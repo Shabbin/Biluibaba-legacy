@@ -79,6 +79,7 @@ module.exports.bookAppointment = async (request, response, next) => {
     time,
     totalAmount,
     type,
+    phoneNumber,
     species,
     detailedConcern,
     homeAddress,
@@ -93,7 +94,8 @@ module.exports.bookAppointment = async (request, response, next) => {
     !totalAmount ||
     !type ||
     !species ||
-    !detailedConcern
+    !detailedConcern ||
+    !phoneNumber
   )
     return next(new ErrorResponse("Missing information", 421));
 
@@ -109,6 +111,7 @@ module.exports.bookAppointment = async (request, response, next) => {
       date,
       time,
       totalAmount,
+      phoneNumber,
       type,
       detailedConcern,
       homeAddress: type === "homeService" ? homeAddress : "",
@@ -131,7 +134,7 @@ module.exports.bookAppointment = async (request, response, next) => {
       request.user,
       sslURLs,
       "",
-      request.user.phoneNumber || ""
+      phoneNumber
     );
 
     appointment.paymentSessionKey = paymentResponse.sessionkey;

@@ -4,6 +4,7 @@ const AppointmentSchema = new mongoose.Schema(
   {
     appointmentId: String,
     status: String,
+    phoneNumber: String,
     petName: String,
     petConcern: [String],
     detailedConcern: String,

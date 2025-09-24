@@ -16,6 +16,7 @@ export default function Page() {
   const [petName, setPetName] = useState("");
   const [petConcern, setPetConcern] = useState("");
   const [homeAddress, setHomeAddress] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [vet, setVet] = useState(null);
   const [species, setSpecies] = useState("cat");
   const [concerns, setConcerns] = useState([]);
@@ -29,6 +30,9 @@ export default function Page() {
       return toast.error(
         "Pet's name needs to be at least 4 characters long and at most 50 characters long"
       );
+
+    if (this.state.phoneNumber === "" || this.state.phoneNumber.length > 30)
+      return toast.error("Please enter a valid phone number.");
 
     if (petConcern === "" || petConcern.length < 10 || petConcern.length > 1000)
       return toast.error(
@@ -47,6 +51,7 @@ export default function Page() {
         totalAmount: vet.totalAmount + 150,
         type: vet.type,
         detailedConcern: petConcern,
+        phoneNumber,
         homeAddress: vet.type === "homeService" ? homeAddress : "",
       });
 
@@ -96,6 +101,19 @@ export default function Page() {
                     onChange={(e) => setPetName(e.target.value)}
                     onKeyPress={(event) => {
                       if (!/[a-zA-z\s]/.test(event.key)) {
+                        event.preventDefault();
+                      }
+                    }}
+                  />
+
+                  <div>*Phone Number</div>
+                  <Input
+                    type="text"
+                    className="mt-2 mb-5"
+                    value={phoneNumber}
+                    onChange={(event) => setPhoneNumber(event.target.value)}
+                    onKeyPress={(event) => {
+                      if (!/[0-9]/.test(event.key)) {
                         event.preventDefault();
                       }
                     }}
