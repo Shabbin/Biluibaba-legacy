@@ -1,0 +1,6 @@
+#ignore some development folder
+/ui
+
+vps.txt
+
+**/.env

@@ -1,0 +1,195 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+import Button from "@/src/components/ui/button";
+
+import { Trash2, ShoppingCart } from "lucide-react";
+
+export default function Page() {
+  const [wishlist, setWishlist] = useState([]);
+  const [selectedItems, setSelectedItems] = useState(new Set());
+
+  const handleSelectAll = (checked) => {
+    if (checked) setSelectedItems(new Set(wishlist.map((item) => item.slug)));
+    else setSelectedItems(new Set());
+  };
+
+  const handleSelectItem = (slug, checked) => {
+    const newSelected = new Set(selectedItems);
+    if (checked) newSelected.add(slug);
+    else newSelected.delete(slug);
+    setSelectedItems(newSelected);
+  };
+
+  const handleDelete = (slug) => {
+    const newSelected = new Set(selectedItems);
+    newSelected.delete(slug);
+    setSelectedItems(newSelected);
+  };
+
+  useEffect(() => {
+    const storedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    if (storedWishlist) setWishlist(storedWishlist);
+  }, []);
+
+  const isAllSelected = selectedItems.length === wishlist.length;
+  const isPartiallySelected =
+    selectedItems.length > 0 && selectedItems.length < wishlist.length;
+
+  useEffect(() => {
+    const wishlistItems = JSON.parse(localStorage.getItem("wishlist")) || [];
+    setWishlist(wishlistItems);
+  }, []);
+
+  return (
+    <div>
+      {wishlist.length > 0 ? (
+        <div className="bg-gray-100 py-8 px-5">
+          <div className="border-b border-gray-200 p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <Checkbox
+                  checked={isAllSelected}
+                  indeterminate={isPartiallySelected}
+                  onChange={handleSelectAll}
+                />
+                <span className="text-gray-600 font-medium">
+                  Select All ({selectedItems.size} Items)
+                </span>
+              </div>
+              <Button
+                type="default"
+                text="Delete"
+                icon={<Trash2 className="h-4 w-4" />}
+                iconAlign="left"
+              />
+            </div>
+          </div>
+
+          <div className="divide-y divide-gray-200">
+            {wishlist.map((product) => (
+              <div key={product.slug} className="p-6 bg-white py-10">
+                <div>
+                  <div className="flex justify-end items-center gap-4 text-xl text-gray-400 hover:text-red-500 p-2">
+                    <Trash2 className="h-4 w-4" /> Delete
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4 flex-1">
+                    {/* Checkbox */}
+                    <Checkbox
+                      checked={selectedItems.has(product.id)}
+                      onChange={(checked) =>
+                        handleSelectItem(product.id, checked)
+                      }
+                    />
+
+                    {/* Product Image */}
+                    <img
+                      src={product.src}
+                      alt={product.name}
+                      className="w-20 h-20 bg-gray-200 rounded-md flex-shrink-0"
+                    />
+
+                    {/* Product Details */}
+                    <div className="flex-1">
+                      <h3 className="font-medium text-gray-900 text-base mb-1">
+                        {product.name}
+                      </h3>
+                      <p className="text-gray-500 text-sm mb-2">
+                        Size - {product.size}
+                      </p>
+
+                      {/* Price Section */}
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xl font-bold text-gray-900">
+                          &#2547;{" "}
+                          {Math.floor(
+                            product.price -
+                              (product.price * product.discount) / 100
+                          )}
+                        </span>
+                        <span className="text-sm text-gray-400 line-through">
+                          TK {product.price.toLocaleString()}
+                        </span>
+                        <span className="text-sm text-green-600 font-medium">
+                          &#2547; {product.discount}% Saved
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex flex-col items-center  ml-4">
+                    <Button
+                      type="default"
+                      text="Add to cart"
+                      icon={<ShoppingCart className="h-4 w-4" />}
+                      iconAlign="left"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="py-5 container mx-auto flex flex-col items-center justify-center gap-5">
+          <img src="/wishlist.png" alt="Wishlist"></img>
+          <h2 className="text-3xl font-bold">Your Wishlist is Empty</h2>
+          <p>Tap heart button to start saving your favourite items.</p>
+          <Button text="Add Now" type="outline" />
+        </div>
+      )}
+    </div>
+  );
+}
+
+const Checkbox = ({
+  checked,
+  onChange,
+  indeterminate = false,
+  className = "",
+}) => {
+  return (
+    <div className={`relative ${className}`}>
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        className="sr-only"
+        ref={(input) => {
+          if (input) input.indeterminate = indeterminate;
+        }}
+      />
+      <div
+        className={`w-5 h-5 border-2 rounded cursor-pointer flex items-center justify-center transition-all duration-200 ${
+          checked || indeterminate
+            ? "bg-black border-black"
+            : "border-gray-300 hover:border-gray-400"
+        }`}
+        onClick={() => onChange(!checked)}
+      >
+        {checked && (
+          <svg
+            className="w-3 h-3 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={3}
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+        )}
+        {indeterminate && !checked && (
+          <div className="w-2 h-0.5 bg-white"></div>
+        )}
+      </div>
+    </div>
+  );
+};

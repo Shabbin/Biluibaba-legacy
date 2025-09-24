@@ -1,0 +1,126 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Invoice</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 0; padding: 0; color: #333;
+      } .container { width: 100%; max-width: 800px; margin: 0 auto; padding:
+      20px; } .header { display: flex; justify-content: space-between;
+      margin-bottom: 30px; } .logo img { height: 50px; } .invoice-details {
+      text-align: right; } .title { background-color: #000; color: #fff;
+      padding: 10px; text-align: center; font-weight: bold; margin-bottom: 20px;
+      } .addresses { display: flex; justify-content: space-between;
+      margin-bottom: 30px; } .from, .to { width: 48%; } .to { text-align: right;
+      } .details { display: flex; justify-content: space-between; margin-bottom:
+      30px; } .details-left, .details-right { width: 48%; } .details-right {
+      text-align: right; } .content { border: 1px solid #ddd; padding: 40px;
+      border-radius: 25px; } .adoption-table { width: 100%; border-collapse:
+      collapse; margin-bottom: 20px; } .adoption-table th, .adoption-table td {
+      border: 1px solid #ddd; padding: 10px; } .adoption-table th { text-align:
+      left; } .adoption-heading { padding: 10px; font-weight: bold;
+      margin-bottom: 10px; } .summary { margin-top: 20px; display: flex;
+      justify-content: space-between; } .payment-info { width: 48%; } .totals {
+      width: 48%; text-align: right; } .footer { margin-top: 50px; display:
+      flex; justify-content: space-between; align-items: center; } .footer-logo
+      { opacity: 0.3; } .footer-text { margin-top: 20px; } .green-text { color:
+      green; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="logo">
+          <img src="http://localhost:5000/uploads/logo" />
+        </div>
+        <div class="invoice-details">
+          <p><strong>Invoice No:</strong> {{invoiceNo}}</p>
+          <p><strong>Date:</strong> {{date}}</p>
+        </div>
+      </div>
+
+      <div class="title">Pet Courier Invoice</div>
+
+      <div class="addresses">
+        <div class="from">
+          <h3>From</h3>
+          <p><strong>Biluibaba</strong></p>
+          <p>00/A, Billu, East Billupara</p>
+          <p>Dhaka - Dhaka - North - Billupara</p>
+          <p>(+880) 1xxxxxxxxx</p>
+        </div>
+        <div class="to">
+          <h3>To</h3>
+          <p>{{cus_name}}</p>
+          <p style="">{{address}}</p>
+          <p>{{phoneNumber}}</p>
+        </div>
+      </div>
+
+      <div class="details">
+        <div class="details-left">
+          <p><strong>Order Date:</strong> {{date}}</p>
+        </div>
+        <div class="details-right">
+          <p><strong>Delivery Type:</strong> Pet Courier by Biluibaba</p>
+          <p><strong>Types Of Transaction:</strong> Online Banking</p>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="adoption-heading">My Adoption</div>
+
+        <table class="adoption-table">
+          <thead>
+            <tr>
+              <th>S/N</th>
+              <th>Species</th>
+              <th>Pet</th>
+              <th>Qty</th>
+              <th>Courier Fee</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>#1</td>
+              <td>{{species}}</td>
+              <td>{{petName}}</td>
+              <td>1</td>
+              <td>&#2547;{{fee}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="summary">
+          <div class="payment-info">
+            <p>
+              <strong>Paid By:</strong>
+              <span class="green-text">{{paidBy}}</span>
+            </p>
+            <p>
+              <strong>Status:</strong>
+              <span class="green-text">{{status}}</span>
+            </p>
+          </div>
+          <div class="totals">
+            <p><strong>QTY:</strong> 1</p>
+            <p><strong>Sub Total:</strong> &#2547;{{total}}</p>
+            <p><strong>Total:</strong> &#2547;{{total}}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div class="footer-text">
+          <p>Thank you for adopting</p>
+          <p>You've given them a second chance at life!</p>
+        </div>
+        <div class="footer-logo">
+          <img
+            src="http://api.biluibaba.com/uploads/logo"
+            style="opacity: 50%; height: 50px"
+          />
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
