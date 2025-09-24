@@ -53,10 +53,6 @@ app.get("/location", async (request, response) => {
 
   const data = await res.json();
 
-  console.log("hi");
-
-  console.log(data);
-
   if (data.results.length > 1) {
     const components = data.results[0].components;
     console.log(components);

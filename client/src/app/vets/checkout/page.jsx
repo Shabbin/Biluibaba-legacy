@@ -50,6 +50,8 @@ export default function Page() {
         homeAddress: vet.type === "homeService" ? homeAddress : "",
       });
 
+      console.log(data);
+
       if (data.success) return (window.location.href = data.url);
     } catch (error) {
       console.error(error);
