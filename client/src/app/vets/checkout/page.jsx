@@ -31,7 +31,7 @@ export default function Page() {
         "Pet's name needs to be at least 4 characters long and at most 50 characters long"
       );
 
-    if (this.state.phoneNumber === "" || this.state.phoneNumber.length > 30)
+    if (phoneNumber === "" || phoneNumber.length > 30)
       return toast.error("Please enter a valid phone number.");
 
     if (petConcern === "" || petConcern.length < 10 || petConcern.length > 1000)
