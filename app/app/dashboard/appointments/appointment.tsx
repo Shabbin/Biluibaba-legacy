@@ -285,7 +285,7 @@ export default function AppointmentDetailsPage() {
         <div className="mb-8">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Prescriptions</h2>
-            {appointment.status !== "confirmed" && (
+            {appointment.status === "confirmed" && (
               <Button
                 onClick={() => setIsAddingPrescription(!isAddingPrescription)}
                 variant="outline"
@@ -296,7 +296,7 @@ export default function AppointmentDetailsPage() {
           </div>
 
           {/* Add Prescription Form */}
-          {isAddingPrescription && appointment.status !== "confirmed" && (
+          {isAddingPrescription && appointment.status === "confirmed" && (
             <div className="bg-gray-50 p-4 rounded-lg mb-4">
               <div className="grid grid-cols-1 gap-4">
                 <div>
