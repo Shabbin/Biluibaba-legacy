@@ -18,6 +18,7 @@ const AppointmentSchema = new mongoose.Schema(
     paymentSessionKey: String,
     type: String,
     homeAddress: String,
+    roomLink: String,
     prescription: [
       {
         medication: String,

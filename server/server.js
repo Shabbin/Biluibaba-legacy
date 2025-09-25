@@ -21,6 +21,7 @@ app.use(
       process.env.CORS_ORIGIN,
       process.env.APP_CORS_ORIGIN,
       process.env.ADMIN_CORS_ORIGIN,
+      process.env.ROOM_CORS_ORIGIN,
     ],
   })
 );
@@ -43,6 +44,7 @@ app.use("/api/order", require("./routes/order"));
 app.use("/api/app", require("./routes/app"));
 app.use("/api/vendor", require("./routes/vendor"));
 app.use("/api/vet", require("./routes/vet"));
+app.use("/api/room", require("./routes/room"));
 app.use("/api/adoptions", require("./routes/adoptions"));
 app.use("/api/admin", require("./routes/admin"));
 

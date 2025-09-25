@@ -10,7 +10,7 @@ const User = require("../models/user.model");
 const Vet = require("../models/vet.model");
 const Appointments = require("../models/appointment.model");
 
-const { generateRandomId } = require("../utils/GenerateId");
+const { generateRandomId, generateRoomId } = require("../utils/GenerateId");
 const { parseTime, calculateTimeSlot } = require("../utils/Time");
 const { createPaymentRequest, validatePayment } = require("../utils/Payment");
 const { generateInvoicePDF } = require("../utils/GeneratePDF");
@@ -28,8 +28,32 @@ const physicalAppointmentVet = fs.readFileSync(
   path.join(__dirname, "../templates/appointments/physical-vet.hbs"),
   "utf-8"
 );
+const physicalAppointmentAdminCancel = fs.readFileSync(
+  path.join(__dirname, "../templates/admin/physical-cancel.hbs"),
+  "utf-8"
+);
 const physicalAppointmentAdmin = fs.readFileSync(
   path.join(__dirname, "../templates/admin/physical-appointment.hbs"),
+  "utf-8"
+);
+const onlineAppointmentConfirm = fs.readFileSync(
+  path.join(__dirname, "../templates/appointments/online-confirm.hbs"),
+  "utf-8"
+);
+const onlineAppointmentCancel = fs.readFileSync(
+  path.join(__dirname, "../templates/appointments/online-cancel.hbs"),
+  "utf-8"
+);
+const onlineAppointmentVet = fs.readFileSync(
+  path.join(__dirname, "../templates/appointments/online-vet.hbs"),
+  "utf-8"
+);
+const onlineAppointmentAdminCancel = fs.readFileSync(
+  path.join(__dirname, "../templates/admin/online-cancel.hbs"),
+  "utf-8"
+);
+const onlineAppointmentAdmin = fs.readFileSync(
+  path.join(__dirname, "../templates/admin/online-appointment.hbs"),
   "utf-8"
 );
 const invoiceTemplate = fs.readFileSync(
@@ -112,6 +136,7 @@ module.exports.bookAppointment = async (request, response, next) => {
       time,
       totalAmount,
       phoneNumber,
+      roomLink: type === "online" ? generateRoomId() : "",
       type,
       detailedConcern,
       homeAddress: type === "homeService" ? homeAddress : "",
@@ -205,7 +230,26 @@ module.exports.validateAppointment = async (request, response, next) => {
         total: appointment.totalAmount.toFixed(2),
       });
 
-      const userMessage = await handlebars.compile(physicalAppointmentConfirm)({
+      const userTemplate =
+        appointment.type === "physical"
+          ? physicalAppointmentConfirm
+          : appointment.type === "online"
+          ? onlineAppointmentConfirm
+          : physicalAppointmentConfirm;
+      const vetTemplate =
+        appointment.type === "physical"
+          ? physicalAppointmentVet
+          : appointment.type === "online"
+          ? onlineAppointmentVet
+          : physicalAppointmentVet;
+      const adminTemplate =
+        appointment.type === "physical"
+          ? physicalAppointmentAdmin
+          : appointment.type === "online"
+          ? onlineAppointmentAdmin
+          : physicalAppointmentAdmin;
+
+      const userMessage = await handlebars.compile(userTemplate)({
         pet_name: appointment.petName,
         name: user.name,
         date: appointment.date,
@@ -213,18 +257,20 @@ module.exports.validateAppointment = async (request, response, next) => {
         vet_name: appointment.vet.name,
         location: appointment.vet.address.fullAddress,
         total_amount: appointment.totalAmount.toFixed(2),
+        room_link: `${process.env.ROOM_URL}?room=${appointment.roomLink}`,
       });
 
-      const message = await handlebars.compile(physicalAppointmentVet)({
+      const message = await handlebars.compile(vetTemplate)({
         pet_name: appointment.petName,
         cus_name: user.name,
         date: appointment.date,
         time: appointment.time,
         location: appointment.vet.address.fullAddress,
         notes: appointment.detailedConcern || "N/A",
+        room_link: appointment.roomLink,
       });
 
-      const adminMessage = await handlebars.compile(physicalAppointmentAdmin)({
+      const adminMessage = await handlebars.compile(adminTemplate)({
         appointment_id: appointment.appointmentId,
         pet_name: appointment.petName,
         cus_name: user.name,
@@ -350,10 +396,30 @@ module.exports.updateAppointment = async (request, response, next) => {
       .status(200)
       .json({ success: true, data: "Appointment Updated" });
   } else if (status === "cancelled") {
-    const message = await handlebars.compile(physicalAppointmentCancel)({
+    const userTemplate =
+      appointment.type === "physical"
+        ? physicalAppointmentCancel
+        : appointment.type === "online"
+        ? onlineAppointmentCancel
+        : physicalAppointmentCancel;
+    const adminTemplate =
+      appointment.type === "physical"
+        ? physicalAppointmentAdminCancel
+        : appointment.type === "online"
+        ? onlineAppointmentAdminCancel
+        : physicalAppointmentAdminCancel;
+
+    const message = await handlebars.compile(userTemplate)({
       name: appointment.user.name,
       date: appointment.date,
       time: appointment.time,
+      total_amount: appointment.totalAmount.toFixed(2),
+    });
+
+    const adminMessage = await handlebars.compile(adminTemplate)({
+      appointmentId: appointment.appointmentId,
+      vet_name: appointment.vet.name,
+      cus_name: appointment.user.name,
       total_amount: appointment.totalAmount.toFixed(2),
     });
 
@@ -361,6 +427,12 @@ module.exports.updateAppointment = async (request, response, next) => {
       to: appointment.user.email,
       subject: `Appointment Cancelled: ${appointment.petName} on ${appointment.date}`,
       message,
+    });
+
+    await sendEmail({
+      to: process.env.ADMIN_EMAIL,
+      subject: `Cancelled appointment (ID: ${appointment.appointmentId}) - refund required`,
+      message: adminMessage,
     });
 
     appointment.status = "cancelled";

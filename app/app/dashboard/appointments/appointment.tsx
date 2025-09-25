@@ -205,6 +205,19 @@ export default function AppointmentDetailsPage() {
                 </p>
               </div>
             )}
+            {appointment.type === "online" && (
+              <div>
+                <p className="text-gray-600">Room Link</p>
+                <a
+                  href={`${process.env.NEXT_PUBLIC_ROOM_URL}?room=${appointment.roomLink}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-blue-600 hover:underline"
+                >
+                  Join Room
+                </a>
+              </div>
+            )}
             <div>
               <p className="text-gray-600">Total Amount</p>
               <p className="font-medium">
