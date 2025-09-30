@@ -128,7 +128,7 @@ const VetProfile = ({
           </div>
         ))}
         <div className="text-green-600 text-center text-lg font-bold">
-          See Your Prefer Timeslot
+          See your prefer {type.toLowerCase()} timeslot
         </div>
       </div>
     </div>

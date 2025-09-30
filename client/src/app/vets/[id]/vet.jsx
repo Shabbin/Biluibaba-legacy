@@ -4,11 +4,8 @@ import { useState, useEffect } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import Tippy from "@tippyjs/react";
 import { toast } from "react-hot-toast";
-import moment from "moment";
 
 import axios from "@/src/lib/axiosInstance";
-
-import withRouter from "@/src/app/controllers/router";
 
 import Button from "@/src/components/ui/button";
 
@@ -19,7 +16,6 @@ import VetsData from "@/src/app/demo.vets";
 
 import { FaStar, FaCheck } from "react-icons/fa";
 import { PiDogThin, PiCatThin } from "react-icons/pi";
-import { TbFileCertificate } from "react-icons/tb";
 
 export default function Page() {
   const [loading, setLoading] = useState(true);
@@ -72,7 +68,6 @@ export default function Page() {
     fetchData();
 
     const newDate = new Date();
-    newDate.setDate(newDate.getDate() + 1); // Set to tomorrow's date
 
     setDate(
       `${newDate.toLocaleDateString("en-US", {
@@ -213,7 +208,7 @@ export default function Page() {
             </div>
             <div className="basis-1/3 sticky top-10 max-h-[865px] rounded-xl border border-neutral-200 shadow-xl">
               <div className="text-2xl font-bold px-4 pt-6 text-center whitespace-nowrap">
-                Next Available time slots
+                Next available {type.toLowerCase()} time slots
               </div>
               <div className="px-6">
                 <Calendar

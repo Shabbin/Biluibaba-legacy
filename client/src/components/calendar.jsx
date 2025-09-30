@@ -17,18 +17,36 @@ const Calendar = ({ date, setDate, availableSlots }) => {
 
   useEffect(() => {
     const dates = [];
-    const today = new Date(date);
-    const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
-    const lastDayOfMonth = new Date(
-      today.getFullYear(),
-      today.getMonth() + 1,
-      0
-    );
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
 
-    // Get all dates of the current month
+    // Get the next available date first by checking today
+    const todayName = now
+      .toLocaleDateString("en-US", { weekday: "long" })
+      .toLowerCase();
+    const todaySlots = availableSlots?.[todayName];
+    const isTodayAvailable = todaySlots?.availableSlots?.length > 0;
+
+    // Set start date based on availability
+    let startDate;
+    if (isTodayAvailable) {
+      // If today is available, start from tomorrow
+      startDate = new Date(now);
+      startDate.setDate(startDate.getDate() + 1);
+    } else {
+      // If today is not available, start from today
+      startDate = new Date(now);
+    }
+
+    // Calculate the end date (one month from start date)
+    const endDate = new Date(startDate);
+    endDate.setMonth(endDate.getMonth() + 1);
+    endDate.setDate(endDate.getDate() - 1);
+
+    // Get dates from October 5th to November 4th
     for (
-      let d = new Date(today.getFullYear(), today.getMonth(), 1);
-      d <= lastDayOfMonth;
+      let d = new Date(startDate);
+      d <= endDate;
       d.setDate(d.getDate() + 1)
     ) {
       const dayName = d

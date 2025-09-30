@@ -82,7 +82,6 @@ export default function Page() {
     phoneNumber: "",
     email: "",
     gender: "Male",
-    hospital: "",
     state: "",
     district: "Dhaka",
     postcode: "",
@@ -429,7 +428,7 @@ function StepTwo({ data, handleDataChange, handleFileChange, setStep }) {
         <img
           src={URL.createObjectURL(data.nidFront)}
           alt="NID Front"
-          className="basis-full w-1/2"
+          className="basis-full w-[300px]"
         />
       )}
       <div className="basis-full">
@@ -446,7 +445,7 @@ function StepTwo({ data, handleDataChange, handleFileChange, setStep }) {
         <img
           src={URL.createObjectURL(data.nidBack)}
           alt="NID Back"
-          className="basis-full w-1/2"
+          className="basis-full w-[300px]"
         />
       )}
       <div className="basis-full">
@@ -474,7 +473,7 @@ function StepTwo({ data, handleDataChange, handleFileChange, setStep }) {
         <img
           src={URL.createObjectURL(data.certificate)}
           alt="Certificate"
-          className="basis-full w-1/2"
+          className="basis-full w-[300px]"
         />
       )}
 
@@ -531,7 +530,9 @@ function StepTwo({ data, handleDataChange, handleFileChange, setStep }) {
 
 function StepThree({ data, handleDataChange, setStep }) {
   const checkAddress = () => {
-    if (!data.fullAddress || data.fullAddress === "")
+    if (!data.hospital || data.hospital === "")
+      return toast.error("Please provide your hospital name.");
+    else if (!data.fullAddress || data.fullAddress === "")
       return toast.error("Please provide your store address.");
     else if (!data.state || data.state === "")
       return toast.error("Please provide your store division.");
@@ -544,8 +545,17 @@ function StepThree({ data, handleDataChange, setStep }) {
 
   return (
     <div className="my-5 flex flex-row items-center justify-between gap-y-2 flex-wrap">
+      <div className="basis-full">
+        <label>Hospital Name</label>
+        <Input
+          type="text"
+          name="hospital"
+          value={data.hospital}
+          onChange={handleDataChange}
+        />
+      </div>
       <div className="basis-1/2 -m-2 p-2">
-        <label htmlFor="storeAddress">Store address</label>
+        <label htmlFor="storeAddress">Hospital address</label>
         <Input
           type="text"
           name="fullAddress"
@@ -554,7 +564,7 @@ function StepThree({ data, handleDataChange, setStep }) {
         />
       </div>
       <div className="basis-1/2 -m-2 p-2">
-        <label htmlFor="state">Store division</label>
+        <label htmlFor="state">Hospital division</label>
         <Input
           type="text"
           name="state"
@@ -564,7 +574,7 @@ function StepThree({ data, handleDataChange, setStep }) {
       </div>
 
       <div className="basis-1/2 -m-2 p-2">
-        <label htmlFor="district">Store district</label>
+        <label htmlFor="district">Hospital district</label>
         <Select
           data={LocationData.map((location) => ({
             value: location,
@@ -576,7 +586,7 @@ function StepThree({ data, handleDataChange, setStep }) {
         />
       </div>
       <div className="basis-1/2 -m-2 p-2">
-        <label htmlFor="postcode">Store postcode</label>
+        <label htmlFor="postcode">Hospital postcode</label>
         <Input
           type="text"
           name="postcode"
