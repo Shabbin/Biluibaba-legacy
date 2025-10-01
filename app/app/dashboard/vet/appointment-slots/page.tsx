@@ -87,7 +87,7 @@ export default function Page() {
       const { data } = await axios.get("/api/vet/me");
 
       if (data.success) {
-        const fetchedSlots = data.vet.appointments.slots;
+        const fetchedSlots = data.vet.appointments?.slots;
         setSlots({
           monday: {
             startTime: fetchedSlots.monday?.startTime || "",

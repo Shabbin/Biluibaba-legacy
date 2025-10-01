@@ -1,22 +1,18 @@
 "use client";
-import { useRef, useState, useEffect } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation } from "swiper/modules";
+import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 import VetProfile from "@/src/components/profile/vet";
 
-import "swiper/css";
-import { PiGreaterThan, PiLessThan } from "react-icons/pi";
+import axios from "@/src/lib/axiosInstance";
 
 const ExpertVets = ({ vet, router }) => {
-  const swiperRef = useRef(null);
-
   const [loading, setLoading] = useState(true);
   const [vets, setVets] = useState([]);
 
   const fetchVets = async () => {
     try {
-      let { data } = await axiosInstance.get("/api/vet/get}");
+      let { data } = await axios.get("/api/vet/");
       if (data.success) setVets(data.vets);
     } catch (error) {
       console.log(error);
@@ -27,37 +23,19 @@ const ExpertVets = ({ vet, router }) => {
   };
 
   useEffect(() => {
+    setLoading(true);
     fetchVets();
   }, []);
 
   return (
-    <div className="relative py-10">
-      <div className="absolute h-full w-full flex flex-row items-center justify-between">
-        <div
-          className="bg-white py-14 rounded-tr-lg rounded-br-lg cursor-pointer hover:bg-neutral-100 transition-all ease-in-out duration-300 shadow z-20"
-          onClick={() => swiperRef.current?.slidePrev()}
-        >
-          <PiLessThan size="3em" className="px-2" />
-        </div>
-        <div
-          className="bg-white py-14 rounded-tl-lg rounded-bl-lg cursor-pointer hover:bg-neutral-100 transition-all ease-in-out duration-300 shadow z-20"
-          onClick={() => swiperRef.current?.slideNext()}
-        >
-          <PiGreaterThan size="3em" className="px-2" />
-        </div>
-      </div>
-      <Swiper
-        className="z-10"
-        onSwiper={(swiper) => (swiperRef.current = swiper)}
-        autoplay={{ delay: 3000, disableOnInteraction: true }}
-        modules={[Autoplay, Navigation]}
-        slidesPerView={3}
-        loop={true}
-      >
-        {vets.map((vet) => (
-          <SwiperSlide key={vet.id}>
+    <div className="py-10">
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <div className="flex md:flex-row flex-col md:-m-2 mx-2 flex-wrap items-center justify-between ">
+          {vets.map((vet, i) => (
             <VetProfile
-              src={vet.profilePic}
+              src={vet.profilePicture}
               id={vet._id}
               name={vet.name}
               designation={vet.degree}
@@ -65,13 +43,14 @@ const ExpertVets = ({ vet, router }) => {
               reviews={100}
               verified={vet.verified}
               slots={vet.appointments.slots}
-              price={vet.appointments["online"].fee}
-              key={vet.id}
+              price={vet.appointments["online"]?.fee}
+              type="online"
+              key={i}
               router={router}
             />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

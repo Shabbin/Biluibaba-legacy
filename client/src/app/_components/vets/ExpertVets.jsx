@@ -15,8 +15,6 @@ export default function ExpertVets() {
     try {
       const { data } = await axios.get("/api/vet");
 
-      console.log(data);
-
       if (data.success) setVets(data.vets);
     } catch (error) {
       console.error("Error fetching vets:", error);

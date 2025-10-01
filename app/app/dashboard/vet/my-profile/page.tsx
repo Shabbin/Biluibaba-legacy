@@ -50,6 +50,7 @@ type FormValues = z.infer<typeof ProfileSchema>;
 export default function Page() {
   const [loading, setLoading] = useState(false);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(ProfileSchema),
@@ -171,7 +172,7 @@ export default function Page() {
               <>
                 <h2 className="text-xl">Current profile picture</h2>
                 <img
-                  className="w-[200px] h-[200px] rounded-full"
+                  className="w-[200px] h-[200px] rounded-full object-cover"
                   src={profilePicture}
                   alt={profilePicture}
                 />
@@ -190,11 +191,30 @@ export default function Page() {
                       accept="image/jpeg,image/png,image/jpg"
                       onChange={(e) => {
                         const file = e.target.files?.[0] ?? null;
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setPreviewImage(reader.result as string);
+                          };
+                          reader.readAsDataURL(file);
+                        } else {
+                          setPreviewImage(null);
+                        }
                         onChange(file);
                       }}
                       {...field}
                     />
                   </FormControl>
+                  {previewImage && (
+                    <div className="mt-4">
+                      <h2 className="text-xl">Preview</h2>
+                      <img
+                        className="w-[200px] h-[200px] rounded-full object-cover mt-2"
+                        src={previewImage}
+                        alt="Profile preview"
+                      />
+                    </div>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}

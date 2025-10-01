@@ -26,7 +26,7 @@ const Login = () => {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [facebookLoading, setFacebookLoading] = useState(false);
 
-  if (user) router.push("/my-account");
+  if (user) router.push("/");
 
   const login = async (authType) => {
     if (authType === "traditional") {
@@ -56,7 +56,12 @@ const Login = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Something went wrong. Please try again.");
+      toast.error(error.response?.data?.error) ||
+        "Login failed. Please try again.";
+    } finally {
+      setLoading(false);
+      setGoogleLoading(false);
+      setFacebookLoading(false);
     }
   };
 

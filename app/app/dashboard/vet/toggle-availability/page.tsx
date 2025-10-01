@@ -183,30 +183,30 @@ export default function Page() {
 
       if (data.success) {
         form.reset({
-          physical: Boolean(appointments.physical.status),
-          online: Boolean(appointments.online.status),
-          emergency: Boolean(appointments.emergency.status),
-          instantChat: Boolean(appointments.instantChat.status), // Handle instantChat from API
-          homeService: Boolean(appointments.homeService.status), // Add homeService
+          physical: Boolean(appointments?.physical.status),
+          online: Boolean(appointments?.online.status),
+          emergency: Boolean(appointments?.emergency.status),
+          instantChat: Boolean(appointments?.instantChat.status), // Handle instantChat from API
+          homeService: Boolean(appointments?.homeService.status), // Add homeService
           physicalFee:
-            appointments.physical.fee !== undefined &&
-            appointments.physical.fee !== null
-              ? Number(appointments.physical.fee)
+            appointments?.physical.fee !== undefined &&
+            appointments?.physical.fee !== null
+              ? Number(appointments?.physical.fee)
               : null,
           onlineFee:
-            appointments.online.fee !== undefined &&
-            appointments.online.fee !== null
-              ? Number(appointments.online.fee)
+            appointments?.online.fee !== undefined &&
+            appointments?.online.fee !== null
+              ? Number(appointments?.online.fee)
               : null,
           emergencyFee:
-            appointments.emergency.fee !== undefined &&
-            appointments.emergency.fee !== null
-              ? Number(appointments.emergency.fee)
+            appointments?.emergency.fee !== undefined &&
+            appointments?.emergency.fee !== null
+              ? Number(appointments?.emergency.fee)
               : null,
           homeServiceFee:
-            appointments.homeService.fee !== undefined &&
-            appointments.homeService.fee !== null
-              ? Number(appointments.homeService.fee)
+            appointments?.homeService.fee !== undefined &&
+            appointments?.homeService.fee !== null
+              ? Number(appointments?.homeService.fee)
               : null, // Add homeServiceFee
         });
       }
@@ -285,6 +285,10 @@ export default function Page() {
                             const value = e.target.value;
                             field.onChange(value === "" ? null : Number(value));
                           }}
+                          onWheel={(e) => {
+                            e.preventDefault();
+                            (e.target as HTMLElement).blur();
+                          }}
                           onBlur={field.onBlur}
                         />
                       </FormControl>
@@ -342,6 +346,10 @@ export default function Page() {
                           onChange={(e) => {
                             const value = e.target.value;
                             field.onChange(value === "" ? null : Number(value));
+                          }}
+                          onWheel={(e) => {
+                            e.preventDefault();
+                            (e.target as HTMLElement).blur();
                           }}
                           onBlur={field.onBlur}
                         />
@@ -401,6 +409,10 @@ export default function Page() {
                             const value = e.target.value;
                             field.onChange(value === "" ? null : Number(value));
                           }}
+                          onWheel={(e) => {
+                            e.preventDefault();
+                            (e.target as HTMLElement).blur();
+                          }}
                           onBlur={field.onBlur}
                         />
                       </FormControl>
@@ -459,6 +471,10 @@ export default function Page() {
                           onChange={(e) => {
                             const value = e.target.value;
                             field.onChange(value === "" ? null : Number(value));
+                          }}
+                          onWheel={(e) => {
+                            e.preventDefault();
+                            (e.target as HTMLElement).blur();
                           }}
                           onBlur={field.onBlur}
                         />
