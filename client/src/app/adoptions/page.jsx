@@ -100,7 +100,7 @@ export default function Page() {
       <img
         src="/adoption_banner.png"
         alt="Banner"
-        className="rounded-lg mx-auto"
+        className="rounded-lg mx-auto md:py-5 py-0"
       />
 
       <div className="bg-neutral-100 md:px-20 px-10 py-10 my-10 rounded-lg">
@@ -270,8 +270,10 @@ export default function Page() {
         </div>
       </div>
 
-      <div className="py-20 flex md:flex-row flex-col items-center justify-between bg-[url('/post-adoption.png')] bg-cover bg-no-repeat bg-center text-white px-10 my-5 rounded-lg gap-5">
-        <h2 className="text-4xl">Do you have any adoption?</h2>
+      <div className="py-20 flex md:flex-row flex-col items-center justify-between bg-[url('/post-adoption.png')] bg-cover bg-no-repeat bg-bottom text-white md:px-20 px-10 my-5 rounded-lg gap-5">
+        <h2 className="text-4xl md:text-left text-center">
+          Do you have any adoption?
+        </h2>
         <button
           className="relative inline-flex h-14 items-center justify-center px-1 before:absolute before:inset-0 before:rounded-full before:border before:border-transparent before:bg-gradient-to-r before:from-[#ff75c3] before:via-[#ffa647] before:to-[#91ffff] before:opacity-0 before:transition before:duration-300 hover:before:opacity-100 rounded-full bg-gradient-to-r from-[#ff75c3] via-[#ffa647] to-[#91ffff] text-xl"
           onClick={() => (window.location.href = "/adoptions/post")}
@@ -284,23 +286,39 @@ export default function Page() {
         </button>{" "}
       </div>
 
+      <div className="py-8 text-5xl text-center font-bold">Available Pets</div>
+
       <div className="py-5">
         {loading ? null : (
           <div className="flex md:flex-row flex-col flex-wrap justify-center gap-5">
             {adoptions.map((adoption, index) => (
-              <div className="basis-1/4 md:-m-5 md:p-5" key={index}>
-                <Adoption
-                  pic={adoption.images[0].path}
-                  name={adoption.name}
-                  pet={adoption.species}
-                  location={adoption.location}
-                  gender={adoption.gender}
-                  addedOn={adoption.updatedAt}
-                  breed={adoption.breed}
-                  age={adoption.age}
-                  id={adoption.adoptionId}
-                />
-              </div>
+              <>
+                <div
+                  className="basis-1/4 md:-m-5 md:p-5"
+                  key={adoption.adoptionId}
+                >
+                  <Adoption
+                    pic={adoption.images[0].path}
+                    name={adoption.name}
+                    pet={adoption.species}
+                    location={adoption.location}
+                    gender={adoption.gender}
+                    addedOn={adoption.updatedAt}
+                    breed={adoption.breed}
+                    age={adoption.age}
+                    id={adoption.adoptionId}
+                  />
+                </div>
+                {(index + 1) % 8 === 0 && index !== adoptions.length - 1 && (
+                  <div className="w-full md:my-8 my-2 md:px-12 px-0">
+                    <img
+                      src="/adoption_banner2.png"
+                      alt="Adoption Banner"
+                      className="rounded-lg w-full"
+                    />
+                  </div>
+                )}
+              </>
             ))}
           </div>
         )}

@@ -255,7 +255,10 @@ module.exports.validateAppointment = async (request, response, next) => {
         date: appointment.date,
         time: appointment.time,
         vet_name: appointment.vet.name,
-        location: appointment.vet.address.fullAddress,
+        location:
+          appointment.type === "physical"
+            ? appointment.vet.address.fullAddress
+            : appointment.homeAddress,
         total_amount: appointment.totalAmount.toFixed(2),
         room_link: `${process.env.ROOM_URL}?room=${appointment.roomLink}`,
       });
