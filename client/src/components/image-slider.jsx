@@ -27,7 +27,7 @@ export default function ImageSlider({ images }) {
     <div className="max-w-4xl mx-auto px-4">
       <div className="relative">
         {/* Main Image */}
-        <div className="aspect-[4/3] w-full overflow-hidden rounded-lg bg-gray-100 mb-4">
+        <div className="aspect-[4/3] w-full overflow-hidden bg-gray-100 mb-4">
           <img
             src={`${images[currentIndex].path}?auto=format&fit=crop&w=1000&q=80`}
             alt={images[currentIndex].filename}
@@ -35,52 +35,51 @@ export default function ImageSlider({ images }) {
           />
         </div>
 
-        {/* Navigation Arrows */}
+        {/* Thumbnails with Navigation Arrows */}
         {images.length > 1 && (
-          <>
+          <div className="relative mt-4">
+            {/* Navigation Arrows */}
             <button
               onClick={goToPrevious}
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-white/80 shadow-md hover:bg-white transition-all"
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-7 h-10 flex items-center justify-center rounded-tr-md rounded-br-md bg-white hover:bg-white transition-all hover:bg-opacity-100"
             >
-              <LuChevronLeft className="w-6 h-6" />
+              <LuChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={goToNext}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-white/80 shadow-md hover:bg-white transition-all"
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-7 h-10 flex items-center justify-center rounded-tr-md rounded-br-md bg-white hover:bg-white transition-all hover:bg-opacity-100"
             >
-              <LuChevronRight className="w-6 h-6" />
+              <LuChevronRight className="w-5 h-5" />
             </button>
-          </>
-        )}
 
-        {/* Thumbnails */}
-        {images.length > 1 && (
-          <div className="grid grid-cols-4 gap-4 mt-4">
-            {thumbnailImages.map((image) => {
-              const index = images.findIndex((img) => img.id === image.id);
-              return (
-                <button
-                  key={image.id}
-                  onClick={() => goToSlide(index)}
-                  className="w-full aspect-[4/3] overflow-hidden rounded-lg opacity-70 hover:opacity-100"
-                >
-                  <img
-                    src={`${image.path}?auto=format&fit=crop&w=200&q=60`}
-                    alt={`Thumbnail ${index + 1}`}
-                    className="h-full w-full object-cover"
-                  />
-                </button>
-              );
-            })}
-            {/* Add placeholder thumbnails to maintain grid layout */}
-            {Array.from({
-              length: Math.max(0, 4 - thumbnailImages.length),
-            }).map((_, index) => (
-              <div
-                key={`placeholder-${index}`}
-                className="w-full aspect-[4/3] rounded-lg bg-gray-200"
-              />
-            ))}
+            {/* Thumbnails Grid */}
+            <div className="grid grid-cols-4 gap-4">
+              {thumbnailImages.map((image) => {
+                const index = images.findIndex((img) => img.id === image.id);
+                return (
+                  <button
+                    key={image.id}
+                    onClick={() => goToSlide(index)}
+                    className="w-full aspect-[4/3] overflow-hidden opacity-70 hover:opacity-100"
+                  >
+                    <img
+                      src={`${image.path}?auto=format&fit=crop&w=200&q=60`}
+                      alt={`Thumbnail ${index + 1}`}
+                      className="h-full w-full object-cover"
+                    />
+                  </button>
+                );
+              })}
+              {/* Add placeholder thumbnails to maintain grid layout */}
+              {Array.from({
+                length: Math.max(0, 4 - thumbnailImages.length),
+              }).map((_, index) => (
+                <div
+                  key={`placeholder-${index}`}
+                  className="w-full aspect-[4/3] rounded-lg bg-gray-200"
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>

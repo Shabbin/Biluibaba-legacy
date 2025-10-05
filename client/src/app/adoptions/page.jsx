@@ -104,9 +104,9 @@ export default function Page() {
       />
 
       <div className="bg-neutral-100 md:px-20 px-10 py-10 my-10 rounded-lg">
-        <div className="flex md:flex-row flex-col items-center flex-wrap">
-          <div className="basis-1/5 w-full md:-me-2 px-2">
-            <label>Age</label>
+        <div className="flex md:flex-row flex-col items-center flex-wrap gap-y-8">
+          <div className="basis-1/5 w-full md:-me-2 px-3">
+            <label className="text-lg">Age</label>
             <Select
               data={[
                 { value: "", text: "All options" },
@@ -148,10 +148,11 @@ export default function Page() {
                 { value: "30+ years", text: "30+ years" },
               ]}
               onChange={(value) => handleFilterChange("age", value)}
+              className="!bg-white !text-sm !text-gray-400"
             ></Select>
           </div>
-          <div className="basis-1/5 w-full md:-me-2 px-2">
-            <label>Species</label>
+          <div className="basis-1/5 w-full md:-me-2 px-3">
+            <label className="text-lg">Species</label>
             <Select
               data={[
                 { value: "", text: "All options" },
@@ -160,11 +161,12 @@ export default function Page() {
                   text: breed.name,
                 })),
               ]}
+              className="!bg-white !text-sm !text-gray-400"
               onChange={(value) => handleFilterChange("species", value)}
             ></Select>
           </div>
-          <div className="basis-1/5 w-full md:-me-2 px-2">
-            <label>Breed</label>
+          <div className="basis-1/5 w-full md:-me-2 px-3">
+            <label className="text-lg">Breed</label>
             <Select
               data={[
                 { text: "All options", value: "" },
@@ -175,22 +177,24 @@ export default function Page() {
                   text: breed,
                 })) || []),
               ]}
+              className="!bg-white !text-sm !text-gray-400"
               onChange={(value) => handleFilterChange("breed", value)}
             ></Select>
           </div>
-          <div className="basis-1/5 w-full md:-me-2 px-2">
-            <label>Gender</label>
+          <div className="basis-1/5 w-full md:-me-2 px-3">
+            <label className="text-lg">Gender</label>
             <Select
               data={[
                 { text: "All options", value: "" },
                 { text: "Male", value: "Male" },
                 { text: "Female", value: "Female" },
               ]}
+              className="!bg-white !text-sm !text-gray-400"
               onChange={(value) => handleFilterChange("gender", value)}
             ></Select>
           </div>
-          <div className="basis-1/5 w-full md:-me-2 px-2">
-            <label>Size</label>
+          <div className="basis-1/5 w-full md:-me-2 px-3">
+            <label className="text-lg">Size</label>
             <Select
               data={[
                 { value: "", text: "All options" },
@@ -198,11 +202,12 @@ export default function Page() {
                 { value: "Medium", text: "Medium" },
                 { text: "Large", value: "Large" },
               ]}
+              className="!bg-white !text-sm !text-gray-400"
               onChange={(value) => handleFilterChange("size", value)}
             ></Select>
           </div>
-          <div className="basis-1/5 w-full md:-me-2 px-2">
-            <label>Vaccinated</label>
+          <div className="basis-1/5 w-full md:-me-2 px-3">
+            <label className="text-lg">Vaccinated</label>
             <Select
               data={[
                 { text: "All options", value: "" },
@@ -215,10 +220,11 @@ export default function Page() {
                   ? false
                   : true
               }
+              className="!bg-white !text-sm !text-gray-400"
             ></Select>
           </div>
-          <div className="basis-1/5 w-full md:-me-2 px-2">
-            <label>Color</label>
+          <div className="basis-1/5 w-full md:-me-2 px-3">
+            <label className="text-lg">Color</label>
             <Select
               data={[
                 { text: "All options", value: "" },
@@ -227,11 +233,12 @@ export default function Page() {
                   text: color,
                 })),
               ]}
+              className="!bg-white !text-sm !text-gray-400"
               onChange={(value) => handleFilterChange("color", value)}
             ></Select>
           </div>
-          <div className="basis-1/5 w-full md:-me-2 px-2">
-            <label>Location</label>
+          <div className="basis-1/5 w-full md:-me-2 px-3">
+            <label className="text-lg">Location</label>
             <Select
               data={[
                 { text: "All options", value: "" },
@@ -240,11 +247,12 @@ export default function Page() {
                   text: location,
                 })),
               ]}
+              className="!bg-white !text-sm !text-gray-400"
               onChange={(value) => handleFilterChange("location", value)}
             ></Select>
           </div>
-          <div className="basis-1/5 w-full md:-me-2 px-2">
-            <label>Neutered/Sprayed</label>
+          <div className="basis-1/5 w-full md:-me-2 px-3">
+            <label className="text-lg">Neutered/Sprayed</label>
             <Select
               data={[
                 { text: "All options", value: "" },
@@ -257,13 +265,14 @@ export default function Page() {
                   ? false
                   : true
               }
+              className="!bg-white !text-sm !text-gray-400"
             ></Select>
           </div>
-          <div className="basis-1/5 w-full md:-me-2 px-2">
+          <div className="basis-1/5 w-full md:-me-2 px-3">
             <Button
               text="Apply"
               type="default"
-              className="w-full mt-5 !py-3"
+              className="w-full mt-6 !py-3"
               onClick={applyFilters}
             ></Button>
           </div>
@@ -283,7 +292,7 @@ export default function Page() {
             Post Adoption
             <span className="px-10"></span>
           </span>
-        </button>{" "}
+        </button>
       </div>
 
       <div className="py-8 text-5xl text-center font-bold">Available Pets</div>

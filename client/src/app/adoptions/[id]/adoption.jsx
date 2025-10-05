@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 
 import { useAuth } from "@/src/components/providers/AuthProvider";
 
-import { LuShare2, LuHeart } from "react-icons/lu";
+import { Share, HeartOutline } from "@/src/components/svg";
 
 import ImageSlider from "@/src/components/image-slider";
 import Button from "@/src/components/ui/button";
@@ -66,6 +66,7 @@ export default function Page() {
       if (data.success) {
         setAdoption(data.adoption);
         setMoreAdoptions(data.moreAdoption);
+        console.log(data);
       }
     } catch (error) {
       console.error(error);
@@ -83,124 +84,126 @@ export default function Page() {
   return (
     <div className="py-5 bg-neutral-50">
       {loading ? null : (
-        <div className="mx-auto container md:px-0 px-5">
+        <div className="mx-auto container md:px-0 px-5 py-5">
           <div className="flex md:flex-row flex-col gap-5">
-            <div className="basis-1/2">
+            <div className="basis-2/3">
               <ImageSlider images={adoption.images} />
             </div>
-            <div className="basis-1/2 bg-white p-8 rounded-xl shadow border flex flex-col justify-between">
-              <div>
-                <h2 className="text-2xl">Hi everyone! I'm</h2>
-                <h3 className="text-5xl font-bold mt-2">{adoption.name}</h3>
-              </div>
-              <div className="py-5">
+            <div className="basis-1/3">
+              <div className="gap-5 bg-white p-8 rounded-md border flex flex-col justify-between">
+                <div>
+                  <h2 className="text-xl font-semibold">Hi everyone! I'm</h2>
+                  <h3 className="text-4xl font-bold mt-2">{adoption.name}</h3>
+                </div>
                 <div className="flex flex-row items-center justify-between">
-                  <h2 className="text-2xl">About</h2>
+                  <h2 className="text-3xl font-semibold">About</h2>
                   <div className="flex flex-row items-center gap-2">
-                    <LuShare2 size="1.5em" />
-                    <LuHeart size="1.5em" />
+                    <Share className="text-[2em]" />
+                    <HeartOutline className="text-[2em]" />
                   </div>
                 </div>
 
-                <div className="py-3 text-xl flex flex-col gap-2">
-                  <div className="flex flex-row items-center justify-between">
-                    <div>Age</div>
-                    <div className="font-bold">{adoption.age}</div>
-                  </div>
-                  <div className="flex flex-row items-center justify-between">
-                    <div>Gender</div>
-                    <div className="font-bold">{adoption.gender}</div>
-                  </div>
-                  <div className="flex flex-row items-center justify-between">
-                    <div>Species</div>
-                    <div className="font-bold">{adoption.species}</div>
-                  </div>
-                  <div className="flex flex-row items-center justify-between">
-                    <div>Size</div>
-                    <div className="font-bold">{adoption.size}</div>
-                  </div>
-                  <div className="flex flex-row items-center justify-between">
-                    <div>Breed</div>
-                    <div className="font-bold">{adoption.breed}</div>
-                  </div>
-                  <div className="flex flex-row items-center justify-between">
-                    <div>Vaccinated</div>
-                    <div className="font-bold">{adoption.vaccinated}</div>
-                  </div>
-                  <div className="flex flex-row items-center justify-between">
-                    <div>Sprayed/Neuter</div>
-                    <div className="font-bold">{adoption.neutered}</div>
-                  </div>
-                  <div className="flex flex-row items-center justify-between">
-                    <div>Location</div>
-                    <div className="font-bold">{adoption.location}</div>
-                  </div>
+                <div>
+                  <div className="py-3 text-xl flex flex-col gap-3">
+                    <div className="flex flex-row items-center justify-between">
+                      <div>Age</div>
+                      <div className="font-semibold">{adoption.age}</div>
+                    </div>
+                    <div className="flex flex-row items-center justify-between">
+                      <div>Gender</div>
+                      <div className="font-semibold">{adoption.gender}</div>
+                    </div>
+                    <div className="flex flex-row items-center justify-between">
+                      <div>Species</div>
+                      <div className="font-semibold">{adoption.species}</div>
+                    </div>
+                    <div className="flex flex-row items-center justify-between">
+                      <div>Size</div>
+                      <div className="font-semibold">{adoption.size}</div>
+                    </div>
+                    <div className="flex flex-row items-center justify-between">
+                      <div>Breed</div>
+                      <div className="font-semibold">{adoption.breed}</div>
+                    </div>
+                    <div className="flex flex-row items-center justify-between">
+                      <div>Vaccinated</div>
+                      <div className="font-semibold">{adoption.vaccinated}</div>
+                    </div>
+                    <div className="flex flex-row items-center justify-between">
+                      <div>Sprayed/Neuter</div>
+                      <div className="font-semibold">{adoption.neutered}</div>
+                    </div>
+                    <div className="flex flex-row items-center justify-between">
+                      <div>Location</div>
+                      <div className="font-semibold">{adoption.location}</div>
+                    </div>
 
-                  <div className="flex flex-row items-center justify-between">
-                    <div>Shipping Cost</div>
-                    <div className="font-bold">&#2547; 500</div>
+                    <div className="flex flex-row items-center justify-between">
+                      <div>Shipping Cost</div>
+                      <div className="font-bold text-2xl">&#2547; 500</div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex flex-col gap-5">
-                {auth.user?.id === adoption.userId._id ? (
-                  <Button
-                    text="Manage Adoption"
-                    type="default"
-                    onClick={() =>
-                      (window.location.href = `/my-account/adoptions/`)
-                    }
-                  />
-                ) : (
-                  <>
-                    {isInWishlist ? (
-                      <Button
-                        text="Remove from Wishlist"
-                        type="outline"
-                        onClick={handleClick}
-                      />
-                    ) : (
-                      <Button
-                        text="Add to Wishlist"
-                        type="outline"
-                        onClick={handleClick}
-                      />
-                    )}
+                <div className="flex flex-col gap-5">
+                  {auth.user?.id === adoption.userId._id ? (
                     <Button
-                      text="Apply to Adopt"
+                      text="Manage Adoption"
                       type="default"
-                      onClick={() => {
-                        localStorage.setItem(
-                          "adoption",
-                          JSON.stringify({
-                            name: adoption.name,
-                            pic: adoption.images[0].path,
-                            species: adoption.species,
-                            gender: adoption.gender,
-                            adoptionId: adoption._id,
-                          })
-                        );
-
-                        window.location.href = "/adoptions/checkout";
-                      }}
+                      onClick={() =>
+                        (window.location.href = `/my-account/adoptions/`)
+                      }
                     />
-                  </>
-                )}
+                  ) : (
+                    <>
+                      {isInWishlist ? (
+                        <Button
+                          text="Remove from Wishlist"
+                          type="outline"
+                          onClick={handleClick}
+                        />
+                      ) : (
+                        <Button
+                          text="Add to Wishlist"
+                          type="outline"
+                          onClick={handleClick}
+                        />
+                      )}
+                      <Button
+                        text="Apply to Adopt"
+                        type="default"
+                        onClick={() => {
+                          localStorage.setItem(
+                            "adoption",
+                            JSON.stringify({
+                              name: adoption.name,
+                              pic: adoption.images[0].path,
+                              species: adoption.species,
+                              gender: adoption.gender,
+                              adoptionId: adoption._id,
+                            })
+                          );
+
+                          window.location.href = "/adoptions/checkout";
+                        }}
+                      />
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="py-5">
-            <div className="p-5 bg-white shadow flex md:flex-row flex-col items-center justify-between md:divide-x-2 divide-y-2 md:divide-y-0 divide-black gap-5 rounded">
+          <div className="py-5 md:my-5 my-5">
+            <div className="px-5 py-8 bg-white flex md:flex-row flex-col items-center justify-between md:divide-x-2 divide-y-2 md:divide-y-0 divide-black gap-5 rounded">
               <div className="basis-1/3 uppercase text-xl text-center">
                 Adoption posted by
               </div>
-              <div className="basis-2/3 md:ps-10 pt-10 md:pt-0">
+              <div className="basis-2/3 md:ps-16 pt-10 md:pt-0">
                 <div className="flex flex-row items-center gap-4">
                   <img
                     src={adoption.userId.avatar}
                     alt={adoption.userId.name}
-                    className="rounded-full w-[100px] h-[100px]"
+                    className="rounded-full w-[80px] h-[8]"
                   />
                   <div>
                     <div className="text-2xl font-bold">
@@ -214,9 +217,9 @@ export default function Page() {
           </div>
 
           <div className="py-5">
-            <div className="p-8 bg-white shadow rounded">
-              <h2 className="text-3xl font-bold mb-2">Description</h2>
-              <p className="text-2xl">{adoption.description}</p>
+            <div className="p-8 bg-white rounded">
+              <h2 className="text-xl font-bold mb-2">Description</h2>
+              <p className="text-lg">{adoption.description}</p>
             </div>
           </div>
 
@@ -225,7 +228,7 @@ export default function Page() {
               More pets to adopt
             </div>
 
-            <div className="flex md:flex-row flex-col justify-between gap-5">
+            <div className="flex md:flex-row flex-col justify-between gap-5 py-5">
               {moreAdoptions.map((adoption, index) => (
                 <Adoption
                   pic={adoption.images[0].path}

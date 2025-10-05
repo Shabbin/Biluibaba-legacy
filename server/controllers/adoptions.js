@@ -214,7 +214,7 @@ module.exports.getAdoptionsWishlist = async (request, response, next) => {
 
   const adoptions = await Adoptions.find({ adoptionId: { $in: adoptionIds } });
 
-  return response.status(200).json({ success: true, adoptions });
+  return response.status(200).json({ success: "approved", adoptions });
 };
 
 module.exports.getAdoption = async (request, response, next) => {
@@ -225,7 +225,7 @@ module.exports.getAdoption = async (request, response, next) => {
   }).populate("userId", "name avatar email");
   if (!adoption) return next(new ErrorResponse("No adoption found", 404));
 
-  const moreAdoption = await Adoptions.find({ status: true }).limit(4);
+  const moreAdoption = await Adoptions.find({ status: "approved" }).limit(4);
 
   return response.status(200).json({ success: true, adoption, moreAdoption });
 };

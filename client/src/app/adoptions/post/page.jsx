@@ -5,7 +5,9 @@ import dynamic from "next/dynamic";
 import { toast } from "react-hot-toast";
 import MultiSelect from "react-select";
 
-import { Upload, X } from "lucide-react";
+import { X } from "lucide-react";
+
+import { Upload } from "@/src/components/svg";
 
 import withRouter from "@/src/app/controllers/router";
 
@@ -213,17 +215,15 @@ export default function Page() {
     }
   };
 
-  // Removed the problematic useEffect that was causing infinite recursion
-
   return (
     <div className="p-5">
-      <h1 className="py-5 text-3xl font-bold text-center">Post an Adoption</h1>
+      <h1 className="py-8 text-4xl font-bold text-center">Post an Adoption</h1>
 
       <div className="py-5 flex md:flex-row flex-col gap-5">
         <div className="basis-1/3 rounded-lg shadow-sm">
           {files.length < 5 && (
             <div
-              className="border-2 rounded-lg px-12 py-32 text-center cursor-pointer hover:border-blue-400 transition-colors"
+              className="border-2 border-dotted rounded-2xl px-12 py-32 text-center cursor-pointer hover:border-blue-400 transition-colors"
               onDragOver={handleDragOver}
               onDrop={handleDrop}
               onClick={() => document.getElementById("fileInput")?.click()}
@@ -236,7 +236,7 @@ export default function Page() {
                 multiple
                 onChange={handleFileSelect}
               />
-              <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <Upload className="w-16 h-16 text-gray-400 rounded-full mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-1">Upload Pet's Image</h3>
               <p className="text-gray-500">
                 Or{" "}
@@ -278,7 +278,7 @@ export default function Page() {
               Maximum of 5 images reached. Remove an image to add another.
             </div>
           )}
-          <div className="mt-6 border-2 rounded-lg shadow-sm p-12">
+          <div className="mt-6 border rounded-2xl shadow-sm p-12">
             <h2 className="text-2xl font-bold">Pet Description</h2>
             <Textarea
               rows="20"
@@ -299,8 +299,8 @@ export default function Page() {
         </div>
         <div className="basis-2/3">
           <div className="rounded-lg shadow-sm">
-            <div className="border-2 rounded-lg p-12 space-y-5 h-auto">
-              <h2 className="text-2xl font-bold">Add a pet</h2>
+            <div className="border rounded-2xl p-12 space-y-5 h-auto">
+              <h2 className="text-3xl font-bold py-5">Add a pet</h2>
 
               <div className="flex flex-row flex-wrap font-medium gap-y-2">
                 <div className="basis-full">

@@ -14,7 +14,7 @@ const Select = ({
       name={name}
       placeholder={placeholder}
       className={
-        "w-full px-4 my-3 py-3 rounded-lg text-black border focus:border-2 focus:ring-1 focus:outline-none focus:ring-zinc-400 bg-neutral-100 shadow-none  " +
+        "w-full px-4 my-3 py-4 rounded-md text-black text-sm border focus:border-2 focus:ring-1 focus:outline-none focus:ring-zinc-400 shadow-none bg-neutral-100  " +
         className
       }
       {...props}

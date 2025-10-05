@@ -2,11 +2,11 @@ import "@/src/styles/globals.css";
 
 import { Toaster } from "react-hot-toast";
 
-import { Roboto } from "next/font/google";
+import { Inter } from "next/font/google";
 
-const roboto = Roboto({
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["100", "300", "400", "500", "700", "900"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
 import Navbar from "@/src/components/navbar";
@@ -23,7 +23,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="selection:bg-stone-950 selection:text-white">
-      <body className={roboto.className}>
+      <body className={inter.className}>
         <AuthProvider>
           <Navbar></Navbar>
           <Toaster

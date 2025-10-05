@@ -107,18 +107,18 @@ export default withRouter(
 
     render() {
       return (
-        <div className="md:py-20 py-10">
+        <div className="md:py-20 py-10 bg-neutral-100">
           <div className="container mx-auto">
             {this.state.loading ? null : (
               <div className="flex md:flex-row flex-col md:gap-10 md:mx-0 mx-5">
-                <div className="basis-2/3 md:order-1 order-2">
-                  <div className="border rounded-2xl my-5">
-                    <div className="px-6 py-5 border-b-1 rounded-tr-2xl rounded-tl-2xl text-xl font-medium">
+                <div className="basis-2/3 md:order-1 order-2 ">
+                  <div className="border rounded-2xl my-5 bg-white">
+                    <div className="px-6 py-8 border-b-1 rounded-tr-2xl rounded-tl-2xl text-3xl font-semibold">
                       Adoption Form
                     </div>
 
                     <div className="p-6">
-                      <h2 className="text-2xl mb-10">
+                      <h2 className="text-4xl py-5 mb-10">
                         Tell us about yourself!
                       </h2>
                       <div>Full name *</div>
@@ -286,36 +286,35 @@ export default withRouter(
                 </div>
 
                 <div className="basis-1/3 md:my-5 md:order-2 order-1">
-                  <div className="border rounded-2xl my-5">
-                    <div className="flex justify-between items-center px-6 py-5 border-b-1">
-                      <div className="font-medium text-lg">Adopting</div>
+                  <div className="border rounded-2xl bg-white">
+                    <div className="flex justify-center items-center px-6 py-8 border-b-1">
+                      <div className="font-semibold text-2xl text-center">
+                        Order Summary
+                      </div>
                     </div>
-                    <div className="flex flex-row my-5 gap-5 px-6">
-                      <img
-                        src={this.state.adoption.pic}
-                        alt={this.state.adoption.name}
-                        className="w-[60px] h-[60px] rounded-full"
-                      />
-                      <div className="flex flex-row items-center justify-between flex-1 my-1">
-                        <div>
-                          <div className="text-lg font-bold">
-                            {this.state.adoption.name}
+                    <div className="text-xl px-6 pt-8 pb-5">Adopting</div>
+                    <div className="border-b-1 pb-5">
+                      <div className="flex flex-row my-5 gap-5 px-6">
+                        <img
+                          src={this.state.adoption.pic}
+                          alt={this.state.adoption.name}
+                          className="w-[60px] h-[60px] rounded-full"
+                        />
+                        <div className="flex flex-row items-center justify-between flex-1 my-1">
+                          <div>
+                            <div className="text-lg font-bold">
+                              {this.state.adoption.name}
+                            </div>
+                            <div>{this.state.adoption.gender}</div>
                           </div>
-                          <div>{this.state.adoption.gender}</div>
-                        </div>
-                        <div>
-                          <div className="px-8 py-1 bg-gray-100 font-light uppercase rounded-2xl">
-                            {this.state.adoption.species}
+                          <div>
+                            <div className="px-8 py-1 bg-gray-100 font-light uppercase rounded-2xl">
+                              {this.state.adoption.species}
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="border rounded-2xl my-5">
-                    <div className="font-medium text-xl px-6 py-6 border-b-1 rounded-tr-2xl rounded-tl-2xl">
-                      Order Summary
-                    </div>
-
                     <div className="px-6 ">
                       <div className="flex flex-row items-center justify-between my-4 text-lg border-b-1 pb-5">
                         <div>Shipping Cost</div>
