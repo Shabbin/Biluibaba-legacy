@@ -9,7 +9,7 @@ import axios from "@/src/lib/axiosInstance";
 import Adoption from "@/src/components/adoption";
 
 import "swiper/css";
-import { PiGreaterThan, PiLessThan } from "react-icons/pi";
+import { ArrowLeft, ArrowRight } from "@/src/components/svg";
 
 const Adoptions = ({ AdoptionData, router }) => {
   const swiperRef = useRef();
@@ -39,22 +39,22 @@ const Adoptions = ({ AdoptionData, router }) => {
 
   return (
     <div className="relative py-20">
-      <div className="absolute h-full w-full flex flex-row items-center justify-between">
+      <div className="absolute z-[2] h-full w-full flex flex-row items-center justify-between">
         <div
-          className="bg-white md:py-14 py-4 rounded-tr-lg rounded-br-lg cursor-pointer hover:bg-neutral-100 transition-all ease-in-out duration-300 shadow  z-20"
+          className="bg-white md:py-10 py-4 rounded-tr-lg rounded-br-lg cursor-pointer hover:bg-neutral-100 transition-all ease-in-out duration-300"
           onClick={() => swiperRef.current?.slidePrev()}
         >
-          <PiLessThan className="px-2 text-[3em]" />
+          <ArrowLeft className="md:text-[4em] text-[1.5em] text-gray-400" />
         </div>
         <div
-          className="bg-white md:py-14 py-4 rounded-tl-lg rounded-bl-lg cursor-pointer hover:bg-neutral-100 transition-all ease-in-out duration-300 shadow  z-20"
+          className="bg-white md:py-10 py-4 rounded-tl-lg rounded-bl-lg cursor-pointer hover:bg-neutral-100 transition-all ease-in-out duration-300"
           onClick={() => swiperRef.current?.slideNext()}
         >
-          <PiGreaterThan className="px-2 text-[3em]" />
+          <ArrowRight className="md:text-[4em] text-[1.5em] text-gray-400" />
         </div>
       </div>
       <Swiper
-        className="z-10"
+        className="!z-[1]"
         onBeforeInit={(swiper) => {
           swiperRef.current = swiper;
         }}

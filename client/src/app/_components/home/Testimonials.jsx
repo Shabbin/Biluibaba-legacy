@@ -36,9 +36,11 @@ const data = [
 
 const Testimonials = () => {
   return (
-    <div className="bg-gray-100 py-20 px-5">
+    <div className="bg-gradient-to-b from-[#74bdf1]  to-[#1096F5] py-20 px-5">
       <div className="container mx-auto ">
-        <h1 className="text-6xl font-bold">Happy Pet Parents</h1>
+        <h1 className="text-6xl font-bold text-center text-white">
+          Happy Pet Parents
+        </h1>
         <div className="flex md:flex-row flex-col items-center justify-between gap-5 py-20">
           {data.map((t) => (
             <div className="md:basis-1/4" key={t.id}>

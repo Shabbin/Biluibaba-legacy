@@ -3,8 +3,8 @@ import Button from "@/src/components/ui/button";
 const ProductAd = ({ title, desc, buttonText }) => {
   return (
     <div className="flex md:flex-row flex-col md:px-0 px-5">
-      <div className="basis-1/2 bg-gray-300 h-full min-h-[400px] rounded-tl-lg rounded-bl-lg"></div>
-      <div className="basis-1/2 border rounded-tr-lg rounded-br-lg p-10">
+      <div className="basis-1/2 bg-gray-300 h-full min-h-[400px] rounded-tl-xl rounded-bl-xl"></div>
+      <div className="basis-1/2 border rounded-tr-xl rounded-br-xl p-10">
         <div className="flex flex-row items-center">
           <div className="inline-flex items-center gap-2 w-full">
             <div className="border w-6 h-6 rounded"></div>
@@ -15,10 +15,10 @@ const ProductAd = ({ title, desc, buttonText }) => {
           </div>
         </div>
         <div className="my-5">
-          <div className="text-4xl font-bold my-5">{title}</div>
+          <div className="text-4xl font-extrabold my-5">{title}</div>
           <div className="my-10 text-lg">{desc}</div>
         </div>
-        <Button type="default" text={buttonText} />
+        <Button type="default" text={buttonText} className="w-1/2" />
       </div>
     </div>
   );

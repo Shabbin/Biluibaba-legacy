@@ -7,6 +7,7 @@ import { CiShoppingCart, CiHeart, CiShop } from "react-icons/ci";
 import { IoEyeOutline, IoCloseOutline } from "react-icons/io5";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { FaStar } from "react-icons/fa";
+import { Cart } from "./svg";
 
 import Button from "@/src/components/ui/button";
 import Quantity from "@/src/components/ui/quantity";
@@ -97,7 +98,7 @@ const Product = ({
         onClick={() => (window.location.href = `/products/${slug}`)}
       >
         <div>
-          <div className="flex flex-row items-center gap-2 mb-4">
+          <div className="flex flex-row items-center gap-3 mb-4">
             <div className="px-3 py-1 rounded bg-green-600 text-white flex flex-row items-center gap-1">
               <FaStar size="1em" />
               <div>5.0</div>
@@ -106,7 +107,7 @@ const Product = ({
           </div>
           <div className="font-bold mb-4">{name}</div>
           <div className="flex flex-row items-center gap-3">
-            <div className="text-3xl font-bold text-red-500">
+            <div className="text-3xl font-bold text-red-600">
               &#2547;{" "}
               {Math.floor(
                 price - (discount > 0 ? (price * discount) / 100 : 0)
@@ -129,7 +130,8 @@ const Product = ({
           <Button
             type="default"
             text="Add to cart"
-            icon={<CiShoppingCart size="1.5em" />}
+            icon={<Cart className="text-[1.5em]" />}
+            iconAlign="left"
             className="w-full !py-3"
           />
         </div>

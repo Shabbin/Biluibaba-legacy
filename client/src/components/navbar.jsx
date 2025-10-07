@@ -88,7 +88,7 @@ const Navbar = () => {
             <div className="relative md:block hidden basis-1/2">
               <Search className="text-3xl pointer-events-none absolute top-1/2 transform -translate-y-1/2 left-3" />
               <Input
-                className="ps-14 !bg-[#f8f8f8] !border-[#dddddd] rounded-xl"
+                className="ps-12 !bg-[#f8f8f8] !border-[#dddddd] rounded-xl"
                 placeholder={'Search "Pet Carrier Bag"'}
               />
             </div>
@@ -107,13 +107,15 @@ const Navbar = () => {
                     My Account
                   </Link>
                 ) : (
-                  <Link href="/login">Login</Link>
+                  <Link href="/login" className="text-lg">
+                    Login
+                  </Link>
                 )}
               </div>
             </div>
             <div className="flex flex-row gap-2 items-center font-medium">
               <HeartOutline className="text-3xl" />
-              <Link href="/wishlist" className="hidden md:block">
+              <Link href="/wishlist" className="hidden md:block text-lg">
                 Wishlist
               </Link>
             </div>

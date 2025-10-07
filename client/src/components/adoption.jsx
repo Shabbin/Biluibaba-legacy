@@ -93,9 +93,9 @@ const Adoption = ({
         <div className="text-xl font-bold my-2">{name}</div>
         <div className="flex flex-row gap-1 items-center">
           <FaLocationDot size="0.8em" />
-          <div className="text-sm">{location}</div>
+          <div className="text-sm font-bold">{location}</div>
         </div>
-        <div className="my-5 text-sm">
+        <div className="my-5 text-sm space-y-2">
           <div className="font-bold">
             Age: <span className="font-normal">{age}</span>
           </div>

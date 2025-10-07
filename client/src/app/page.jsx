@@ -99,7 +99,7 @@ export default function Home() {
               <h2 className="md:text-6xl text-5xl text-center font-bold">
                 Popular Category
               </h2>
-              <div className="md:py-20 py-10 flex flex-row items-center md:justify-start justify-center flex-wrap gap-y-10">
+              <div className="md:py-14 py-10 flex flex-row items-center md:justify-start justify-center flex-wrap gap-y-10">
                 {site.popular_product_category.map((category, index) => (
                   <div
                     className="md:basis-1/6 basis-1/3 -me-2 px-2"
@@ -161,8 +161,8 @@ export default function Home() {
           <div className="container mx-auto py-10">
             <div className="flex flex-row items-center justify-between md:px-0 px-5">
               <h1 className="md:text-6xl text-5xl font-bold">Cat Food</h1>
-              <div className="text-red-500 hover:underline text-xl cursor-pointer uppercase transition-all ease-in-out duration-300">
-                See All
+              <div className="text-red-600 font-bold hover:underline text-2xl cursor-pointer transition-all ease-in-out duration-300">
+                see all
               </div>
             </div>
             <FeatureProducts
@@ -175,8 +175,8 @@ export default function Home() {
           <div className="container mx-auto py-10">
             <div className="flex flex-row items-center justify-between md:px-0 px-5">
               <h1 className="md:text-6xl text-5xl font-bold">Accessories</h1>
-              <div className="text-red-500 hover:underline text-xl cursor-pointer uppercase transition-all ease-in-out duration-300">
-                See All
+              <div className="text-red-600 font-bold hover:underline text-2xl cursor-pointer transition-all ease-in-out duration-300">
+                see all
               </div>
             </div>
             <FeatureProducts
@@ -232,13 +232,13 @@ export default function Home() {
             />
             <div className="flex md:flex-row flex-col gap-5 items-center justify-between mt-5">
               {site.vet_grid_banners.map((banner, index) => (
-                <div
-                  key={index}
-                  src={banner.path}
-                  alt={`Vet Banner ${index}`}
-                  style={{ backgroundImage: `url(${banner.path})` }}
-                  className="min-w-[400px] min-h-[400px] bg-cover bg-no-repeat bg-center"
-                />
+                <div key={index} className="md:basis-1/3 basis-full">
+                  <img
+                    src={banner.path}
+                    alt={`Vet Banner ${index}`}
+                    className="min-w-auto min-h-auto"
+                  />
+                </div>
               ))}
             </div>
           </div>
@@ -252,7 +252,11 @@ export default function Home() {
               <Adoptions AdoptionData={AdoptionData} router={useRouter()} />
 
               <div className="text-center flex justify-center">
-                <Button type="default" text="See all Pets" />
+                <Button
+                  type="default"
+                  text="See all Pets"
+                  className="font-extrabold text-xl"
+                />
               </div>
             </div>
           </div>
@@ -270,10 +274,10 @@ export default function Home() {
           <Testimonials />
 
           <div className="container mx-auto py-20 md:px-0 px-5">
-            <h2 className="font-bold text-gray-700 text-xl mb-5">
+            <h2 className="font-bold text-gray-700 text-3xl mb-5">
               Biluibaba: Unleash Joy with Our Online Pet Store
             </h2>
-            <div className="flex flex-col gap-10 text-xl text-gray-500 font-light">
+            <div className="flex flex-col gap-10 text-2xl text-gray-500">
               <p>
                 Welcome to Biluibaba, your ultimate online pet store in
                 Bangladesh! At Biluibaba, we're more than just a pet shop online

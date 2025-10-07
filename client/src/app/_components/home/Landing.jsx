@@ -16,16 +16,16 @@ const Landing = ({ slider }) => {
     <div className="relative">
       <div className="absolute z-[2] h-full w-full flex flex-row items-center justify-between">
         <div
-          className="bg-white md:py-14 py-4 rounded-tr-lg rounded-br-lg cursor-pointer hover:bg-neutral-100 transition-all ease-in-out duration-300"
+          className="bg-white md:py-10 py-4 rounded-tr-lg rounded-br-lg cursor-pointer hover:bg-neutral-100 transition-all ease-in-out duration-300"
           onClick={() => swiperRef.current?.slidePrev()}
         >
-          <ArrowLeft className="px-2 md:text-[3em] text-[1.5em]" />
+          <ArrowLeft className="md:text-[5em] text-[1.5em] text-gray-400" />
         </div>
         <div
-          className="bg-white md:py-14 py-4 rounded-tl-lg rounded-bl-lg cursor-pointer hover:bg-neutral-100 transition-all ease-in-out duration-300"
+          className="bg-white md:py-10 py-4 rounded-tl-lg rounded-bl-lg cursor-pointer hover:bg-neutral-100 transition-all ease-in-out duration-300"
           onClick={() => swiperRef.current?.slideNext()}
         >
-          <ArrowRight className="px-2 md:text-[3em] text-[1.5em]" />
+          <ArrowRight className="md:text-[5em] text-[1.5em] text-gray-400" />
         </div>
       </div>
       <Swiper
