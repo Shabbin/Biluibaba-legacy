@@ -31,6 +31,7 @@ import {
   ModalBody,
 } from "@heroui/modal";
 import Link from "next/link";
+import { Star, Share, HeartOutline, Cart } from "@/src/components/svg";
 
 export default function Page() {
   const { user } = useAuth();
@@ -188,9 +189,27 @@ export default function Page() {
               <div>
                 <div className="my-5 text-xl font-bold">{product.name}</div>
 
+                <div className="flex items-center justify-between py-4">
+                  <div className="flex items-center gap-2">
+                    <div className="bg-green-600 text-white px-3 text-xs py-2 rounded-full inline-flex items-center justify-center gap-1">
+                      <Star className="text-[1em]" /> {product.ratings}
+                    </div>
+
+                    <div className="divide-x-3 text-gray-400 inline-flex items-center justify-center font-semibold">
+                      <div className="px-2">{product.totalRatings} Ratings</div>
+                      <div className="px-2">{product.totalReviews} Reviews</div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-row items-center gap-2">
+                    <Share className="text-[2em]" />
+                    <HeartOutline className="text-[2em]" />
+                  </div>
+                </div>
+
                 <div className="border-t-2 border-b-2 py-5 my-5 text-xl">
                   <div className="flex flex-row items-center gap-5">
-                    <div className="text-4xl font-bold text-red-500">
+                    <div className="text-4xl font-semibold text-red-500">
                       &#2547; {price}
                     </div>
                     {product.discount > 0 && (
@@ -198,7 +217,7 @@ export default function Page() {
                         <div className="line-through text-2xl">
                           &#2547; {product.price}
                         </div>
-                        <div className="text-green-500 uppercase">
+                        <div className="text-green-500 uppercase font-bold">
                           save {product.discount}%
                         </div>
                       </>
@@ -207,11 +226,14 @@ export default function Page() {
                 </div>
 
                 <div className="py-5">
-                  <h2 className="text-2xl">Size: {product.size} grams</h2>
+                  <h2 className="text-2xl">
+                    <span className="font-bold">Size: </span> {product.size}
+                  </h2>
                 </div>
                 <div className="py-5">
                   <h2 className="text-2xl">
-                    Quantity: {product.quantity} left
+                    <span className="font-bold">Quantity: </span>{" "}
+                    {product.quantity} left
                   </h2>
                 </div>
               </div>
@@ -234,7 +256,7 @@ export default function Page() {
                     text="ADD TO CART"
                     type="outline"
                     onClick={() => addToCart("add")}
-                    icon={<LuShoppingCart size="1.5em" />}
+                    icon={<Cart className="text-[1.5em]" />}
                     iconAlign={"left"}
                     className="basis-1/2 md:w-auto w-full"
                   ></Button>
@@ -249,7 +271,7 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="py-5 border my-5">
+          <div className="py-5 border my-14 shadow rounded-lg">
             <ProductRatings
               ratings={product.ratings}
               totalRatings={product.totalRatings}
@@ -257,8 +279,8 @@ export default function Page() {
               ratingBreakdown={product.ratingBreakdown}
             />
 
-            <div className="border-b border-t flex md:flex-row flex-col items-center justify-between gap-10 p-10">
-              <h2 className="text-3xl font-bold">What's on your mind?</h2>
+            <div className="border-b border-t flex md:flex-row flex-col items-center justify-between gap-10 p-10 shadow">
+              <h2 className="text-4xl font-bold">What's on your mind?</h2>
 
               {user && user.id ? (
                 <>
@@ -333,7 +355,7 @@ export default function Page() {
             </div>
 
             <div className="px-10 py-14">
-              <h2 className="text-3xl font-bold">
+              <h2 className="text-4xl font-bold mb-5">
                 All Reviews ({product.totalReviews})
               </h2>
 
@@ -358,8 +380,8 @@ export default function Page() {
                     </div>
 
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="bg-green-600 text-white px-2 py-1 rounded-full text-xs flex items-center">
-                        <span className="mr-1">★</span>{" "}
+                      <div className="bg-green-600 text-white px-2 py-1 rounded-full text-xs flex items-center gap-1 font-bold">
+                        <Star className="text-[1em]" />
                         {review.rating.toFixed(1)}
                       </div>
                       <span className="text-gray-500">
@@ -367,7 +389,7 @@ export default function Page() {
                       </span>
                     </div>
 
-                    <p className="my-2">{review.comment}</p>
+                    <p className="my-2 text-xl">{review.comment}</p>
                   </div>
                 </div>
               ))}
@@ -406,7 +428,7 @@ export default function Page() {
             </div>
           </div>
           <div className="py-14">
-            <h2 className="text-5xl py-5 text-center">
+            <h2 className="text-5xl py-5 text-center font-bold">
               More Things Your Pet Will Like
             </h2>
 

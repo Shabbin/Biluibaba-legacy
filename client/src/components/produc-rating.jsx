@@ -1,5 +1,7 @@
 import React from "react";
 
+import { Star } from "./svg";
+
 const ProductRatings = ({
   ratings,
   totalRatings,
@@ -37,16 +39,16 @@ const ProductRatings = ({
 
   return (
     <div className="bg-white rounded-2xl p-8 shadow-sm mx-auto py-10">
-      <h2 className="text-4xl font-bold text-center mb-12">
+      <h2 className="text-5xl font-bold text-center mb-12">
         Product Ratings & Reviews
       </h2>
 
       <div className="flex flex-col md:flex-row gap-10 py-10">
         {/* Left side - Average Rating */}
         <div className="flex flex-col items-center justify-center md:w-1/3">
-          <div className="text-green-600 text-7xl font-semibold flex items-center">
+          <div className="text-green-700 text-7xl font-semibold flex items-center">
             {ratings.toFixed(1)}
-            <span className="text-5xl ml-2">★</span>
+            <Star className="text-5xl ms-2" />
           </div>
           <div className="text-gray-400 text-xl text-center mt-4">
             {formatNumber(totalRatings)} Ratings,

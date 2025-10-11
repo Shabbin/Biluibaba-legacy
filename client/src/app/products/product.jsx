@@ -11,14 +11,13 @@ import axios from "@/src/lib/axiosInstance";
 
 import "swiper/css";
 import { PiGreaterThan, PiLessThan } from "react-icons/pi";
+import { Filter, ArrowLeft, ArrowRight } from "@/src/components/svg";
 
 import Select from "@/src/components/ui/select";
 
 import Product from "@/src/components/product";
 
 import ProductsData from "@/src/app/demo.products";
-
-import { GiSettingsKnobs } from "react-icons/gi";
 
 import PetData from "@/src/app/products/pet-product.data";
 
@@ -93,19 +92,19 @@ const Products = () => {
 
   return (
     <div>
-      <div className="">
+      <div className="py-5 px-10">
         <img src={petData.src} />
       </div>
 
       <div className="py-10 px-5">
         <div className="flex md:flex-row flex-col items-center justify-between py-8 border-b-2 text-xl md:gap-0 gap-5">
-          <div className="flex flex-row items-center gap-2 font-medium basis-1/4 justify-center md:text-xl text-3xl">
-            <GiSettingsKnobs size="1.2em" /> Filter
+          <div className="flex flex-row items-center gap-2 font-medium basis-1/6 justify-center md:text-xl text-3xl">
+            <Filter className="text-[1.2em]" /> Filter
           </div>
-          <div className="basis-1/2 text-center md:border-r-2 md:border-l-2 border-t-2 border-b-2 md:border-t-0 md:border-b-0 md:text-xl text-3xl">
+          <div className="basis-2/3 text-center md:border-r-2 md:border-l-2 border-t-2 border-b-2 md:border-t-0 md:border-b-0 md:text-xl text-3xl font-semibold text-xl">
             {productCount} Products
           </div>
-          <div className="basis-1/4 text-center">
+          <div className="basis-1/6 text-center">
             <Select
               data={[
                 { text: "Popularity", value: "popularity" },
@@ -133,21 +132,32 @@ const Products = () => {
           {loading ? (
             <div>Loading...</div>
           ) : (
-            products.map((product) => (
-              <div className="md:basis-1/4 basis-full" key={product._id}>
-                <Product
-                  id={product.id}
-                  name={product.name}
-                  src={product.images[0].path}
-                  price={product.price}
-                  discount={product.discount}
-                  category={product.category}
-                  description={product.description}
-                  slug={product.slug}
-                  router={router}
-                  size={product.size}
-                />
-              </div>
+            products.map((product, index) => (
+              <>
+                <div className="md:basis-1/4 basis-full" key={product._id}>
+                  <Product
+                    id={product.id}
+                    name={product.name}
+                    src={product.images[0].path}
+                    price={product.price}
+                    discount={product.discount}
+                    category={product.category}
+                    description={product.description}
+                    slug={product.slug}
+                    router={router}
+                    size={product.size}
+                  />
+                </div>
+                {(index + 1) % 8 === 0 && index !== products.length - 1 && (
+                  <div className="w-full md:my-8 my-2 md:px-12 px-0">
+                    <img
+                      src="/shop-banner.png"
+                      alt="Shop Banner"
+                      className="rounded-lg w-full"
+                    />
+                  </div>
+                )}
+              </>
             ))
           )}
           {products.length <= 0 && (
@@ -189,16 +199,16 @@ const CategorySlider = ({
     <div className="relative">
       <div className="absolute h-full w-full flex flex-row items-center justify-between">
         <div
-          className="bg-white z-20 py-14 rounded-tr-lg rounded-br-lg cursor-pointer hover:bg-neutral-100 transition-all ease-in-out duration-300"
+          className="bg-white z-20 py-4 rounded-tr-lg rounded-br-lg cursor-pointer hover:bg-neutral-100 transition-all ease-in-out duration-300"
           onClick={() => swiperRef.current?.slidePrev()}
         >
-          <PiLessThan size="3em" className="px-2" />
+          <ArrowLeft className="px-2 text-[3em]" />
         </div>
         <div
-          className="bg-white z-20 py-14 rounded-tl-lg rounded-bl-lg cursor-pointer hover:bg-neutral-100 transition-all ease-in-out duration-300"
+          className="bg-white z-20 py-4 rounded-tl-lg rounded-bl-lg cursor-pointer hover:bg-neutral-100 transition-all ease-in-out duration-300"
           onClick={() => swiperRef.current?.slideNext()}
         >
-          <PiGreaterThan size="3em" className="px-2" />
+          <ArrowRight className="px-2 text-[3em]" />
         </div>
       </div>
       <Swiper
@@ -213,8 +223,7 @@ const CategorySlider = ({
             spaceBetween: 40,
           },
           640: {
-            slidesPerView: 4,
-            spaceBetween: 10,
+            slidesPerView: 6,
           },
         }}
       >
@@ -222,7 +231,7 @@ const CategorySlider = ({
           <SwiperSlide key={index}>
             <div
               className={
-                "border-2 p-5 flex flex-col items-center justify-center gap-2 cursor-pointer " +
+                "border-2 p-5 h-[200px] flex flex-col items-center justify-center gap-4 cursor-pointer " +
                 (category.name === selectedCategory.name &&
                   "border-b-8 border-b-black")
               }
@@ -231,9 +240,9 @@ const CategorySlider = ({
               <img
                 src={category.src}
                 alt={category.name}
-                className="w-[100px]"
+                className="w-[80px] h-[80px] object-contain"
               />
-              <div>{category.name}</div>
+              <div className="text-center font-semibold">{category.name}</div>
             </div>
           </SwiperSlide>
         ))}
