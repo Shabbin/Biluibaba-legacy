@@ -101,7 +101,7 @@ const Products = () => {
           <div className="flex flex-row items-center gap-2 font-medium basis-1/6 justify-center md:text-xl text-3xl">
             <Filter className="text-[1.2em]" /> Filter
           </div>
-          <div className="basis-2/3 text-center md:border-r-2 md:border-l-2 border-t-2 border-b-2 md:border-t-0 md:border-b-0 md:text-xl text-3xl font-semibold text-xl">
+          <div className="basis-2/3 text-center md:border-r-2 md:border-l-2 border-t-2 border-b-2 md:border-t-0 md:border-b-0 md:text-xl text-3xl font-semibold">
             {productCount} Products
           </div>
           <div className="basis-1/6 text-center">

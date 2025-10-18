@@ -8,6 +8,7 @@ export { default as Cart } from "./Cart.svg";
 export { default as Cat } from "./Cat.svg";
 export { default as Certificate } from "./Certificate.svg";
 export { default as Crown } from "./Crown.svg";
+export { default as Delete } from "./Delete.svg";
 export { default as Dog } from "./Dog.svg";
 export { default as Filter } from "./Filter.svg";
 export { default as Heart } from "./Heart.svg";

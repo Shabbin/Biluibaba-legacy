@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import Button from "@/src/components/ui/button";
 
-import { Trash2, ShoppingCart } from "lucide-react";
+import { Delete, AddCart } from "@/src/components/svg";
 
 export default function Page() {
   const [wishlist, setWishlist] = useState([]);
@@ -45,93 +45,98 @@ export default function Page() {
   return (
     <div>
       {wishlist.length > 0 ? (
-        <div className="bg-gray-100 py-8 px-5">
-          <div className="border-b border-gray-200 p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <Checkbox
-                  checked={isAllSelected}
-                  indeterminate={isPartiallySelected}
-                  onChange={handleSelectAll}
-                />
-                <span className="text-gray-600 font-medium">
-                  Select All ({selectedItems.size} Items)
-                </span>
-              </div>
-              <Button
-                type="default"
-                text="Delete"
-                icon={<Trash2 className="h-4 w-4" />}
-                iconAlign="left"
-              />
-            </div>
-          </div>
-
-          <div className="divide-y divide-gray-200">
-            {wishlist.map((product) => (
-              <div key={product.slug} className="p-6 bg-white py-10">
-                <div>
-                  <div className="flex justify-end items-center gap-4 text-xl text-gray-400 hover:text-red-500 p-2">
-                    <Trash2 className="h-4 w-4" /> Delete
-                  </div>
+        <div className="bg-neutral-100 py-8 px-5">
+          <div className="container mx-auto">
+            <div className="border-b bg-white p-6 my-5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <Checkbox
+                    checked={isAllSelected}
+                    indeterminate={isPartiallySelected}
+                    onChange={handleSelectAll}
+                  />
+                  <span className="text-gray-600 font-medium">
+                    Select All ({selectedItems.size} Items)
+                  </span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4 flex-1">
-                    {/* Checkbox */}
-                    <Checkbox
-                      checked={selectedItems.has(product.id)}
-                      onChange={(checked) =>
-                        handleSelectItem(product.id, checked)
-                      }
-                    />
+                <Button
+                  type="default"
+                  text="Delete"
+                  icon={<Delete className="h-4 w-4" />}
+                  iconAlign="left"
+                />
+              </div>
+            </div>
 
-                    {/* Product Image */}
-                    <img
-                      src={product.src}
-                      alt={product.name}
-                      className="w-20 h-20 bg-gray-200 rounded-md flex-shrink-0"
-                    />
-
-                    {/* Product Details */}
-                    <div className="flex-1">
-                      <h3 className="font-medium text-gray-900 text-base mb-1">
-                        {product.name}
-                      </h3>
-                      <p className="text-gray-500 text-sm mb-2">
-                        Size - {product.size}
-                      </p>
-
-                      {/* Price Section */}
-                      <div className="flex items-center space-x-2">
-                        <span className="text-xl font-bold text-gray-900">
-                          &#2547;{" "}
-                          {Math.floor(
-                            product.price -
-                              (product.price * product.discount) / 100
-                          )}
-                        </span>
-                        <span className="text-sm text-gray-400 line-through">
-                          TK {product.price.toLocaleString()}
-                        </span>
-                        <span className="text-sm text-green-600 font-medium">
-                          &#2547; {product.discount}% Saved
-                        </span>
-                      </div>
+            <div className="space-y-5">
+              {wishlist.map((product) => (
+                <div
+                  key={product.slug}
+                  className="p-6 bg-white py-10 rounded-xl "
+                >
+                  <div>
+                    <div className="flex justify-end items-center gap-4 text-xl text-gray-400 hover:text-red-500 p-2 cursor-pointer">
+                      <Delete className="h-6 w-6" /> Delete
                     </div>
                   </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4 flex-1">
+                      {/* Checkbox */}
+                      <Checkbox
+                        checked={selectedItems.has(product.id)}
+                        onChange={(checked) =>
+                          handleSelectItem(product.id, checked)
+                        }
+                      />
 
-                  {/* Actions */}
-                  <div className="flex flex-col items-center  ml-4">
-                    <Button
-                      type="default"
-                      text="Add to cart"
-                      icon={<ShoppingCart className="h-4 w-4" />}
-                      iconAlign="left"
-                    />
+                      {/* Product Image */}
+                      <img
+                        src={product.src}
+                        alt={product.name}
+                        className="w-20 h-20 bg-gray-200 rounded-md flex-shrink-0"
+                      />
+
+                      {/* Product Details */}
+                      <div className="flex-1">
+                        <h3 className="font-medium text-gray-900 text-base mb-1">
+                          {product.name}
+                        </h3>
+                        <p className="text-gray-500 text-sm mb-2">
+                          Size - {product.size}
+                        </p>
+
+                        {/* Price Section */}
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xl font-bold text-gray-900">
+                            &#2547;{" "}
+                            {Math.floor(
+                              product.price -
+                                (product.price * product.discount) / 100
+                            )}
+                          </span>
+                          <span className="text-sm text-gray-400 line-through">
+                            TK {product.price.toLocaleString()}
+                          </span>
+                          <span className="text-sm text-green-600 font-medium">
+                            &#2547; {product.discount}% Saved
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex flex-col items-center  ml-4">
+                      <Button
+                        type="default"
+                        text="Add to cart"
+                        icon={<AddCart className="h-4 w-4" />}
+                        iconAlign="left"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       ) : (

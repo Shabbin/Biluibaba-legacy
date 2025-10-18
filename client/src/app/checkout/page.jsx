@@ -153,18 +153,14 @@ export default withRouter(
 
     render() {
       return (
-        <div className="py-20">
+        <div className="py-20 bg-neutral-100">
           <div className="container mx-auto">
-            <div className="text-3xl my-10 font-semibold mx-5">
-              Shipping details
-            </div>
-
             {this.state.loading ? null : (
               <div className="flex md:flex-row flex-col gap-10 md:mx-0 mx-5">
                 <div className="basis-2/3 md:order-1 order-2">
-                  <div className="border rounded-2xl my-5">
-                    <div className="px-6 py-5 border-b-1 rounded-tr-2xl rounded-tl-2xl text-xl font-medium">
-                      Shipping address
+                  <div className="border rounded-lg my-5 bg-white">
+                    <div className="p-6 border-b-1 rounded-tr-lg rounded-tl-lg text-2xl font-medium">
+                      Shipping & Billing
                     </div>
 
                     <div className="p-6">
@@ -258,37 +254,37 @@ export default withRouter(
                           this.setState({ notes: event.target.value })
                         }
                       />
-
-                      <div className="">Choose Payment Method</div>
-                      <div>
-                        <Select
-                          data={[
-                            { value: "Online", text: "Pay Online" },
-                            {
-                              value: "Cash on delivery",
-                              text: "Cash on delivery",
-                            },
-                          ]}
-                          onChange={(event) =>
-                            this.setState({ paymentMethod: event.target.value })
-                          }
-                          value={this.state.paymentMethod}
-                          className="mb-5"
-                        ></Select>
-                      </div>
-
-                      <Button
-                        type="default"
-                        text="Proceed to payment"
-                        className="w-full"
-                        disabled={this.state.orderLoading}
-                        onClick={() => this.onSubmit()}
-                      />
                     </div>
                   </div>
                 </div>
                 <div className="basis-1/3 md:my-5 my-0 md:order-2 order-1">
-                  <div className="border rounded-2xl mb-5">
+                  <div className="bg-white rounded-lg p-5 mb-5">
+                    <div className="flex flex-row items-center justify-between border-dotted border-b-2 py-5">
+                      <div className="flex items-center gap-2">
+                        <img
+                          src="/coupon.png"
+                          alt="coupon"
+                          className="w-8 h-8"
+                        />
+                        <div>
+                          <div className="text-sm uppercase">Whiskas</div>
+                          <div className="text-xs text-green-500">
+                            Save ৳234 using this coupon
+                          </div>
+                        </div>
+                      </div>
+                      <Button
+                        text="Apply"
+                        type="default"
+                        className="!py-2 !px-8"
+                      />
+                    </div>
+                    <div className="text-green-700 text-center cursor-pointer pt-5">
+                      View all Coupons &gt;
+                    </div>
+                  </div>
+
+                  <div className="border rounded-lg mb-5 bg-white">
                     <div className="flex justify-between items-center px-6 py-5 border-b-1">
                       <div className="font-medium text-lg">Ordered Items</div>
                       <Link href="/my-cart" className="underline">
@@ -323,7 +319,7 @@ export default withRouter(
                     ))}
                   </div>
 
-                  <div className="border rounded-2xl">
+                  <div className="border rounded-lg bg-white">
                     <div className="font-medium text-xl px-6 py-6 border-b-1 rounded-tr-2xl rounded-tl-2xl">
                       Order Summary
                     </div>
@@ -349,7 +345,7 @@ export default withRouter(
                         </div>
                       </div>
 
-                      <div className="flex flex-row items-center justify-between my-4 text-lg border-b-1 pb-5 font-semibold">
+                      <div className="flex flex-row items-center justify-between text-lg border-b-1 pb-5 font-semibold">
                         <div>Total Amount</div>
                         <div>
                           &#2547;
@@ -359,17 +355,40 @@ export default withRouter(
                         </div>
                       </div>
 
-                      <div className="flex flex-row items-center gap-5 my-4 text-lg">
-                        <Input
-                          placeholder="Enter your coupon code"
-                          className="!py-2 !px-2"
-                        />
-                        <Button
-                          text="Apply"
-                          type="default"
-                          className="!py-2 !px-8"
-                        />
+                      <div className="py-5">
+                        <div className="flex items-center gap-2">
+                          <Radio
+                            name="payment"
+                            checked={
+                              this.state.paymentMethod === "Cash on delivery"
+                            }
+                            onChange={() =>
+                              this.setState({
+                                paymentMethod: "Cash on delivery",
+                              })
+                            }
+                          />
+                          <label>Cash on delivery</label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Radio
+                            name="payment"
+                            checked={this.state.paymentMethod === "Online"}
+                            onChange={() =>
+                              this.setState({ paymentMethod: "Online" })
+                            }
+                          />
+                          <label>Pay Online</label>
+                        </div>
                       </div>
+
+                      <Button
+                        type="default"
+                        text="Checkout"
+                        className="w-full"
+                        disabled={this.state.orderLoading}
+                        onClick={() => this.onSubmit()}
+                      />
                     </div>
                   </div>
                 </div>

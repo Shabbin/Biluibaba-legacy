@@ -28,6 +28,7 @@ import {
   Percentage,
   Adoption,
   ArrowRight,
+  LocationDot,
 } from "@/src/components/svg";
 import { LiaDonateSolid } from "react-icons/lia";
 import { RxHamburgerMenu } from "react-icons/rx";
@@ -77,14 +78,21 @@ const Navbar = () => {
   return (
     <div className="relative w-full top-0 z-50 transition-all ease-in-out duration-300 border-b border">
       <div className="container mx-auto">
-        <div className="flex flex-row gap-10 items-center justify-between md:px-0 px-5">
-          <div className="md:pe-10 pe-5 flex items-center border-r py-8">
+        <div className="flex flex-row gap-3 items-center justify-between md:px-0 px-5">
+          <div className="pe-3 flex items-center border-r py-8">
             <Link href="/">
               <Image src={Logo} className="md:w-[220px] w-[250px]" alt="logo" />
             </Link>
           </div>
 
           <div className="flex flex-row w-full flex-grow justify-between items-center">
+            <div className="basis-1/8 md:block hidden">
+              <h2 className="font-bold text-xs">Your delivery location</h2>
+              <div className="flex flex-row items-center gap-1">
+                <LocationDot className="w-4 h-4" />
+                <span className="text-xs">West Shewrapara, Dhaka</span>
+              </div>
+            </div>
             <div className="relative md:block hidden basis-1/2">
               <Search className="text-3xl pointer-events-none absolute top-1/2 transform -translate-y-1/2 left-3" />
               <Input
@@ -107,7 +115,7 @@ const Navbar = () => {
                     My Account
                   </Link>
                 ) : (
-                  <Link href="/login" className="text-lg">
+                  <Link href="/login" className="text-sm">
                     Login
                   </Link>
                 )}
@@ -115,7 +123,7 @@ const Navbar = () => {
             </div>
             <div className="flex flex-row gap-2 items-center font-medium">
               <HeartOutline className="text-3xl" />
-              <Link href="/wishlist" className="hidden md:block text-lg">
+              <Link href="/wishlist" className="hidden md:block text-sm">
                 Wishlist
               </Link>
             </div>
@@ -130,7 +138,7 @@ const Navbar = () => {
                 type="default"
                 iconAlign="left"
                 onClick={() => toggleCart(true)}
-                className="hidden md:flex px-6 !py-4"
+                className="hidden md:flex px-3 !py-3"
               />
               <MyCart toggle={cart} toggler={toggleCart} />
               <RxHamburgerMenu

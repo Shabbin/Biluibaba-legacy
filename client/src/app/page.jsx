@@ -72,8 +72,6 @@ export default function Home() {
     try {
       const { data } = await axios.get("/api/admin/site-settings");
 
-      console.log(data);
-
       if (data.success) setSite(data.site);
     } catch (error) {
       console.error(error);

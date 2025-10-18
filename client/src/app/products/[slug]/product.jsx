@@ -31,7 +31,7 @@ import {
   ModalBody,
 } from "@heroui/modal";
 import Link from "next/link";
-import { Star, Share, HeartOutline, Cart } from "@/src/components/svg";
+import { Star, Share, HeartOutline, AddCart } from "@/src/components/svg";
 
 export default function Page() {
   const { user } = useAuth();
@@ -123,6 +123,7 @@ export default function Page() {
         originalPrice: product.price,
         quantity: quantity,
         vendorId: product.vendorId._id,
+        slug: product.slug,
       });
       localStorage.setItem("cart", JSON.stringify(cart));
       toast.success(`${product.name} added to cart!`);
@@ -160,6 +161,7 @@ export default function Page() {
       originalPrice: product.price,
       quantity: quantity,
       vendorId: product.vendorId._id,
+      product: product.slug,
     });
     localStorage.setItem("cart", JSON.stringify(cart));
     toast.success(`${product.name} added to cart!`);
@@ -256,7 +258,7 @@ export default function Page() {
                     text="ADD TO CART"
                     type="outline"
                     onClick={() => addToCart("add")}
-                    icon={<Cart className="text-[1.5em]" />}
+                    icon={<AddCart className="text-[1.5em]" />}
                     iconAlign={"left"}
                     className="basis-1/2 md:w-auto w-full"
                   ></Button>

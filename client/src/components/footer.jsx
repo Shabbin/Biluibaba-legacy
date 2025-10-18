@@ -91,6 +91,9 @@ const Footer = () => {
           <div className="bg-black rounded-full py-5 text-center md:text-xl text-lg text-white font-bold">
             &copy; {new Date().getFullYear()} Biluibaba.com. All Rights Reserved
           </div>
+          <div className="text-center text-lg font-bold pt-5 text-gray-500">
+            Developed by Fractal
+          </div>
         </div>
       </div>
     </div>

@@ -7,7 +7,7 @@ import { CiShoppingCart, CiHeart, CiShop } from "react-icons/ci";
 import { IoEyeOutline, IoCloseOutline } from "react-icons/io5";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { FaStar } from "react-icons/fa";
-import { Cart } from "./svg";
+import { AddCart } from "./svg";
 
 import Button from "@/src/components/ui/button";
 import Quantity from "@/src/components/ui/quantity";
@@ -105,7 +105,7 @@ const Product = ({
             </div>
             <div>(500)</div>
           </div>
-          <div className="font-bold mb-4">{name}</div>
+          <div className="font-bold mb-4 h-[70px]">{name}</div>
           <div className="flex flex-row items-center gap-3">
             <div className="text-3xl font-bold text-red-600">
               &#2547;{" "}
@@ -130,7 +130,7 @@ const Product = ({
           <Button
             type="default"
             text="Add to cart"
-            icon={<Cart className="text-[1.5em]" />}
+            icon={<AddCart className="text-[1.5em]" />}
             iconAlign="left"
             className="w-full !py-3"
           />

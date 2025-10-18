@@ -128,7 +128,7 @@ export default function Page() {
 
   return (
     <div>
-      <div>
+      <div className="p-5">
         <img src="/best_deals.png" alt="Best Deals" />
       </div>
 
