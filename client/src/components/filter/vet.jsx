@@ -28,6 +28,7 @@ import {
   FaCrutch,
   FaFaucet,
 } from "react-icons/fa";
+import { Cat, Dog } from "../svg";
 
 export default class Filter extends React.Component {
   constructor(props) {
@@ -40,8 +41,8 @@ export default class Filter extends React.Component {
     this.handleToggle = this.handleToggle.bind(this);
   }
 
-  handleToggle(toggleState) {
-    this.setState({ toggle: toggleState });
+  handleToggle() {
+    return (window.location.href = "/vets/filter");
   }
 
   render() {
@@ -49,47 +50,36 @@ export default class Filter extends React.Component {
       <div className="flex md:flex-row flex-col gap-3">
         <div
           className="flex flex-row items-center gap-2 border px-4 py-3 rounded-lg hover:shadow-lg cursor-pointer transition-all ease-in-out duration-300"
-          onClick={() => this.handleToggle(true)}
+          onClick={() => this.handleToggle()}
         >
           <IoLocationOutline size="1.2em" />
           <div>{this.props.location}</div>
         </div>
         <div
           className="flex flex-row items-center gap-2 border px-4 py-3 rounded-lg hover:shadow-lg cursor-pointer transition-all ease-in-out duration-300"
-          onClick={() => this.handleToggle(true)}
+          onClick={() => this.handleToggle()}
         >
           <IoCalendarClearOutline size="1.2em" />
           <div>{this.props.calendar}</div>
         </div>
         <div
           className="flex flex-row items-center gap-2 border px-4 py-3 rounded-lg hover:shadow-lg cursor-pointer transition-all ease-in-out duration-300"
-          onClick={() => this.handleToggle(true)}
+          onClick={() => this.handleToggle()}
         >
           {this.props.species === "Dog" ? (
-            <PiDogThin size="1.2em" />
+            <Dog size="text-[1.2em]" />
           ) : (
-            <PiCatThin size="1.2em" />
+            <Cat size="text-[1.2em]" />
           )}
-          <div>{this.props.species}</div>
+          <div>{this.props.species.toUpperCase()}</div>
         </div>
         <div
           className="flex flex-row items-center gap-2 border px-4 py-3 rounded-lg hover:shadow-lg cursor-pointer transition-all ease-in-out duration-300 bg-zinc-950 text-white"
-          onClick={() => this.handleToggle(true)}
+          onClick={() => this.handleToggle()}
         >
           <IoSettingsOutline size="1.2em" />
           <div>All filters</div>
         </div>
-
-        <FilterModal
-          isOpen={this.state.toggle}
-          onClose={this.handleToggle}
-          onConfirm={this.handleToggle}
-          calendar={this.props.calendar}
-          species={this.props.species}
-          setLocation={this.props.setLocation}
-          setCalendar={this.props.setCalendar}
-          setSpecies={this.props.setSpecies}
-        />
       </div>
     );
   }

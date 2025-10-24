@@ -30,7 +30,7 @@ export default function ExpertVets() {
 
   return (
     <div>
-      <h1 className="md:text-6xl text-5xl font-bold text-center py-10">
+      <h1 className="md:text-4xl text-3xl font-bold text-center py-10">
         Our Expert Vets
       </h1>
       {loading ? (

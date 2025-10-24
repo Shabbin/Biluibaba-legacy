@@ -6,6 +6,7 @@ import Link from "next/link";
 import { toast } from "react-hot-toast";
 
 import { FaFacebook, FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
+import { Facebook, Google } from "@/src/components/svg";
 
 import { useAuth } from "@/src/components/providers/AuthProvider";
 
@@ -77,17 +78,17 @@ const Signin = () => {
   };
 
   return (
-    <div className="py-20 bg-neutral-100">
+    <div className="py-20 bg-[#f8f8f8]">
       <div className="container md:mx-auto">
         <div className="flex flex-row justify-between">
           <img
             src="/login.png"
             alt="Login"
-            className="basis-1/2 min-w-[400px] h-1/2 md:block hidden"
+            className="basis-1/2 min-w-[400px] h-1/2 md:block hidden rounded-tl-2xl rounded-bl-2xl"
           />
-          <div className="md:basis-1/2 basis-full bg-white p-8 flex flex-col justify-evenly md:mx-0 mx-5">
+          <div className="md:basis-1/2 basis-full bg-white p-8 flex flex-col justify-evenly md:mx-0 mx-5 rounded-2xl md:rounded-tl-none md:rounded-bl-none">
             <div>
-              <h2 className="text-3xl font-medium">Signup</h2>
+              <h2 className="text-3xl font-bold">Signup</h2>
               <p className="my-5 text-xl text-gray-600 font-light">
                 Get access to your Orders, Wishlist, Vet and Recommendations
               </p>
@@ -95,7 +96,7 @@ const Signin = () => {
 
             <div className="flex flex-col justify-between">
               <div>
-                <div className="text-lg">Name *</div>
+                <div className="text-lg font-bold">Name *</div>
                 <Input
                   type="text"
                   placeholder="Enter your name"
@@ -103,7 +104,7 @@ const Signin = () => {
                   onChange={(event) => setName(event.target.value)}
                 />
 
-                <div className="text-lg">Phone Number *</div>
+                <div className="text-lg font-bold">Phone Number *</div>
                 <Input
                   type="text"
                   placeholder="Enter phone number"
@@ -117,7 +118,7 @@ const Signin = () => {
                   }}
                 />
 
-                <div className="text-lg">Email *</div>
+                <div className="text-lg font-bold">Email *</div>
                 <Input
                   type="email"
                   placeholder="Enter your email"
@@ -125,7 +126,7 @@ const Signin = () => {
                   onChange={(event) => setEmail(event.target.value)}
                 />
 
-                <div className="text-lg">Password *</div>
+                <div className="text-lg font-bold">Password *</div>
                 <div className="relative block">
                   {passwordType === "password" ? (
                     <FaEyeSlash
@@ -157,14 +158,14 @@ const Signin = () => {
 
                 <div className="py-5 text-center">
                   Already have an account?{" "}
-                  <Link href="/login" className="text-blue-500">
+                  <Link href="/login" className="text-blue-500 font-bold">
                     Login
                   </Link>
                 </div>
 
                 <div className="flex flex-row flex-nowrap items-center my-5">
-                  <div className="flex-grow block border-t border-gray-500"></div>
-                  <div className="flex-none block mx-4 px-4 py-2.5 text-xl text-gray-500 font-bold uppercase">
+                  <div className="flex-grow block border-t border-gray-300"></div>
+                  <div className="flex-none block mx-4 px-4 py-2.5 text-xl text-gray-300 font-bold uppercase">
                     or
                   </div>
                   <div className="flex-grow block border-t border-gray-500"></div>
@@ -175,20 +176,20 @@ const Signin = () => {
                     <Button
                       iconAlign="left"
                       type="outline"
-                      disabled={facebookLoading}
-                      text="Signin with Facebook"
-                      icon={<FaFacebook size="1.5em" />}
+                      disabled={googleLoaading}
+                      text="Signin with Google"
+                      icon={<Google className="text-[1.5em]" />}
                       className="w-full basis-1/2"
-                      onClick={() => handleForm("facebook")}
+                      onClick={() => handleForm("google")}
                     />
                     <Button
                       iconAlign="left"
                       type="outline"
-                      disabled={googleLoaading}
-                      text="Signin with Google"
-                      icon={<FaGoogle size="1.5em" />}
+                      disabled={facebookLoading}
+                      text="Signin with Facebook"
+                      icon={<Facebook className="text-[1.5em]" />}
                       className="w-full basis-1/2"
-                      onClick={() => handleForm("google")}
+                      onClick={() => handleForm("facebook")}
                     />
                   </div>
                 </div>

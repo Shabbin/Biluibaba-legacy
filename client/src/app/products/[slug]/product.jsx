@@ -161,7 +161,7 @@ export default function Page() {
       originalPrice: product.price,
       quantity: quantity,
       vendorId: product.vendorId._id,
-      product: product.slug,
+      slug: product.slug,
     });
     localStorage.setItem("cart", JSON.stringify(cart));
     toast.success(`${product.name} added to cart!`);

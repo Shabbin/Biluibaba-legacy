@@ -216,7 +216,7 @@ export default function Home() {
                   text="See All Vets"
                   type="default"
                   className="mt-10"
-                  onClick={() => router.push("/vet")}
+                  onClick={() => router.push("/vets")}
                 ></Button>
               </div>
             </div>

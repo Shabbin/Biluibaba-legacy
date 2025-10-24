@@ -15,7 +15,7 @@ import ReviewCard from "@/src/components/review";
 import VetsData from "@/src/app/demo.vets";
 
 import { FaStar, FaCheck } from "react-icons/fa";
-import { PiDogThin, PiCatThin } from "react-icons/pi";
+import { Cat, Dog } from "@/src/components/svg";
 
 export default function Page() {
   const [loading, setLoading] = useState(true);
@@ -147,9 +147,9 @@ export default function Page() {
                       key={i}
                     >
                       {s.pet == "Dog" ? (
-                        <PiDogThin size="2em" />
+                        <Dog className="text-[2em]" />
                       ) : (
-                        <PiCatThin size="2em" />
+                        <Cat className="text-[2em]" />
                       )}
                       <div className="text-lg">{s.pet}</div>
                     </div>
@@ -158,22 +158,20 @@ export default function Page() {
               </div>
               <div className="py-10 border-b-1">
                 <div className="text-2xl font-bold">Areas of interest</div>
-                <div className="flex flex-col gap-2 my-5">
-                  {vet.specializedZone.map((s, i) => (
-                    <div key={i}>
-                      {s.concerns.map((concern, concernIndex) => (
-                        <div
-                          className="flex flex-row items-center gap-4 text-lg"
-                          key={`${i}-${concernIndex}`}
-                        >
-                          <FaCheck />
-                          <div>
-                            {s.pet} - {concern}
-                          </div>
+                <div className="flex flex-row flex-wrap items-center my-5">
+                  {vet.specializedZone.map((s, i) =>
+                    s.concerns.map((concern, concernIndex) => (
+                      <div
+                        className="basis-1/4 -me-2 px-2 flex flex-row items-center gap-4 text-lg"
+                        key={`${i}-${concernIndex}`}
+                      >
+                        <FaCheck />
+                        <div>
+                          {s.pet} - {concern}
                         </div>
-                      ))}
-                    </div>
-                  ))}
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
               <div className="py-10 border-b-1">
@@ -224,8 +222,10 @@ export default function Page() {
                 ].availableSlots.map((slot, index) => (
                   <div
                     className={
-                      "flex flex-row justify-between items-center p-5 border-black border rounded-lg text-sm cursor-pointer hover:text-neutral-500 " +
-                      (selectedSlot === slot ? "border-2" : "border-1")
+                      "flex flex-row justify-between items-center p-5 border-2 rounded-lg text-sm cursor-pointer hover:text-neutral-500 " +
+                      (selectedSlot === slot
+                        ? "border-black"
+                        : "border-default")
                     }
                     key={index}
                     onClick={() => setSelectedSlot(slot)}
@@ -239,7 +239,7 @@ export default function Page() {
                   </div>
                 ))}
               </div>
-              <div className="mt-auto py-5">
+              <div className="mt-auto py-5 shadow-[0_-8px_20px_-6px_rgba(0,0,0,0.18)]">
                 <div className="flex flex-row justify-between items-center px-6">
                   <div>
                     <div className="text-3xl font-semibold">Total</div>

@@ -13,7 +13,8 @@ import Button from "@/src/components/ui/button";
 import Input from "@/src/components/ui/input";
 import Radio from "@/src/components/ui/radio";
 
-import { FaFacebook, FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Facebook, Google } from "@/src/components/svg";
 
 const Login = () => {
   const router = useRouter();
@@ -66,17 +67,17 @@ const Login = () => {
   };
 
   return (
-    <div className="py-20 bg-neutral-100">
+    <div className="py-20 bg-[#f8f8f8]">
       <div className="container mx-auto">
         <div className="flex flex-row justify-between">
           <img
-            className="basis-1/2 min-w-[400px] h-1/2 md:block hidden"
+            className="basis-1/2 min-w-[400px] h-1/2 md:block hidden rounded-tl-2xl rounded-bl-2xl"
             src="/login.png"
             alt="Login"
           />
-          <div className="md:basis-1/2 basis-full bg-white p-8 flex flex-col justify-evenly md:mx-0 mx-5">
+          <div className="md:basis-1/2 basis-full bg-white p-8 flex flex-col justify-evenly md:mx-0 mx-5 rounded-2xl md:rounded-tl-none md:rounded-bl-none">
             <div>
-              <h2 className="text-3xl font-medium">Login</h2>
+              <h2 className="text-3xl font-bold">Login</h2>
               <p className="my-5 text-xl text-gray-600 font-light">
                 Get access to your Orders, Wishlist, Vet and Recommendations
               </p>
@@ -84,7 +85,7 @@ const Login = () => {
 
             <div className="flex flex-col justify-between">
               <div>
-                <label>Email Address *</label>
+                <label className="font-bold">Email Address *</label>
                 <Input
                   type="email"
                   value={email}
@@ -92,7 +93,7 @@ const Login = () => {
                   placeholder="Email Address"
                 />
 
-                <label>Password *</label>
+                <label className="font-bold">Password *</label>
                 <div className="relative block">
                   {passwordType === "password" ? (
                     <FaEyeSlash
@@ -119,14 +120,14 @@ const Login = () => {
                   <div className="flex flex-row items-center gap-2">
                     <Radio /> Remember Me
                   </div>
-                  <Link href="/">Forgot Password</Link>
+                  <Link href="/">Forgot Password?</Link>
                 </div>
 
                 <Button
                   type="default"
                   disabled={loading}
                   text="Login"
-                  className="mt-5 w-full"
+                  className="mt-5 w-full !font-bold"
                   onClick={() => login("traditional")}
                 ></Button>
 
@@ -143,11 +144,11 @@ const Login = () => {
               </div>
 
               <div className="flex flex-row flex-nowrap items-center my-5">
-                <div className="flex-grow block border-t border-gray-500"></div>
+                <div className="flex-grow block border-t border-gray-300"></div>
                 <div className="flex-none block mx-4 px-4 py-2.5 text-xl text-gray-500 font-bold uppercase">
                   or
                 </div>
-                <div className="flex-grow block border-t border-gray-500"></div>
+                <div className="flex-grow block border-t border-gray-300"></div>
               </div>
 
               <div>
@@ -155,27 +156,27 @@ const Login = () => {
                   <Button
                     iconAlign="left"
                     type="outline"
-                    disabled={facebookLoading}
-                    text="Login with Facebook"
-                    icon={<FaFacebook size="1.5em" />}
+                    disabled={googleLoading}
+                    text="Login with Google"
+                    icon={<Google className="text-[1.5em]" />}
                     className="w-full basis-1/2"
-                    onClick={() => login("facebook")}
+                    onClick={() => login("google")}
                   />
                   <Button
                     iconAlign="left"
                     type="outline"
-                    disabled={googleLoading}
-                    text="Login with Google"
-                    icon={<FaGoogle size="1.5em" />}
+                    disabled={facebookLoading}
+                    text="Login with Facebook"
+                    icon={<Facebook className="text-[1.5em]" />}
                     className="w-full basis-1/2"
-                    onClick={() => login("google")}
+                    onClick={() => login("facebook")}
                   />
                 </div>
               </div>
 
               <div className="py-5 text-center">
                 New to Biluibaba?{" "}
-                <Link href="/signin" className="text-blue-500 font-medium">
+                <Link href="/signin" className="text-blue-500 font-bold">
                   Create an account
                 </Link>
               </div>

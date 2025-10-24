@@ -53,7 +53,9 @@ export default function Page() {
   return (
     <div className="py-10">
       <div className="container mx-auto">
-        <h2 className="text-5xl font-bold mb-8 text-center">Your Pet Type</h2>
+        <h2 className="text-4xl font-semibold mb-8 text-center">
+          Your Pet Type
+        </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto px-4 py-5">
           {[
             { name: "cat", icon: Cat },
@@ -64,7 +66,7 @@ export default function Page() {
             <button
               key={pet.name}
               onClick={() => handleSpeciesChange(pet.name)}
-              className={`relative aspect-square rounded-xl border-2 p-4 flex flex-col items-center justify-center gap-4 hover:border-black transition-colors
+              className={`relative aspect-square rounded-xl border-4 p-4 flex flex-col items-center justify-center gap-4 hover:border-black transition-colors
                 ${species === pet.name ? "border-black" : "border-gray-200"}`}
             >
               <div className="w-20 h-20">
@@ -72,58 +74,60 @@ export default function Page() {
               </div>
               <span className="text-xl capitalize">{pet.name}</span>
               {species === pet.name && (
-                <div className="absolute top-3 left-3 w-4 h-4 rounded-full bg-black" />
+                <div className="absolute top-3 left-3 w-4 h-4 rounded-full border-4 border-black" />
               )}
             </button>
           ))}
         </div>
 
-        <h2 className="text-5xl font-bold mb-8 text-center">Concerns</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto px-4">
-          {ConcernsList.map((concern) => (
-            <div
-              key={concern.value}
-              className={`relative rounded-xl border-2 p-4 flex items-center gap-3 cursor-pointer hover:border-black transition-colors
-                ${
-                  concerns.includes(concern.value)
-                    ? "border-black"
-                    : "border-gray-200"
-                }`}
-              onClick={() => {
-                const newConcerns = concerns.includes(concern.value)
-                  ? concerns.filter((c) => c !== concern.value)
-                  : [...concerns, concern.value];
-                setConcerns(newConcerns);
-              }}
-            >
-              <div className="flex items-center gap-3 flex-1">
-                <span className="text-lg">{concern.label}</span>
-              </div>
+        <div className="py-10">
+          <h2 className="text-5xl font-bold mb-8 text-center">Concerns</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto px-4 py-5">
+            {ConcernsList.map((concern) => (
               <div
-                className={`w-5 h-5 border-2 rounded flex items-center justify-center
-                ${
-                  concerns.includes(concern.value)
-                    ? "border-black bg-black"
-                    : "border-gray-300"
-                }`}
+                key={concern.value}
+                className={`relative rounded-xl border-2 p-4 flex items-center gap-3 cursor-pointer hover:border-black transition-colors
+                  ${
+                    concerns.includes(concern.value)
+                      ? "border-black"
+                      : "border-gray-200"
+                  }`}
+                onClick={() => {
+                  const newConcerns = concerns.includes(concern.value)
+                    ? concerns.filter((c) => c !== concern.value)
+                    : [...concerns, concern.value];
+                  setConcerns(newConcerns);
+                }}
               >
-                {concerns.includes(concern.value) && (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-3 w-3 text-white"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                )}
+                <div className="flex items-center gap-3 flex-1">
+                  <span className="text-lg">{concern.label}</span>
+                </div>
+                <div
+                  className={`w-7 h-7 border-2 rounded flex items-center justify-center
+                  ${
+                    concerns.includes(concern.value)
+                      ? "border-black bg-black"
+                      : "border-gray-300"
+                  }`}
+                >
+                  {concerns.includes(concern.value) && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 text-white"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         <Button

@@ -27,3 +27,5 @@ export { default as Upload } from "./Upload.svg";
 export { default as User } from "./User.svg";
 export { default as Vet } from "./Vet.svg";
 export { default as Video } from "./Video.svg";
+export { default as Facebook } from "./Facebook.svg";
+export { default as Google } from "./Google.svg";

@@ -77,7 +77,7 @@ const Navbar = () => {
 
   return (
     <div className="relative w-full top-0 z-50 transition-all ease-in-out duration-300 border-b border">
-      <div className="container mx-auto">
+      <div className="px-5">
         <div className="flex flex-row gap-3 items-center justify-between md:px-0 px-5">
           <div className="pe-3 flex items-center border-r py-8">
             <Link href="/">
@@ -151,7 +151,7 @@ const Navbar = () => {
         </div>
       </div>
       <div className="border-t md:py-4">
-        <div className="container mx-auto">
+        <div className="px-5">
           <div
             className={
               "fixed w-full h-full top-0 left-0 bg-stone-900 transition-opacity ease-in-out duration-400 " +

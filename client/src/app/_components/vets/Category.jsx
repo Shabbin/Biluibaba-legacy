@@ -4,8 +4,8 @@ const Category = ({ categories }) => {
   return (
     <div className="md:px-0 px-5">
       <div className="container mx-auto pt-5 pb-20">
-        <div className="mb-14">
-          <h1 className="md:text-6xl text-5xl font-bold text-center">
+        <div className="mb-10">
+          <h1 className="md:text-4xl text-3xl font-bold text-center">
             Services
           </h1>
         </div>

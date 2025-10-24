@@ -78,22 +78,22 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="md:py-20 py-10">
+    <div className="md:py-20 py-10 bg-neutral-100">
       <div className="container mx-auto">
         {loading ? null : (
           <div className="flex md:flex-row flex-col md:gap-10 md:mx-0 mx-5">
             <div className="basis-2/3">
-              <div className="border rounded-2xl my-5">
-                <div className="px-6 py-5 border-b-1 rounded-tr-2xl rounded-tl-2xl text-3xl font-medium">
+              <div className="border rounded-2xl my-5 bg-white">
+                <div className="px-8 py-8 border-b-1 rounded-tr-2xl rounded-tl-2xl text-3xl font-medium">
                   Pet and Payment
                 </div>
 
-                <div className="p-6">
-                  <div className="text-2xl mb-10">
+                <div className="p-8">
+                  <div className="text-4xl mb-10">
                     Tell the vet about your pets problem
                   </div>
 
-                  <div>*Pet's Name</div>
+                  <div className="font-bold">*Pet's Name</div>
                   <Input
                     type="text"
                     className="mt-2 mb-5"
@@ -106,7 +106,7 @@ export default function Page() {
                     }}
                   />
 
-                  <div>*Phone Number</div>
+                  <div className="font-bold">*Phone Number</div>
                   <Input
                     type="text"
                     className="mt-2 mb-5"
@@ -121,7 +121,7 @@ export default function Page() {
 
                   {vet.type === "homeService" && (
                     <>
-                      <div>*Your home address</div>
+                      <div className="font-bold">*Your home address</div>
                       <Input
                         type="text"
                         className="mt-2 mb-5"
@@ -131,7 +131,9 @@ export default function Page() {
                     </>
                   )}
 
-                  <div>*Tell the vet about your concern</div>
+                  <div className="font-bold">
+                    *Tell the vet about your concern
+                  </div>
                   <Textarea
                     type="text"
                     className="mb-5"
@@ -152,14 +154,16 @@ export default function Page() {
             </div>
 
             <div className="basis-1/3">
-              <div className="border rounded-2xl my-5">
-                <div className="flex justify-between items-center px-6 py-5 border-b-1">
-                  <div className="font-medium text-2xl">Booking Summary</div>
+              <div className="border rounded-2xl my-5 bg-white">
+                <div className="flex justify-center items-center px-8 py-8 border-b-1">
+                  <div className="font-bold text-2xl text-center">
+                    Booking Summary
+                  </div>
                 </div>
 
                 <div>
-                  <div className="px-6">
-                    <h2 className="text-2xl my-4">Vet Information</h2>
+                  <div className="px-8">
+                    <h2 className="text-2xl mb-5 mt-8">Vet Information</h2>
                     <div className="flex flex-row items-center gap-5 py-4">
                       <img
                         src={vet.profilePicture}
@@ -181,7 +185,7 @@ export default function Page() {
                       </div>
                     </div>
                     <div className="py-4 flex flex-row items-center gap-5">
-                      <Calendar className="w-14 h-14" />
+                      <Calendar className="w-12 h-12" />
                       <div className="text-lg">{vet.date}</div>
                     </div>
                   </div>
@@ -189,15 +193,15 @@ export default function Page() {
                   <div className="py-5 border-t-2 px-6 text-xl space-y-5">
                     <div className="flex flex-row justify-between items-center">
                       <div>Appointment Fee</div>
-                      <div>&#2547; {vet.totalAmount}</div>
+                      <div className="font-bold">&#2547; {vet.totalAmount}</div>
                     </div>
                     <div className="flex flex-row justify-between items-center">
                       <div>Booking Fee</div>
-                      <div>&#2547; 150</div>
+                      <div className="font-bold">&#2547; 150</div>
                     </div>
                   </div>
 
-                  <div className="py-5 border-t-2 px-6">
+                  <div className="py-5 border-t-2 px-6 shadow-[0_-8px_20px_-6px_rgba(0,0,0,0.18)] mt-20">
                     <div className="flex flex-row items-center justify-between">
                       <div>
                         <div className="text-2xl font-bold mb-2">Total</div>

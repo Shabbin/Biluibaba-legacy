@@ -6,7 +6,7 @@ import { Navigation } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/navigation";
-import { HiArrowSmLeft, HiArrowSmRight } from "react-icons/hi";
+import { ArrowRight, ArrowLeft } from "@/src/components/svg";
 import { IoCalendarClearOutline } from "react-icons/io5";
 
 const Calendar = ({ date, setDate, availableSlots }) => {
@@ -125,14 +125,14 @@ const Calendar = ({ date, setDate, availableSlots }) => {
             onClick={() => swiperRef.current?.slidePrev()}
             aria-label="Previous dates"
           >
-            <HiArrowSmLeft size="2em" />
+            <ArrowLeft className="text-[2em]" />
           </button>
           <button
             className="cursor-pointer focus:outline-none"
             onClick={() => swiperRef.current?.slideNext()}
             aria-label="Next dates"
           >
-            <HiArrowSmRight size="2em" />
+            <ArrowRight className="text-[2em]" />
           </button>
         </div>
       </div>
