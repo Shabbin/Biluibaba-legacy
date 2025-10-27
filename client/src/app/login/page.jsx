@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import axiosInstance from "@/src/lib/axiosInstance";
 
@@ -19,6 +19,11 @@ import { Facebook, Google } from "@/src/components/svg";
 const Login = () => {
   const router = useRouter();
   const { fetchUserData, user } = useAuth();
+  const searchParams = useSearchParams();
+
+  const from = searchParams.get("from");
+
+  if (!from) router.push("/login?from=/");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -43,7 +48,7 @@ const Login = () => {
     try {
       let { data } = await axiosInstance.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
-        { type: authType, email, password }
+        { type: authType, email, password, from: from || "/" }
       );
 
       if (data.success && authType !== "traditional") {
@@ -53,7 +58,7 @@ const Login = () => {
           "You have successfully logged into your account. Redirecting you back to page..."
         );
         await fetchUserData();
-        return router.push("/");
+        return router.push(from || "/");
       }
     } catch (error) {
       console.error(error);

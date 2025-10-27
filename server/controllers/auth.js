@@ -20,11 +20,11 @@ module.exports.getUserInfo = async (request, response, next) => {
 };
 
 module.exports.login = async (request, response, next) => {
-  const { type, email, password } = request.body;
+  const { type, email, password, from } = request.body;
 
   if (!type) return next(new ErrorResponse("Missing information", 422));
 
-  if (type === "google") handleGoogleOAuth(response);
+  if (type === "google") handleGoogleOAuth(response, from);
   else if (type === "facebook") handleFacebookOAuth(response);
   else {
     if (!email || !password)
@@ -89,7 +89,7 @@ module.exports.register = async (request, response, next) => {
 };
 
 module.exports.authenticateGoogle = async (request, response, next) => {
-  const { code } = request.query;
+  const { code, state } = request.query;
 
   if (!code)
     return response
@@ -105,7 +105,7 @@ module.exports.authenticateGoogle = async (request, response, next) => {
 
     const user = await User.findOne({ email: data.email });
 
-    if (user) return redirectAndSendToken("/", user, 200, response);
+    if (user) return redirectAndSendToken(state || "/", user, 200, response);
     else {
       let newUser = await registerUser(
         data.name,
@@ -116,7 +116,7 @@ module.exports.authenticateGoogle = async (request, response, next) => {
         data.picture
       );
 
-      return redirectAndSendToken("/", newUser, 200, response);
+      return redirectAndSendToken(state || "/", newUser, 200, response);
     }
   } catch (error) {
     console.error(error);
@@ -125,7 +125,7 @@ module.exports.authenticateGoogle = async (request, response, next) => {
 };
 
 module.exports.authenticateFacebook = async (request, response, next) => {
-  const { code } = request.query;
+  const { code, state } = request.query;
 
   if (!code) return response.status(400).send("No code returned from facebook");
 
@@ -226,7 +226,7 @@ const registerUser = async (
   return user;
 };
 
-const handleGoogleOAuth = async (response) => {
+const handleGoogleOAuth = async (response, state) => {
   const scopes = [
     "https://www.googleapis.com/auth/userinfo.profile",
     "https://www.googleapis.com/auth/userinfo.email",
@@ -234,6 +234,7 @@ const handleGoogleOAuth = async (response) => {
   const url = oauth2Client.generateAuthUrl({
     access_type: "offline",
     scope: scopes,
+    state,
   });
   return response.status(200).json({ success: true, url });
 };
