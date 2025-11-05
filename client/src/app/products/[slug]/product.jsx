@@ -18,8 +18,6 @@ import axios from "@/src/lib/axiosInstance";
 
 import { formatDate } from "@/src/utils/formatDate";
 
-import { LuShoppingCart } from "react-icons/lu";
-
 import { useAuth } from "@/src/components/providers/AuthProvider";
 
 import {
@@ -348,7 +346,10 @@ export default function Page() {
                 </>
               ) : (
                 <div className="text-2xl">
-                  <Link href="/login" className="text-blue-500 underline">
+                  <Link
+                    href={`/login?from=/products/${product.slug}`}
+                    className="text-blue-500 underline"
+                  >
                     Login
                   </Link>{" "}
                   to write a review.

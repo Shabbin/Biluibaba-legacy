@@ -83,7 +83,10 @@ module.exports.getExpertVets = async (request, response, next) => {
 module.exports.getVet = async (request, response, next) => {
   const { id } = request.params;
 
-  const vet = await Vet.findById(id);
+  const vet = await Vet.findById(id).populate(
+    "reviews.userId",
+    "name email avatar"
+  );
 
   if (vet) return response.status(200).json({ success: true, vet });
 };
@@ -92,6 +95,42 @@ module.exports.getAllVetId = async (request, response, next) => {
   const vets = await Vet.find({ status: true }).select("_id");
 
   if (vets) return response.status(200).json({ success: true, vets });
+};
+
+module.exports.submitReview = async (request, response, next) => {
+  const { vetId, rating, comment } = request.body;
+
+  if (!vetId || !rating)
+    return next(new ErrorResponse("Missing information", 421));
+
+  if (rating < 1 || rating > 5)
+    return next(new ErrorResponse("Invalid rating value", 422));
+
+  try {
+    const vet = await Vet.findById(vetId);
+
+    if (!vet) return next(new ErrorResponse("Vet not found", 404));
+
+    const review = {
+      userId: request.user.id,
+      comment,
+      rating,
+      date: new Date(),
+    };
+
+    vet.reviews.push(review);
+    vet.totalRatings += rating;
+    vet.totalReviews += 1;
+
+    await vet.save();
+
+    return response
+      .status(200)
+      .json({ success: true, data: "Review submitted successfully" });
+  } catch (error) {
+    console.error(error);
+    next(new ErrorResponse("Server Error", 500));
+  }
 };
 
 module.exports.bookAppointment = async (request, response, next) => {

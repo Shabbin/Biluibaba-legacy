@@ -120,6 +120,9 @@ const VetSchema = new mongoose.Schema(
         status: Boolean,
       },
     },
+    totalRatings: { type: Number, default: 0 },
+    totalReviews: { type: Number, default: 0 },
+    ratings: { type: Number, default: 0 },
     reviews: [
       {
         userId: { type: mongoose.Schema.Types.ObjectId, ref: "UserData" },
@@ -145,6 +148,23 @@ const VetSchema = new mongoose.Schema(
 
 VetSchema.pre("save", async function (next) {
   if (!this.isModified("password")) next();
+
+  if (this.reviews && this.reviews.length > 0) {
+    // Count total reviews with comments
+    this.totalReviews = this.reviews.filter(
+      (review) => review.comment && review.comment.trim() !== ""
+    ).length;
+
+    // Count total ratings
+    this.totalRatings = this.reviews.length;
+
+    // Calculate average rating
+    const totalRatingPoints = this.reviews.reduce(
+      (sum, review) => sum + review.rating,
+      0
+    );
+    this.ratings = totalRatingPoints / this.totalRatings;
+  }
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);

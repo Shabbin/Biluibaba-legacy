@@ -18,9 +18,12 @@ const {
   getAppointment,
   updateAppointment,
   getUpcomingAppointments,
+  submitReview,
 } = require("../controllers/vet");
 
 const { protectVet, protectUser } = require("../middleware/auth");
+
+router.route("/rating").post(protectUser, submitReview);
 
 router.route("/").get(getExpertVets);
 router.route("/get").get(getVets);

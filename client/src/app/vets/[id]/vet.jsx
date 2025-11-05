@@ -4,24 +4,51 @@ import { useState, useEffect } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import Tippy from "@tippyjs/react";
 import { toast } from "react-hot-toast";
+import Link from "next/link";
+import { Pagination } from "@heroui/pagination";
 
 import axios from "@/src/lib/axiosInstance";
 
 import Button from "@/src/components/ui/button";
-
 import Calendar from "@/src/components/calendar";
-import ReviewCard from "@/src/components/review";
+import Textarea from "@/src/components/ui/textarea";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  useDisclosure,
+  ModalBody,
+} from "@heroui/modal";
 
-import VetsData from "@/src/app/demo.vets";
+import { useAuth } from "@/src/components/providers/AuthProvider";
+
+import { formatDate } from "@/src/utils/formatDate";
 
 import { FaStar, FaCheck } from "react-icons/fa";
-import { Cat, Dog } from "@/src/components/svg";
+import { Cat, Dog, Star } from "@/src/components/svg";
 
 export default function Page() {
+  const { user } = useAuth();
+
   const [loading, setLoading] = useState(true);
   const [vet, setVet] = useState({});
   const [selectedSlot, setSelectedSlot] = useState("");
   const [date, setDate] = useState("");
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const [rating, setRating] = useState(1);
+  const [comment, setComment] = useState("");
+  const [reviewStatus, setReviewStatus] = useState(false);
+
+  const [reviewCurrentPage, setReviewCurrentPage] = useState(1);
+  const reviewsPerPage = 2;
+
+  const indexOfLastReview = reviewCurrentPage * reviewsPerPage;
+  const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
+  const currentReviews = vet.reviews
+    ?.reverse()
+    .slice(indexOfFirstReview, indexOfLastReview);
 
   const router = useRouter();
   const params = useParams();
@@ -62,6 +89,35 @@ export default function Page() {
     );
 
     return (window.location.href = "/vets/checkout");
+  };
+
+  const submitReview = async (onClose) => {
+    if (!rating || rating < 1 || rating > 5) {
+      return toast.error("Please provide a valid rating between 1 and 5");
+    }
+
+    try {
+      const { data } = await axios.post(`/api/vet/rating/`, {
+        rating,
+        vetId: vet._id,
+        comment,
+      });
+
+      if (data.success) {
+        toast.success("Review submitted successfully");
+        setRating(1);
+        setComment("");
+        onClose();
+        fetchData();
+      } else {
+        toast.error("Failed to submit review");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred while submitting your review");
+    } finally {
+      setReviewStatus(false);
+    }
   };
 
   useEffect(() => {
@@ -180,29 +236,150 @@ export default function Page() {
                   {vet.license}
                 </div>
               </div>
-              {/* <div className="py-10">
-                <div className="text-2xl font-bold flex flex-row gap-2 items-center">
-                  <FaStar size="1em" className="text-black" />
-                  <div>{vet.star.toFixed(1)}</div>
-                  <div>&#183;</div>
-                  <div>{vet.reviews.length} reviews</div>
-                </div>
-                <div className="flex md:flex-row flex-col gap-5 my-5 justify-between flex-wrap">
-                  {vet.reviews.map((r, i) => (
-                    <div
-                      className="md:w-1/2 w-full md:-m-2 md:p-2 flex-grow"
-                      key={i}
-                    >
-                      <ReviewCard
-                        review={r.review}
-                        profilePic={r.profilePic}
-                        name={r.name}
-                        date={r.date}
+              <div className="py-5">
+                <div className="border-b flex md:flex-row flex-col items-center justify-between gap-10 py-10">
+                  <h2 className="text-xl font-bold">What's on your mind?</h2>
+
+                  {user && user.id ? (
+                    <>
+                      <Button
+                        text="Write a Review"
+                        type="outline"
+                        className="text-lg md:w-auto w-full"
+                        onClick={onOpen}
                       />
+
+                      <Modal
+                        isOpen={isOpen}
+                        onOpenChange={onOpenChange}
+                        size="4xl"
+                      >
+                        <ModalContent>
+                          {(onClose) => (
+                            <>
+                              <ModalHeader className="flex flex-col gap-1">
+                                Write a review
+                              </ModalHeader>
+                              <ModalBody>
+                                <div className="flex flex-row gap-5 items-center justify-center">
+                                  {[1, 2, 3, 4, 5].map((star) => (
+                                    <div
+                                      key={star}
+                                      className="flex flex-row items-center gap-2 cursor-pointer py-5"
+                                      onClick={() => setRating(star)}
+                                    >
+                                      <span
+                                        className={`text-5xl ${
+                                          rating >= star
+                                            ? "text-yellow-500"
+                                            : "text-gray-400"
+                                        }`}
+                                      >
+                                        ★
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
+                                <div>Your Comment</div>
+                                <Textarea
+                                  placeholder="Write your review here..."
+                                  value={comment}
+                                  onChange={(e) => setComment(e.target.value)}
+                                  rows="5"
+                                />
+                              </ModalBody>
+                              <ModalFooter>
+                                <Button
+                                  onClick={onClose}
+                                  text="Close"
+                                  type="outline"
+                                ></Button>
+                                <Button
+                                  onClick={() => submitReview(onClose)}
+                                  text="Submit"
+                                  type="default"
+                                  disabled={reviewStatus}
+                                ></Button>
+                              </ModalFooter>
+                            </>
+                          )}
+                        </ModalContent>
+                      </Modal>
+                    </>
+                  ) : (
+                    <div className="text-lg">
+                      <Link
+                        href={`/login?from=/vets/${vet._id}`}
+                        className="text-blue-500 underline"
+                      >
+                        Login
+                      </Link>{" "}
+                      to write a review.
+                    </div>
+                  )}
+                </div>
+
+                <div className=" py-14">
+                  <div className="flex flex-row items-center gap-2 text-2xl font-bold">
+                    <div className="flex flex-row items-center gap-2">
+                      <Star className="text-[1rem]" /> {vet.ratings.toFixed(1)}
+                    </div>
+                    <div>.</div>
+                    <div>{vet.totalReviews} Reviews</div>
+                  </div>
+
+                  {currentReviews.length === 0 && (
+                    <div className="text-gray-500 text-center py-10">
+                      No reviews yet. Be the first to write a review!
+                    </div>
+                  )}
+
+                  {currentReviews.map((review, index) => (
+                    <div key={review.id}>
+                      <div className="py-4 border-b flex flex-col gap-4">
+                        <div className="flex items-center gap-4 mb-2">
+                          <img
+                            src={review.userId.avatar}
+                            alt={review.userId.name}
+                            className="w-[50px] h-[50px] rounded-full"
+                          />
+                          <h3 className="text-xl text-gray-600">
+                            {review.userId.name}
+                          </h3>
+                        </div>
+
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="bg-green-600 text-white px-2 py-1 rounded-full text-xs flex items-center gap-1 font-bold">
+                            <Star className="text-[1em]" />
+                            {review.rating.toFixed(1)}
+                          </div>
+                          <span className="text-gray-500">
+                            Posted on {formatDate(review.date)}
+                          </span>
+                        </div>
+
+                        <p className="my-2 text-xl">{review.comment}</p>
+                      </div>
                     </div>
                   ))}
+
+                  <div className="flex justify-center mt-8">
+                    {!loading && vet.reviews.length > 2 && (
+                      <Pagination
+                        total={Math.ceil(vet.reviews.length / reviewsPerPage)}
+                        initialPage={1}
+                        page={reviewCurrentPage}
+                        onChange={setReviewCurrentPage}
+                        classNames={{
+                          cursor: "bg-zinc-950 border-zinc-950 ",
+                        }}
+                        variant="flat"
+                        showControls
+                      />
+                    )}
+                  </div>
                 </div>
-              </div> */}
+              </div>
             </div>
             <div className="basis-1/3 sticky top-10 max-h-[865px] rounded-xl border border-neutral-200 shadow-xl">
               <div className="text-2xl font-bold px-4 pt-6 text-center whitespace-nowrap">
