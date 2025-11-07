@@ -1,9 +1,9 @@
-const crypto = require("crypto");
-const jwt = require("jsonwebtoken");
 const { google } = require("googleapis");
 const axios = require("axios");
 
 const User = require("../models/user.model");
+const Orders = require("../models/order.model");
+const Appointments = require("../models/appointment.model");
 
 const ErrorResponse = require("../utils/ErrorResponse");
 
@@ -17,6 +17,60 @@ module.exports.getUserInfo = async (request, response, next) => {
   const user = await User.findById(request.user.id).select("-password");
 
   response.status(200).json({ success: true, data: user });
+};
+
+module.exports.updateUserInfo = async (request, response, next) => {
+  const { name, phoneNumber, shippingAddress } = request.body;
+
+  if (!name || !phoneNumber)
+    return next(new ErrorResponse("Missing information", 422));
+
+  const user = await User.findById(request.user.id);
+
+  if (!user) return next(new ErrorResponse("User not found", 404));
+
+  user.name = name;
+  user.phoneNumber = phoneNumber;
+
+  if (shippingAddress) user.shipping = shippingAddress;
+
+  await user.save();
+
+  response.status(200).json({ success: true, data: "Profile updated" });
+};
+
+module.exports.getOrders = async (request, response, next) => {
+  const { type } = request.query;
+
+  if (!type) return next(new ErrorResponse("Missing information", 422));
+
+  const user = await User.findById(request.user.id);
+
+  if (!user) return next(new ErrorResponse("User not found", 404));
+
+  const filter =
+    type === "all" ? { userId: user._id } : { userId: user._id, status: type };
+
+  const orders = await Orders.find(filter);
+
+  return response.status(200).json({ success: true, orders });
+};
+
+module.exports.getBookings = async (request, response, next) => {
+  const { type } = request.query;
+
+  if (!type) return next(new ErrorResponse("Missing information", 422));
+
+  const user = await User.findById(request.user.id);
+
+  if (!user) return next(new ErrorResponse("User not found", 404));
+
+  const bookings = await Appointments.find({
+    user: user._id,
+    type,
+  }).populate("vet");
+
+  return response.status(200).json({ success: true, bookings });
 };
 
 module.exports.login = async (request, response, next) => {

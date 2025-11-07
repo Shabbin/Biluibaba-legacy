@@ -1,0 +1,4 @@
+- Location not functional
+- Animation/functionality (Tags & Title)
+- see all button not functional
+- See all pets button not functional

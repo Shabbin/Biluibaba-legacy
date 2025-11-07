@@ -8,6 +8,9 @@ const {
   authenticateGoogle,
   getUserInfo,
   logoutUser,
+  updateUserInfo,
+  getOrders,
+  getBookings,
 } = require("../controllers/auth");
 
 const { protectUser } = require("../middleware/auth");
@@ -20,6 +23,9 @@ router.route("/google").get(authenticateGoogle);
 router.use(protectUser);
 
 router.route("/me").get(getUserInfo);
+router.route("/update-profile").post(updateUserInfo);
+router.route("/orders").get(getOrders);
+router.route("/vet").get(getBookings);
 router.route("/logout").get(logoutUser);
 
 module.exports = router;

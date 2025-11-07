@@ -6,29 +6,27 @@ export default function Sidebar() {
       <div className="border-b-2 p-5">
         <h2 className="text-xl font-semibold">My Account</h2>
         <div className="flex flex-col gap-2 pt-4 px-4 text-lg text-gray-500">
-          <Link href="/my-account/profile">My Profile</Link>
-          <Link href="/my-account/address">My Address</Link>
+          <Link href="/my-account">My Profile</Link>
+          <Link href="/my-account">My Address</Link>
         </div>
       </div>
       <div className="border-b-2 p-5">
         <h2 className="text-xl font-semibold">My Orders</h2>
         <div className="flex flex-col gap-2 pt-4 px-4 text-lg text-gray-500">
-          <Link href="/my-account/orders">My Orders</Link>
-          <Link href="/my-account/orders-cancellation">My Cancellation</Link>
-          <Link href="/my-account/order-returns">My Returns</Link>
+          <Link href="/my-account/orders?type=all">My Orders</Link>
+          <Link href="/my-account/orders?type=cancelled">My Cancellation</Link>
+          <Link href="/my-account/orders?type=returns">My Returns</Link>
         </div>
       </div>
       <div className="border-b-2 p-5">
         <h2 className="text-xl font-semibold">My Bookings</h2>
         <div className="flex flex-col gap-2 pt-4 px-4 text-lg text-gray-500">
           <Link href="/my-account/vet?type=online">Vet Online</Link>
-          <Link href="/my-account/vet?type=offline">Vet Offline</Link>
-          <Link href="/my-account/vet?type=home-service">Home Service</Link>
+          <Link href="/my-account/vet?type=physical">Vet Offline</Link>
+          <Link href="/my-account/vet?type=homeService">Home Service</Link>
           <Link href="/my-account/vet?type=emergency">Emergency</Link>
           <Link href="/my-account/vet?type=vaccine">Vaccine</Link>
-          <Link href="/my-account/vet?type=neutered/sprayed">
-            Neutered/Sprayed
-          </Link>
+          <Link href="/my-account/vet?type=neutered">Neutered/Sprayed</Link>
         </div>
       </div>
       <div className="border-b-2 p-5">
