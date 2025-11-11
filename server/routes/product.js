@@ -13,9 +13,11 @@ const {
   updateProduct,
   deleteProduct,
   updateProductStatus,
+  searchProducts,
 } = require("../controllers/product");
 
 router.route("/get/:slug").get(getProduct);
+router.route("/search").get(searchProducts);
 
 router.route("/:type/:category").get(getProducts);
 router.route("/get").get(getPetProducts);

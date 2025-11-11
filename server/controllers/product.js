@@ -32,6 +32,29 @@ module.exports.getProducts = async (request, response, next) => {
   return response.status(200).json({ success: true, products });
 };
 
+module.exports.searchProducts = async (request, response, next) => {
+  const { query } = request.query;
+
+  if (!query || query.trim() === "")
+    return response.json({ success: true, products: [] });
+
+  try {
+    const products = await Products.find({
+      $or: [
+        { name: { $regex: query, $options: "i" } },
+        { tags: { $regex: query, $options: "i" } },
+      ],
+    }).limit(10);
+
+    return response.status(200).json({ success: true, products });
+  } catch (error) {
+    console.error("Error searching products:", error);
+    return response
+      .status(500)
+      .json({ success: false, message: "Server error" });
+  }
+};
+
 module.exports.getBestDeals = async (request, response, next) => {
   const { count } = request.query;
 

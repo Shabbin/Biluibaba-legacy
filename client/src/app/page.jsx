@@ -44,10 +44,6 @@ let productCategories = [
     src: "/pets/rabbit.png",
     link: "/products?pet=rabbit",
   },
-  {
-    src: "/pets/guinea-pig.png",
-    link: "/products?pet=guinea-pig",
-  },
 ];
 
 export default function Home() {
@@ -159,7 +155,10 @@ export default function Home() {
           <div className="container mx-auto py-10">
             <div className="flex flex-row items-center justify-between md:px-0 px-5">
               <h1 className="md:text-6xl text-5xl font-bold">Cat Food</h1>
-              <div className="text-red-600 font-bold hover:underline text-2xl cursor-pointer transition-all ease-in-out duration-300">
+              <div
+                className="text-red-600 font-bold hover:underline text-2xl cursor-pointer transition-all ease-in-out duration-300"
+                onClick={() => (window.location.href = "/products?pet=cat")}
+              >
                 see all
               </div>
             </div>
@@ -173,7 +172,10 @@ export default function Home() {
           <div className="container mx-auto py-10">
             <div className="flex flex-row items-center justify-between md:px-0 px-5">
               <h1 className="md:text-6xl text-5xl font-bold">Accessories</h1>
-              <div className="text-red-600 font-bold hover:underline text-2xl cursor-pointer transition-all ease-in-out duration-300">
+              <div
+                className="text-red-600 font-bold hover:underline text-2xl cursor-pointer transition-all ease-in-out duration-300"
+                onClick={() => (window.location.href = "/products?pet=cat")}
+              >
                 see all
               </div>
             </div>
@@ -254,6 +256,7 @@ export default function Home() {
                   type="default"
                   text="See all Pets"
                   className="font-extrabold text-xl"
+                  onClick={() => (window.location.href = "/adoptions")}
                 />
               </div>
             </div>

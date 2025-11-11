@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import axios from "@/src/lib/axiosInstance";
 
@@ -36,9 +37,11 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import Logo from "@/public/logo-black.png";
 
 const Navbar = () => {
+  const router = useRouter();
   const [cart, toggleCart] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
+  const [query, setQuery] = useState("");
 
   const getUserCoordinates = async () => {
     return new Promise((resolve, reject) => {
@@ -98,6 +101,12 @@ const Navbar = () => {
               <Input
                 className="ps-12 !bg-[#f8f8f8] !border-[#dddddd] rounded-xl"
                 placeholder={'Search "Pet Carrier Bag"'}
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  if (e.target.value.trim() === "") return router.push("/");
+                  router.push(`/search?query=${e.target.value}`);
+                }}
               />
             </div>
             <div className="flex flex-row gap-2 items-center font-medium z-[20]">
@@ -191,10 +200,7 @@ const Navbar = () => {
                 (value) => value.name === "Bird"
               )}
             />
-            <DropdownItem
-              parent="More Pets"
-              icon={<Rabbit className="text-2xl" />}
-            />
+            <MorePetsDropdown />
 
             <Link href="/vets" className="flex flex-row gap-2 items-center">
               <Vet className="text-2xl" />
@@ -217,6 +223,41 @@ const Navbar = () => {
             </Link>
           </div>
         </div>
+      </div>
+    </div>
+  );
+};
+
+const MorePetsDropdown = () => {
+  return (
+    <div className="group relative cursor-pointer md:w-auto w-full">
+      <div className="flex flex-row gap-2 items-center">
+        <Rabbit className="text-2xl" />
+        <div>More Pets</div>
+        <svg width="10" height="6" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="5,5 1,1 9,1" fill="black" />
+        </svg>
+      </div>
+
+      <div className="group-hover:block md:absolute hidden left-0 h-auto rounded">
+        <ul className="top-0 md:my-0 my-2 md:py-0 py-2 md:border-t-0 border-t-black border-t-2 md:w-52 w-full text-base md:shadow md:border bg-white">
+          <li className="bg-white md:hover:bg-gray-100">
+            <div
+              className="px-3 py-1 cursor-pointer"
+              onClick={() => (window.location.href = "/products?pet=rabbit")}
+            >
+              Rabbits
+            </div>
+          </li>
+          <li className="bg-white md:hover:bg-gray-100">
+            <div
+              className="px-3 py-1 cursor-pointer"
+              onClick={() => (window.location.href = "/products?pet=fish")}
+            >
+              Fish
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
   );
