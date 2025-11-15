@@ -8,39 +8,54 @@ import { Delete, AddCart } from "@/src/components/svg";
 
 export default function Page() {
   const [wishlist, setWishlist] = useState([]);
-  const [selectedItems, setSelectedItems] = useState(new Set());
+  const [selectedItems, setSelectedItems] = useState([]);
 
   const handleSelectAll = (checked) => {
-    if (checked) setSelectedItems(new Set(wishlist.map((item) => item.slug)));
-    else setSelectedItems(new Set());
+    const newSelected = checked ? wishlist.map((item) => item.slug) : [];
+    setSelectedItems(newSelected);
   };
 
   const handleSelectItem = (slug, checked) => {
-    const newSelected = new Set(selectedItems);
-    if (checked) newSelected.add(slug);
-    else newSelected.delete(slug);
+    const newSelected = checked
+      ? [...selectedItems, slug]
+      : selectedItems.filter((itemSlug) => itemSlug !== slug);
     setSelectedItems(newSelected);
   };
 
   const handleDelete = (slug) => {
-    const newSelected = new Set(selectedItems);
-    newSelected.delete(slug);
+    // Remove from wishlist
+    const newWishlist = wishlist.filter((item) => item.slug !== slug);
+    setWishlist(newWishlist);
+    localStorage.setItem("wishlist", JSON.stringify(newWishlist));
+
+    // Remove from selected items
+    const newSelected = selectedItems.filter((itemSlug) => itemSlug !== slug);
     setSelectedItems(newSelected);
+  };
+
+  const handleDeleteSelected = () => {
+    if (selectedItems.length === 0) return;
+
+    // Remove all selected items from wishlist
+    const newWishlist = wishlist.filter(
+      (item) => !selectedItems.includes(item.slug)
+    );
+    setWishlist(newWishlist);
+    localStorage.setItem("wishlist", JSON.stringify(newWishlist));
+
+    // Clear selected items
+    setSelectedItems([]);
   };
 
   useEffect(() => {
     const storedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-    if (storedWishlist) setWishlist(storedWishlist);
+    setWishlist(storedWishlist);
   }, []);
 
-  const isAllSelected = selectedItems.length === wishlist.length;
+  const isAllSelected =
+    wishlist.length > 0 && selectedItems.length === wishlist.length;
   const isPartiallySelected =
     selectedItems.length > 0 && selectedItems.length < wishlist.length;
-
-  useEffect(() => {
-    const wishlistItems = JSON.parse(localStorage.getItem("wishlist")) || [];
-    setWishlist(wishlistItems);
-  }, []);
 
   return (
     <div>
@@ -56,7 +71,7 @@ export default function Page() {
                     onChange={handleSelectAll}
                   />
                   <span className="text-gray-600 font-medium">
-                    Select All ({selectedItems.size} Items)
+                    Select All ({selectedItems.length} Items)
                   </span>
                 </div>
                 <Button
@@ -64,6 +79,7 @@ export default function Page() {
                   text="Delete"
                   icon={<Delete className="h-4 w-4" />}
                   iconAlign="left"
+                  onClick={handleDeleteSelected}
                 />
               </div>
             </div>
@@ -75,7 +91,10 @@ export default function Page() {
                   className="p-6 bg-white py-10 rounded-xl "
                 >
                   <div>
-                    <div className="flex justify-end items-center gap-4 text-xl text-gray-400 hover:text-red-500 p-2 cursor-pointer">
+                    <div
+                      className="flex justify-end items-center gap-4 text-xl text-gray-400 hover:text-red-500 p-2 cursor-pointer"
+                      onClick={() => handleDelete(product.slug)}
+                    >
                       <Delete className="h-6 w-6" /> Delete
                     </div>
                   </div>
@@ -83,9 +102,9 @@ export default function Page() {
                     <div className="flex items-center space-x-4 flex-1">
                       {/* Checkbox */}
                       <Checkbox
-                        checked={selectedItems.has(product.id)}
+                        checked={selectedItems.includes(product.slug)}
                         onChange={(checked) =>
-                          handleSelectItem(product.id, checked)
+                          handleSelectItem(product.slug, checked)
                         }
                       />
 
@@ -130,6 +149,9 @@ export default function Page() {
                         type="default"
                         text="Add to cart"
                         icon={<AddCart className="h-4 w-4" />}
+                        onClick={() =>
+                          (window.location.href = `/products/${product.slug}`)
+                        }
                         iconAlign="left"
                       />
                     </div>
