@@ -258,7 +258,7 @@ export default function Home() {
                 <Button
                   type="default"
                   text="See all Pets"
-                  className="font-extrabold text-xl"
+                  className="font-extrabold text-xl z-30"
                   onClick={() => (window.location.href = "/adoptions")}
                 />
               </div>
