@@ -348,4 +348,45 @@ module.exports.pets = [
       },
     ],
   },
+  {
+    name: "fish",
+    src: "/banners/fish.png",
+    categories: [
+      {
+        name: "Accessories",
+        value: ["fish", "accessories"],
+        src: "/banners/rabbit/accessories.png",
+      },
+      {
+        name: "Bowl",
+        value: ["fish", "accessories", "feeling-bowls"],
+        src: "/banners/rabbit/bowl.png",
+      },
+      {
+        name: "Clothing",
+        value: ["fish", "clothing-and-apparel"],
+        src: "/banners/rabbit/clothing.png",
+      },
+      {
+        name: "Grooming",
+        value: ["fish", "grooming-and-hygiene"],
+        src: "/banners/rabbit/grooming.png",
+      },
+      {
+        name: "Pet Travel and Outdoor",
+        value: ["fish", "toys"],
+        src: "/banners/rabbit/pet-travel-and-outdoor.png",
+      },
+      {
+        name: "Furniture",
+        value: ["fish", "furniture"],
+        src: "/banners/rabbit/furniture.png",
+      },
+      {
+        name: "Food",
+        value: ["fish", "food-and-treats"],
+        src: "/banners/rabbit/food.png",
+      },
+    ],
+  },
 ];

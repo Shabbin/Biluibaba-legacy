@@ -102,7 +102,10 @@ export default function Home() {
                     <img
                       src={category.image}
                       alt={category.category}
-                      className="rounded-lg mx-auto"
+                      className="rounded-lg mx-auto cursor-pointer"
+                      onClick={() =>
+                        (window.location.href = category.categorySlug)
+                      }
                     />
                   </div>
                 ))}
