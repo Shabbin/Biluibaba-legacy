@@ -1,0 +1,9 @@
+export { default as authRoutes } from './auth';
+export { default as productRoutes } from './product';
+export { default as vendorRoutes } from './vendor';
+export { default as vetRoutes } from './vet';
+export { default as orderRoutes } from './order';
+export { default as adoptionsRoutes } from './adoptions';
+export { default as appRoutes } from './app';
+export { default as roomRoutes } from './room';
+export { default as adminRoutes } from './admin';
