@@ -152,12 +152,24 @@ const Footer = (): JSX.Element => {
 
         <div className="py-10">
           <h2 className="text-2xl uppercase font-bold mb-10">Popular Searches</h2>
-          <p className="text-xl font-medium">{POPULAR_SEARCHES.join(' | ')}</p>
+          <p className="text-xl font-medium text-black">
+            {POPULAR_SEARCHES.map((item, idx) => (
+              <span key={idx}>
+                <Link
+                  href={`/search?query=${encodeURIComponent(item)}`}
+                  className="hover:underline"
+                >
+                  {item}
+                </Link>
+                {idx < POPULAR_SEARCHES.length - 1 && ' | '}
+              </span>
+            ))}
+          </p>
         </div>
 
         <div className="py-10">
           <h2 className="text-2xl uppercase font-bold mb-10">
-            Biluibaba.com Head Office
+            Biluibaba.com – Online Headquarters
           </h2>
           <address className="text-xl font-medium not-italic">
             Dhaka Bangladesh, 1216
@@ -169,7 +181,7 @@ const Footer = (): JSX.Element => {
             &copy; {currentYear} Biluibaba.com. All Rights Reserved
           </div>
           <div className="text-center text-lg font-bold pt-5 text-gray-500">
-            Developed by Fractal
+            © 2026 BBIT. All rights reserved.
           </div>
         </div>
       </div>
