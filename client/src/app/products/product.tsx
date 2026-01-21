@@ -50,26 +50,32 @@ interface CategorySliderProps {
   categories: CategoryData[];
   selectedCategory: CategoryData;
   setSelectedCategory: (category: CategoryData) => void;
+  activeIndex: number;
+  swiperRef: React.RefObject<SwiperClass>;
 }
 
 const Products: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-
   const pet = searchParams.get('pet');
 
   const [loading, setLoading] = useState<boolean>(true);
   const [petData, setPetData] = useState<PetDataItem | undefined>(
-    PetData.pets.find((item: PetDataItem) => item.name === pet)
+    PetData.pets.find((item) => item.name === pet)
   );
+
   const [selectedCategory, setSelectedCategory] = useState<CategoryData>(
-    PetData.pets.find((item: PetDataItem) => item.name === pet)?.categories[0] || {
+    PetData.pets.find((item) => item.name === pet)?.categories[0] || {
       name: '',
       src: '',
       value: [],
     }
   );
+
+  const [activeIndex, setActiveIndex] = useState(0);
+  const swiperRef = useRef<SwiperClass | null>(null);
+
   const [filter, setFilter] = useState<string>('popularity');
   const [products, setProducts] = useState<ProductData[]>([]);
   const [count, setCount] = useState<number>(0);
@@ -78,9 +84,71 @@ const Products: React.FC = () => {
   const itemsPerPage = 40;
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const fetchProducts = async (pageCount: number = 0): Promise<void> => {
+  // -------------------------------
+  // Handle popular search clicks
+  // -------------------------------
+  const handlePopularSearchClick = (petName: string, categoryValue: string, subValue?: string) => {
+    const petInfo = PetData.pets.find((p) => p.name === petName);
+    if (!petInfo) return;
+
+    let categoryMatch: CategoryData | undefined;
+    if (subValue) {
+      categoryMatch = petInfo.categories.find(
+        (cat) => cat.value[1] === categoryValue && cat.value[2] === subValue
+      );
+    } else {
+      categoryMatch = petInfo.categories.find((cat) => cat.value[1] === categoryValue);
+    }
+
+    if (!categoryMatch) return;
+
+    setPetData(petInfo);
+    setSelectedCategory(categoryMatch);
+    const index = petInfo.categories.indexOf(categoryMatch);
+    setActiveIndex(index);
+
+    if (swiperRef.current) swiperRef.current.slideToLoop(index);
+
+    const params = new URLSearchParams();
+    params.set('pet', petName);
+    params.set('category', categoryMatch.value[1]);
+    if (categoryMatch.value[2]) params.set('sub', categoryMatch.value[2]);
+
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  // -------------------------------
+  // Sync category with URL (popular search or manually)
+  // -------------------------------
+  useEffect(() => {
     if (!petData) return;
-    
+
+    const urlCategory = searchParams.get('category');
+    const urlSub = searchParams.get('sub');
+    if (!urlCategory) return;
+
+    const normalize = (val?: string) => val?.toLowerCase().replace(/_/g, '-');
+
+    const matchedCategory = petData.categories.find(
+      (cat) =>
+        normalize(cat.value[1]) === normalize(urlCategory) &&
+        (!urlSub || normalize(cat.value[2]) === normalize(urlSub))
+    );
+
+    if (matchedCategory) {
+      setSelectedCategory({ ...matchedCategory });
+      const index = petData.categories.indexOf(matchedCategory);
+      setActiveIndex(index);
+      if (swiperRef.current) swiperRef.current.slideToLoop(index);
+    }
+  }, [searchParams, petData]);
+
+  // -------------------------------
+  // Fetch products
+  // -------------------------------
+  const fetchProducts = async (pageCount: number = 0) => {
+    if (!petData || !selectedCategory) return;
+
     setLoading(true);
     try {
       const { data } = await axios.get(
@@ -102,7 +170,7 @@ const Products: React.FC = () => {
     }
   };
 
-  const handlePageChange = (page: number): void => {
+  const handlePageChange = (page: number) => {
     setCurrentPage(page);
     const newCount = (page - 1) * itemsPerPage;
     setCount(newCount);
@@ -110,21 +178,50 @@ const Products: React.FC = () => {
     window.scrollTo({ top: 50, behavior: 'smooth' });
   };
 
+  // -------------------------------
+  // Update petData if URL param changes
+  // -------------------------------
+  useEffect(() => {
+    if (!pet) return;
+    const petInfo = PetData.pets.find((p) => p.name === pet);
+    if (petInfo) {
+      setPetData(petInfo);
+      if (!selectedCategory || selectedCategory.value[0] !== pet) {
+        setSelectedCategory(petInfo.categories[0]);
+        setActiveIndex(0);
+      }
+    }
+  }, [pet]);
+
+  // -------------------------------
+  // Initial load
+  // -------------------------------
   useEffect(() => {
     if (!pet) router.push('/products?pet=cat');
     fetchProducts(count);
   }, []);
 
+  // -------------------------------
+  // Update URL whenever category changes
+  // -------------------------------
   useEffect(() => {
     if (!pet || !selectedCategory) return;
-    
+
     const params = new URLSearchParams();
     params.set('pet', pet);
     params.set('category', selectedCategory.value[1]);
     if (selectedCategory.value[2]) params.set('sub', selectedCategory.value[2]);
+
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
-    fetchProducts();
   }, [selectedCategory]);
+
+  // -------------------------------
+  // Refetch products whenever selectedCategory changes
+  // -------------------------------
+  useEffect(() => {
+    if (!petData || !selectedCategory) return;
+    fetchProducts(0);
+  }, [petData, selectedCategory]);
 
   if (!petData) {
     return <div className="text-center py-20">Loading pet data...</div>;
@@ -134,6 +231,23 @@ const Products: React.FC = () => {
     <div>
       <div className="py-5 px-10">
         <img src={petData.src} alt={petData.name} />
+      </div>
+
+      {/* -------------------------------
+          Popular Searches (Hyperlinks)
+      ------------------------------- */}
+      <div className="flex flex-wrap gap-4 py-5 px-10">
+        {petData.categories.map((cat) => (
+          <button
+            key={cat.name}
+            onClick={() =>
+              handlePopularSearchClick(petData.name, cat.value[1], cat.value[2])
+            }
+            className="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded"
+          >
+            {cat.name}
+          </button>
+        ))}
       </div>
 
       <div className="py-10 px-5">
@@ -165,6 +279,8 @@ const Products: React.FC = () => {
             categories={petData.categories}
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
+            activeIndex={activeIndex}
+            swiperRef={swiperRef}
           />
         </div>
       </div>
@@ -228,13 +344,16 @@ const Products: React.FC = () => {
   );
 };
 
+// -------------------------------
+// CategorySlider
+// -------------------------------
 const CategorySlider: React.FC<CategorySliderProps> = ({
   categories,
   selectedCategory,
   setSelectedCategory,
+  activeIndex,
+  swiperRef,
 }) => {
-  const swiperRef = useRef<SwiperClass | null>(null);
-
   return (
     <div className="relative">
       <div className="absolute h-full w-full flex flex-row items-center justify-between">
@@ -251,20 +370,16 @@ const CategorySlider: React.FC<CategorySliderProps> = ({
           <ArrowRight className="px-2 text-[3em]" />
         </div>
       </div>
+
       <Swiper
-        className="z-10"
         onSwiper={(swiper) => (swiperRef.current = swiper)}
         loop={true}
         modules={[Autoplay, Navigation]}
         autoplay={{ delay: 5000, disableOnInteraction: true }}
+        initialSlide={activeIndex} // ✅ initial position
         breakpoints={{
-          480: {
-            slidesPerView: 1,
-            spaceBetween: 40,
-          },
-          640: {
-            slidesPerView: 6,
-          },
+          480: { slidesPerView: 1, spaceBetween: 40 },
+          640: { slidesPerView: 6 },
         }}
       >
         {categories.map((category, index) => (
@@ -275,7 +390,7 @@ const CategorySlider: React.FC<CategorySliderProps> = ({
                 (category.name === selectedCategory.name &&
                   'border-b-8 border-b-black')
               }
-              onClick={() => setSelectedCategory(category)}
+              onClick={() => setSelectedCategory({ ...category })}
             >
               <img
                 src={category.src}

@@ -46,36 +46,27 @@ const SOCIAL_LINKS = [
   { icon: FaYoutube, href: 'https://youtube.com/biluibaba', label: 'YouTube' },
 ];
 
+// ✅ Updated POPULAR_SEARCHES to match PetData categories and subs
 const POPULAR_SEARCHES = [
-  'Dog Food',
-  'Dog Collars Leashes Harnesses',
-  'Me-O',
-  'Cat Clothes',
-  'Cat Litter',
-  'Dog Raincoat',
-  'Dog Toys',
-  'Dog Beds',
-  'Veg Dog Food Dog Biscuits Cookies',
-  'Cat Dry Food',
-  'Cat Food',
-  'Pet Pharmacy',
-  'Pedigree',
-  'Cat Toys',
-  'Drools',
-  'Royal Canin',
-  'Dog Grooming Dog Carrier',
-  'Dogs Bones',
-  'Chews Pedigree Pro',
-  'Sheba',
-  'Whiskas',
-  'Cat Collars',
-  'Leashes Harnesses',
-  'Cat Wet Food',
-  'Cat Treats Dog Shampoos & Conditioners',
-  'Cat Carriers Travel Supplies',
-  'Dog Accessories',
-  'Cat Accessories',
-  'Cat Litter Boxes',
+  { label: 'Dog Food', href: '/products?pet=dog&category=food-and-treats' },
+  { label: 'Dog Accessories', href: '/products?pet=dog&category=accessories' },
+  { label: 'Dog Toys', href: '/products?pet=dog&category=toys' },
+  { label: 'Dog Furniture', href: '/products?pet=dog&category=furniture' },
+  { label: 'Dog Health and Wellness', href: '/products?pet=dog&category=health-and-wellness' },
+  { label: 'Dog Travel and Outdoor', href: '/products?pet=dog&category=travel-and-outdoor' },
+  { label: 'Cat Food and Treats', href: '/products?pet=cat&category=food-and-treats' },
+  { label: 'Cat Accessories', href: '/products?pet=cat&category=accessories' },
+  { label: 'Cat Toys', href: '/products?pet=cat&category=toys' },
+  { label: 'Cat Furniture', href: '/products?pet=cat&category=furniture' },
+  { label: 'Cat Health and Wellness', href: '/products?pet=cat&category=health-and-wellness' },
+  { label: 'Cat Travel and Outdoor', href: '/products?pet=cat&category=travel-and-outdoor' },
+  { label: 'Bird Food and Treats', href: '/products?pet=bird&category=food-and-treats' },
+  { label: 'Bird Toys', href: '/products?pet=bird&category=toys' },
+  { label: 'Rabbit Food', href: '/products?pet=rabbit&category=food-and-treats' },
+  { label: 'Rabbit Accessories', href: '/products?pet=rabbit&category=accessories' },
+  { label: 'Fish Food', href: '/products?pet=fish&category=food-and-treats' },
+  { label: 'Pet Grooming', href: '/products?category=grooming-and-hygiene' },
+  { label: 'Pet Training', href: '/products?category=training-and-behavior' },
 ];
 
 const FooterSection = ({
@@ -155,11 +146,8 @@ const Footer = (): JSX.Element => {
           <p className="text-xl font-medium text-black">
             {POPULAR_SEARCHES.map((item, idx) => (
               <span key={idx}>
-                <Link
-                  href={`/search?query=${encodeURIComponent(item)}`}
-                  className="hover:underline"
-                >
-                  {item}
+                <Link href={item.href} className="hover:underline">
+                  {item.label}
                 </Link>
                 {idx < POPULAR_SEARCHES.length - 1 && ' | '}
               </span>
