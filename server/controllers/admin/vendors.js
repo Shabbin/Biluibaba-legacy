@@ -156,10 +156,15 @@ module.exports.getProduct = async (request, response, next) => {
 module.exports.updateProductStatus = async (request, response, next) => {
   const { status, productId } = request.body;
 
-  const product = await Products.updateOne({ productId }, { status }).populate(
+  const product = await Products.findOne({ productId }).populate(
     "vendorId",
     "name email _id"
   );
+
+  if (!product) return next(new ErrorResponse("Product not found", 404));
+
+  product.status = status;
+  await product.save();
 
   const message = handlebars.compile(
     status ? productApproved : productRejected
@@ -175,8 +180,6 @@ module.exports.updateProductStatus = async (request, response, next) => {
       : "Product Submission Not Approved",
     message,
   });
-
-  if (!product) return next(new ErrorResponse("Product not found", 404));
 
   return response.status(200).json({ success: true, product });
 };
