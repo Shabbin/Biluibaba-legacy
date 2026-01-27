@@ -1,10 +1,16 @@
 const SSLCommerzPayment = require("sslcommerz-lts");
 
+// Initialize SSLCommerz with production mode based on environment variable
+const isLive = process.env.SSLCOMMERZ_IS_LIVE === 'true';
 const SSLCommerz = new SSLCommerzPayment(
   process.env.SSLCOMMERZ_STORE_ID,
   process.env.SSLCOMMERZ_API_KEY,
-  false
+  isLive // true for production, false for sandbox
 );
+
+// Log the payment mode on initialization
+console.log(`SSLCommerz initialized in ${isLive ? 'PRODUCTION' : 'SANDBOX'} mode`);
+console.log(`Store ID: ${process.env.SSLCOMMERZ_STORE_ID}`);
 
 // This function initializes the payment request with SSLCommerz
 module.exports.createPaymentRequest = async (
@@ -20,6 +26,12 @@ module.exports.createPaymentRequest = async (
   phoneNumber
 ) => {
   try {
+    console.log(`\n=== Creating Payment Request ===`);
+    console.log(`Transaction ID: ${tran_id}`);
+    console.log(`Amount: ${total_amount.toFixed(2)} BDT`);
+    console.log(`Product: ${product_name}`);
+    console.log(`Mode: ${isLive ? 'PRODUCTION' : 'SANDBOX'}`);
+    
     const apiResponse = await SSLCommerz.init({
       total_amount: total_amount.toFixed(2),
       currency: "BDT",
@@ -46,6 +58,10 @@ module.exports.createPaymentRequest = async (
       value_a: tran_id,
     });
 
+    console.log(`Payment Gateway URL: ${apiResponse.GatewayPageURL}`);
+    console.log(`Session Key: ${apiResponse.sessionkey}`);
+    console.log(`=== Payment Request Created Successfully ===\n`);
+    
     return apiResponse;
   } catch (error) {
     console.error("Payment request error:", error);
@@ -56,10 +72,19 @@ module.exports.createPaymentRequest = async (
 // This function validates the payment after the transaction
 module.exports.validatePayment = async (val_id) => {
   try {
+    console.log(`\n=== Validating Payment ===`);
+    console.log(`Validation ID: ${val_id}`);
+    console.log(`Mode: ${isLive ? 'PRODUCTION' : 'SANDBOX'}`);
+    
     const apiResponse = await SSLCommerz.validate({
       val_id,
     });
 
+    console.log(`Validation Status: ${apiResponse.status}`);
+    console.log(`Transaction ID: ${apiResponse.tran_id || 'N/A'}`);
+    console.log(`Amount: ${apiResponse.amount || 'N/A'} ${apiResponse.currency || ''}`);
+    console.log(`=== Payment Validation Complete ===\n`);
+    
     return apiResponse;
   } catch (error) {
     console.error("Payment validation error:", error);

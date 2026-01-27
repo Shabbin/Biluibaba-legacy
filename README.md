@@ -790,13 +790,39 @@ General utility routes (location, etc.)
 ### SSLCommerz Integration
 **Bangladesh's leading payment gateway**
 
+> **⚠️ PRODUCTION READY**: The payment system is now configured for production mode. See [SSLCOMMERZ_PRODUCTION_SETUP.md](SSLCOMMERZ_PRODUCTION_SETUP.md) for detailed configuration guide.
+
 #### Configuration
 ```javascript
 // Environment variables required:
 SSLCOMMERZ_STORE_ID=your_store_id
 SSLCOMMERZ_API_KEY=your_api_key
+SSLCOMMERZ_IS_LIVE=true  // Set to 'true' for production, 'false' for sandbox
 
-// Sandbox mode: false in production
+// Production URLs (must be HTTPS):
+BACKEND_URL=https://api.yourdomain.com
+FRONTEND_URL=https://yourdomain.com
+```
+
+#### Quick Start
+
+1. **Verify Configuration**
+```bash
+# Run the verification script
+./verify-sslcommerz.sh
+```
+
+2. **Check Startup Logs**
+```bash
+# Server startup will display:
+==============================================
+SSLCommerz Configuration Check
+==============================================
+Environment: production
+SSLCommerz Mode: PRODUCTION ✓
+Store ID: your_store_id
+API Key: ***xxxx
+==============================================
 ```
 
 #### Payment Flow
@@ -820,7 +846,7 @@ const paymentResponse = await createPaymentRequest(
 
 2. **User Redirected to SSLCommerz Gateway**
    - Customer enters payment details
-   - SSLCommerz processes payment
+   - SSLCommerz processes payment (PRODUCTION mode processes real transactions)
 
 3. **Callback Handling**
 ```javascript
@@ -833,6 +859,7 @@ const paymentResponse = await createPaymentRequest(
 ```javascript
 const validationResponse = await validatePayment(val_id);
 // Updates order/appointment payment status
+// Logs validation details for auditing
 ```
 
 #### Supported Payment Types
@@ -843,6 +870,22 @@ const validationResponse = await validatePayment(val_id);
 
 #### Currency
 - BDT (Bangladeshi Taka - ৳)
+
+#### Payment Endpoints
+- **Product Orders**: `/api/order` → `/api/order/validate`
+- **Adoptions**: `/api/adoptions/order` → `/api/adoptions/validate`
+- **Vet Appointments**: `/api/vet/appointment/book` → `/api/vet/appointment/validate`
+
+#### Monitoring & Logging
+All payment transactions are logged with:
+- Transaction ID
+- Amount and currency
+- Payment mode (PRODUCTION/SANDBOX)
+- Gateway URL
+- Validation status
+- Customer details (masked for security)
+
+For detailed troubleshooting and production setup instructions, refer to [SSLCOMMERZ_PRODUCTION_SETUP.md](SSLCOMMERZ_PRODUCTION_SETUP.md).
 
 ---
 
