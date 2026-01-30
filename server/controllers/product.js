@@ -23,11 +23,11 @@ module.exports.getProducts = async (request, response, next) => {
 
   let products;
 
-  if (type === "featured") products = await Products.find({ featured: true });
+  if (type === "featured") products = await Products.find({ featured: true, status: true });
   else if (type === "parent")
-    products = await Products.find({ categories: [{ parent: category }] });
+    products = await Products.find({ categories: [{ parent: category }], status: true });
   else if (type === "sub")
-    products = await Products.find({ categories: [{ sub: category }] });
+    products = await Products.find({ categories: [{ sub: category }], status: true });
 
   return response.status(200).json({ success: true, products });
 };
@@ -40,6 +40,7 @@ module.exports.searchProducts = async (request, response, next) => {
 
   try {
     const products = await Products.find({
+      status: true,
       $or: [
         { name: { $regex: query, $options: "i" } },
         { tags: { $regex: query, $options: "i" } },
@@ -81,7 +82,7 @@ module.exports.getPetProducts = async (request, response, next) => {
     const { parent, category, count } = request.query;
 
     // Base query to get all products under the parent category
-    let baseQuery = { "categories.parent": parent };
+    let baseQuery = { "categories.parent": parent, status: true };
 
     // Query for exact category (and sub-category if provided)
     let categoryQuery = { ...baseQuery, "categories.category": category };
@@ -108,7 +109,7 @@ module.exports.getPetProducts = async (request, response, next) => {
 module.exports.getProduct = async (request, response, next) => {
   const { slug } = request.params;
 
-  const product = await Products.findOne({ slug })
+  const product = await Products.findOne({ slug, status: true })
     .populate({
       path: "reviews.userId",
       select: "name avatar",
@@ -118,14 +119,15 @@ module.exports.getProduct = async (request, response, next) => {
       select: "storeName avatar _id",
     });
 
+  if (!product) return next(new ErrorResponse("No product found", 404));
+
   const products = await Products.find({
     categories: { $elemMatch: { parent: product.categories[0].parent } },
     _id: { $ne: product._id },
+    status: true,
   })
     .limit(10)
     .sort({ createdAt: -1 });
-
-  if (!product) return next(new ErrorResponse("No product found", 404));
 
   return response.status(200).json({ success: true, product, products });
 };
