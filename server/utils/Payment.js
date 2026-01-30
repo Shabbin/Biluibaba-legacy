@@ -58,6 +58,8 @@ module.exports.createPaymentRequest = async (
       value_a: tran_id,
     });
 
+    console.log("Raw response",apiResponse)
+
     console.log(`Payment Gateway URL: ${apiResponse.GatewayPageURL}`);
     console.log(`Session Key: ${apiResponse.sessionkey}`);
     console.log(`=== Payment Request Created Successfully ===\n`);
