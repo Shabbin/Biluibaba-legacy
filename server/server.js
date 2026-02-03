@@ -4,9 +4,45 @@ const logger = require("coders-logger");
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpecs = require("./config/swagger");
 
 const connectDB = require("./config/db");
 const errorHandler = require("./middleware/error");
+
+// Validate SSLCommerz Configuration
+console.log("\n==============================================");
+console.log("SSLCommerz Configuration Check");
+console.log("==============================================");
+console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+console.log(`SSLCommerz Mode: ${process.env.SSLCOMMERZ_IS_LIVE === 'true' ? 'PRODUCTION ✓' : 'SANDBOX ⚠️'}`);
+console.log(`Store ID: ${process.env.SSLCOMMERZ_STORE_ID}`);
+console.log(`API Key: ${process.env.SSLCOMMERZ_API_KEY ? '***' + process.env.SSLCOMMERZ_API_KEY.slice(-4) : 'NOT SET'}`);
+console.log(`Backend URL: ${process.env.BACKEND_URL}`);
+console.log(`Frontend URL: ${process.env.FRONTEND_URL}`);
+
+// Validate required environment variables
+const requiredEnvVars = [
+  'SSLCOMMERZ_STORE_ID',
+  'SSLCOMMERZ_API_KEY',
+  'SSLCOMMERZ_IS_LIVE',
+  'BACKEND_URL',
+  'FRONTEND_URL'
+];
+
+const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+if (missingVars.length > 0) {
+  console.error(`\n❌ ERROR: Missing required environment variables: ${missingVars.join(', ')}`);
+  console.log("==============================================\n");
+  process.exit(1);
+}
+
+if (process.env.SSLCOMMERZ_IS_LIVE === 'true') {
+  console.log("\n⚠️  WARNING: SSLCommerz is in PRODUCTION mode!");
+  console.log("   Real transactions will be processed.");
+  console.log("   Ensure you have valid production credentials.");
+}
+console.log("==============================================\n");
 
 // Connect to database
 connectDB();
@@ -36,6 +72,29 @@ app.use("/uploads/adoptions", express.static("./uploads/adoptions"));
 app.use("/uploads/site-settings", express.static("./uploads/site-settings"));
 app.use("/uploads/logo", express.static("./uploads/logo.png"));
 app.use("/uploads/vendor", express.static("./uploads/vendor"));
+
+// Swagger Documentation
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpecs, {
+    customCss: ".swagger-ui .topbar { display: none }",
+    customSiteTitle: "Biluibaba API Documentation",
+    swaggerOptions: {
+      persistAuthorization: true,
+      docExpansion: "none",
+      filter: true,
+      tagsSorter: "alpha",
+      operationsSorter: "alpha",
+    },
+  })
+);
+
+// Swagger JSON endpoint
+app.get("/api-docs.json", (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.send(swaggerSpecs);
+});
 
 // Routes
 app.use("/api/auth", require("./routes/auth"));
