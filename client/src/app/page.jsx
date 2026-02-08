@@ -14,6 +14,7 @@ import FeatureProducts from "@/src/app/_components/home/FeatureProducts";
 import ExpertVets from "@/src/app/_components/home/ExpertVets";
 import Adoptions from "@/src/app/_components/home/Adoptions";
 import Testimonials from "@/src/app/_components/home/Testimonials";
+import { WavyDivider } from "@/src/components/ui/dividers";
 
 import ProductAd from "@/src/components/productad";
 
@@ -81,32 +82,40 @@ export default function Home() {
   }, []);
 
   return (
-    <main>
+    <main className="bg-white">
       {!loading && (
         <>
-          <div className="p-5">
+          {/* Hero section with soft blue background */}
+          <div className="bg-petzy-blue-light py-10 px-5">
             <Landing slider={site.product_landing_slider} />
           </div>
+          
+          {/* Wavy divider */}
+          <div className="text-petzy-blue-light -mt-1">
+            <WavyDivider />
+          </div>
 
-          <div className="pt-10">
+          <div className="pt-10 bg-white">
             <div className="container mx-auto">
-              <h2 className="md:text-6xl text-5xl text-center font-bold">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl text-center font-bold text-petzy-slate">
                 Popular Category
               </h2>
               <div className="md:py-14 py-10 flex flex-row items-center md:justify-start justify-center flex-wrap gap-y-10">
                 {site.popular_product_category.map((category, index) => (
                   <div
-                    className="md:basis-1/6 basis-1/3 -me-2 px-2"
+                    className="md:basis-1/6 basis-1/3 px-2 transform hover:scale-110 transition-all duration-300"
                     key={category._id}
                   >
-                    <img
-                      src={category.image}
-                      alt={category.category}
-                      className="rounded-lg mx-auto cursor-pointer"
-                      onClick={() =>
-                        (window.location.href = category.categorySlug)
-                      }
-                    />
+                    <div className="bg-white rounded-3xl shadow-soft hover:shadow-soft-lg p-4 transition-all duration-300">
+                      <img
+                        src={category.image}
+                        alt={category.category}
+                        className="rounded-2xl mx-auto cursor-pointer"
+                        onClick={() =>
+                          (window.location.href = category.categorySlug)
+                        }
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -115,8 +124,8 @@ export default function Home() {
 
           <ProductCategory categories={productCategories} />
 
-          <div className="container md:mx-auto py-10">
-            <h1 className="md:text-6xl text-5xl font-bold text-center">
+          <div className="container md:mx-auto py-10 bg-white">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-petzy-slate">
               Feature Products
             </h1>
             <FeatureProducts
@@ -126,7 +135,7 @@ export default function Home() {
             />
           </div>
 
-          <div className="py-10">
+          <div className="py-10 bg-petzy-yellow-soft">
             <div className="container mx-auto">
               <ProductAd
                 title="Product Title"
@@ -136,16 +145,16 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="container mx-auto py-10">
+          <div className="container mx-auto py-10 bg-white">
             <img
               src={site.product_banner_one.path}
               alt="Product Banner 1"
-              className="w-full h-full"
+              className="w-full h-full rounded-3xl shadow-soft"
             />
           </div>
 
-          <div className="container mx-auto py-10">
-            <h1 className="md:text-6xl text-5xl font-bold text-center">
+          <div className="container mx-auto py-10 bg-white">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-petzy-slate">
               Best Seller
             </h1>
             <FeatureProducts
@@ -155,11 +164,11 @@ export default function Home() {
             />
           </div>
 
-          <div className="container mx-auto py-10">
+          <div className="container mx-auto py-10 bg-white">
             <div className="flex flex-row items-center justify-between md:px-0 px-5">
-              <h1 className="md:text-6xl text-5xl font-bold">Cat Food</h1>
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-petzy-slate">Cat Food</h1>
               <div
-                className="text-red-600 font-bold hover:underline text-2xl cursor-pointer transition-all ease-in-out duration-300"
+                className="text-petzy-coral font-bold hover:underline text-2xl cursor-pointer transition-all ease-in-out duration-300"
                 onClick={() => (window.location.href = "/products?pet=cat")}
               >
                 see all
@@ -172,11 +181,11 @@ export default function Home() {
             />
           </div>
 
-          <div className="container mx-auto py-10">
+          <div className="container mx-auto py-10 bg-white">
             <div className="flex flex-row items-center justify-between md:px-0 px-5">
-              <h1 className="md:text-6xl text-5xl font-bold">Accessories</h1>
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-petzy-slate">Accessories</h1>
               <div
-                className="text-red-600 font-bold hover:underline text-2xl cursor-pointer transition-all ease-in-out duration-300"
+                className="text-petzy-coral font-bold hover:underline text-2xl cursor-pointer transition-all ease-in-out duration-300"
                 onClick={() => (window.location.href = "/products?pet=cat")}
               >
                 see all
@@ -189,28 +198,37 @@ export default function Home() {
             />
           </div>
 
-          <div className="container mx-auto py-10 md:px-0 px-5">
-            <h1 className="md:text-6xl text-5xl font-bold text-center mb-10">
+          <div className="container mx-auto py-10 md:px-0 px-5 bg-white">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-10 text-petzy-slate">
               Brand In Spotlight
             </h1>
             <div className="flex flex-row flex-wrap items-center gap-y-5">
               {site.product_brands_in_spotlight.map((brand, index) => (
-                <img
-                  src={brand.path}
-                  alt={brand.name}
-                  className="md:basis-1/5 basis-1/2 -me-2 px-2 md:w-[200px] w-[150px]"
-                />
+                <div key={index} className="md:basis-1/5 basis-1/2 px-2">
+                  <div className="bg-white rounded-3xl shadow-soft hover:shadow-soft-lg p-6 transition-all duration-300">
+                    <img
+                      src={brand.path}
+                      alt={brand.name}
+                      className="md:w-[200px] w-[150px] mx-auto"
+                    />
+                  </div>
+                </div>
               ))}
             </div>
           </div>
 
-          <div className="py-10 px-5">
+          <div className="bg-petzy-periwinkle-light py-10 px-5">
             <Landing slider={site.vet_landing_slider} />
           </div>
+          
+          {/* Wavy divider */}
+          <div className="text-petzy-periwinkle-light -mt-1">
+            <WavyDivider />
+          </div>
 
-          <div className="container mx-auto">
+          <div className="container mx-auto bg-white">
             <div className="my-5 py-10">
-              <div className="md:text-6xl text-5xl font-bold text-center">
+              <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-petzy-slate">
                 Get Advice From Expert Vet
               </div>
 
@@ -227,11 +245,11 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="container mx-auto py-5">
+          <div className="container mx-auto py-5 bg-white">
             <img
               src={site.vet_banner_one.path}
               alt="Vet Banner One"
-              className="w-full h-full"
+              className="w-full h-full rounded-3xl shadow-soft"
             />
             <div className="flex md:flex-row flex-col gap-5 items-center justify-between mt-5">
               {site.vet_grid_banners.map((banner, index) => (
@@ -239,16 +257,16 @@ export default function Home() {
                   <img
                     src={banner.path}
                     alt={`Vet Banner ${index}`}
-                    className="min-w-auto min-h-auto"
+                    className="min-w-auto min-h-auto rounded-3xl shadow-soft"
                   />
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="container mx-auto">
+          <div className="container mx-auto bg-white">
             <div className="my-5 pb-20">
-              <div className="md:text-6xl text-5xl font-bold text-center">
+              <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-petzy-slate">
                 Find a Life Long Friend
               </div>
 
@@ -265,7 +283,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="py-10">
+          <div className="py-10 bg-petzy-mint-light">
             <div className="container mx-auto">
               <ProductAd
                 title="Donate and Save an Animals"
@@ -277,11 +295,11 @@ export default function Home() {
 
           <Testimonials />
 
-          <div className="container mx-auto py-20 md:px-0 px-5">
-            <h2 className="font-bold text-gray-700 text-3xl mb-5">
+          <div className="container mx-auto py-20 md:px-0 px-5 bg-white">
+            <h2 className="font-bold text-petzy-slate text-xl md:text-2xl lg:text-3xl mb-5">
               Biluibaba: Unleash Joy with Our Online Pet Store
             </h2>
-            <div className="flex flex-col gap-10 text-2xl text-gray-500">
+            <div className="flex flex-col gap-6 md:gap-8 text-sm md:text-base lg:text-lg text-petzy-slate-light">
               <p>
                 Welcome to Biluibaba, your ultimate online pet store in
                 Bangladesh! At Biluibaba, we're more than just a pet shop online

@@ -9,7 +9,7 @@ export default function Select({
   name,
   ...props
 }) {
-  const textColor = value ? "text-gray-700" : "text-gray-400";
+  const textColor = value ? "text-petzy-slate" : "text-petzy-slate-light/50";
 
   return (
     <div className="w-full">
@@ -19,7 +19,7 @@ export default function Select({
           onChange={onChange}
           name={name}
           placeholder={placeholder}
-          className={`appearance-none w-full text-sm bg-white border border-gray-200 rounded px-4 my-3 py-3 ${textColor} focus:outline-none focus:ring-2 focus:ring-indigo-100`}
+          className={`appearance-none w-full bg-white border-2 border-gray-200 rounded-3xl px-4 md:px-6 my-3 py-3 md:py-4 ${textColor} focus:outline-none focus:ring-2 focus:ring-petzy-coral/20 focus:border-petzy-coral shadow-soft transition-all duration-300 text-xs md:text-sm`}
         >
           {data.map((d, i) => (
             <option key={i} value={d.value}>
@@ -28,9 +28,9 @@ export default function Select({
           ))}
         </select>
 
-        <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+        <div className="pointer-events-none absolute inset-y-0 right-6 flex items-center">
           <svg
-            className="w-3 h-3 text-black"
+            className="w-3 h-3 text-petzy-slate"
             viewBox="0 0 10 6"
             fill="currentColor"
             xmlns="http://www.w3.org/2000/svg"

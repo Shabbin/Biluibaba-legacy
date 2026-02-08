@@ -25,7 +25,7 @@ const Input = ({
         disabled={disabled}
         accept={accept}
         className={
-          "w-full px-4 my-3 py-3 rounded-lg text-black border focus:border-2 focus:ring-1 focus:outline-none focus:ring-zinc-400 bg-neutral-100 " +
+          "w-full px-4 md:px-6 my-3 py-3 md:py-4 rounded-3xl text-petzy-slate border-2 border-gray-200 focus:border-petzy-coral focus:ring-2 focus:outline-none focus:ring-petzy-coral/20 bg-white shadow-soft transition-all duration-300 placeholder:text-petzy-slate-light/50 text-sm md:text-base " +
           className
         }
         {...props}

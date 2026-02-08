@@ -41,16 +41,16 @@ const Adoptions = ({ AdoptionData, router }) => {
     <div className="relative py-20">
       <div className="absolute h-full w-full flex flex-row items-center justify-between">
         <div
-          className="bg-white md:py-10 py-4 rounded-tr-lg rounded-br-lg cursor-pointer hover:bg-neutral-100 transition-all ease-in-out duration-300 z-20"
+          className="bg-white md:py-10 py-4 rounded-pill cursor-pointer hover:bg-petzy-mint-light transition-all ease-in-out duration-300 shadow-soft hover:shadow-soft-lg z-20"
           onClick={() => swiperRef.current?.slidePrev()}
         >
-          <ArrowLeft className="md:text-[4em] text-[1.5em] text-gray-400" />
+          <ArrowLeft className="md:text-[4em] text-[1.5em] text-petzy-slate-light px-3" />
         </div>
         <div
-          className=" bg-white md:py-10 py-4 rounded-tl-lg rounded-bl-lg cursor-pointer hover:bg-neutral-100 transition-all ease-in-out duration-300 z-20"
+          className="bg-white md:py-10 py-4 rounded-pill cursor-pointer hover:bg-petzy-mint-light transition-all ease-in-out duration-300 shadow-soft hover:shadow-soft-lg z-20"
           onClick={() => swiperRef.current?.slideNext()}
         >
-          <ArrowRight className="md:text-[4em] text-[1.5em] text-gray-400" />
+          <ArrowRight className="md:text-[4em] text-[1.5em] text-petzy-slate-light px-3" />
         </div>
       </div>
       <Swiper

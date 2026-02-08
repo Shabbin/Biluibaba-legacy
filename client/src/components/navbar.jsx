@@ -79,10 +79,10 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div className="relative w-full top-0 z-50 transition-all ease-in-out duration-300 border-b border">
+    <div className="relative w-full top-0 z-50 transition-all ease-in-out duration-300 bg-white shadow-soft">
       <div className="px-5">
         <div className="flex flex-row gap-3 items-center justify-between md:px-0 px-5">
-          <div className="pe-3 flex items-center border-r py-8">
+          <div className="pe-3 flex items-center py-8">
             <Link href="/">
               <Image src={Logo} className="md:w-[220px] w-[250px]" alt="logo" />
             </Link>
@@ -90,16 +90,16 @@ const Navbar = () => {
 
           <div className="flex flex-row w-full flex-grow justify-between items-center">
             <div className="basis-1/8 md:block hidden">
-              <h2 className="font-bold text-xs">Your delivery location</h2>
+              <h2 className="font-bold text-[10px] lg:text-xs text-petzy-slate">Your delivery location</h2>
               <div className="flex flex-row items-center gap-1">
-                <LocationDot className="w-4 h-4" />
-                <span className="text-xs">West Shewrapara, Dhaka</span>
+                <LocationDot className="w-3 h-3 lg:w-4 lg:h-4 text-petzy-coral" />
+                <span className="text-[10px] lg:text-xs text-petzy-slate-light">West Shewrapara, Dhaka</span>
               </div>
             </div>
             <div className="relative md:block hidden basis-1/2">
-              <Search className="text-3xl pointer-events-none absolute top-1/2 transform -translate-y-1/2 left-3" />
+              <Search className="text-3xl pointer-events-none absolute top-1/2 transform -translate-y-1/2 left-3 text-petzy-slate-light" />
               <Input
-                className="ps-12 !bg-[#f8f8f8] !border-[#dddddd] rounded-xl"
+                className="ps-12 !bg-white !border-gray-200 !rounded-pill !shadow-soft"
                 placeholder={'Search "Pet Carrier Bag"'}
                 value={query}
                 onChange={(e) => {
@@ -111,7 +111,7 @@ const Navbar = () => {
             </div>
             <div className="flex flex-row gap-2 items-center font-medium z-[20]">
               <User
-                className="text-3xl"
+                className="text-3xl text-petzy-slate hover:text-petzy-coral transition-colors duration-300"
                 onClick={() =>
                   user
                     ? (window.location.href = "/my-account")
@@ -120,25 +120,25 @@ const Navbar = () => {
               />
               <div className="hidden md:block">
                 {user ? (
-                  <Link href="/my-account" className="text-sm">
+                  <Link href="/my-account" className="text-xs lg:text-sm text-petzy-slate hover:text-petzy-coral transition-colors duration-300">
                     My Account
                   </Link>
                 ) : (
-                  <Link href="/login" className="text-sm">
+                  <Link href="/login" className="text-xs lg:text-sm text-petzy-slate hover:text-petzy-coral transition-colors duration-300">
                     Login
                   </Link>
                 )}
               </div>
             </div>
             <div className="flex flex-row gap-2 items-center font-medium">
-              <HeartOutline className="text-3xl" />
-              <Link href="/wishlist" className="hidden md:block text-sm">
+              <HeartOutline className="text-3xl text-petzy-slate hover:text-petzy-coral transition-colors duration-300" />
+              <Link href="/wishlist" className="hidden md:block text-xs lg:text-sm text-petzy-slate hover:text-petzy-coral transition-colors duration-300">
                 Wishlist
               </Link>
             </div>
             <Cart
               onClick={() => toggleCart(true)}
-              className="md:hidden text-4xl"
+              className="md:hidden text-4xl text-petzy-slate hover:text-petzy-coral transition-colors duration-300"
             />
             <div className="relative">
               <Button
@@ -153,24 +153,24 @@ const Navbar = () => {
               <RxHamburgerMenu
                 size="2em"
                 onClick={() => setIsOpen(true)}
-                className="inline-flex md:hidden"
+                className="inline-flex md:hidden text-petzy-slate"
               />
             </div>
           </div>
         </div>
       </div>
-      <div className="border-t md:py-4">
+      <div className="border-t border-gray-200 md:py-4 bg-white">
         <div className="px-5">
           <div
             className={
-              "fixed w-full h-full top-0 left-0 bg-stone-900 transition-opacity ease-in-out duration-400 " +
+              "fixed w-full h-full top-0 left-0 bg-petzy-slate transition-opacity ease-in-out duration-400 " +
               (isOpen ? "opacity-50 z-[100]" : "opacity-50 hidden")
             }
             onClick={() => setIsOpen(false)}
           ></div>
           <div
             className={
-              "flex md:flex-row bg-white z-[101] flex-col gap-5 md:items-center items-start md:justify-between justify-start fixed md:static md:w-auto md:h-auto w-3/4 h-full top-0 transform transition-all duration-300 ease-out md:p-0 p-3 md:text-xl md:overflow-y-visible overflow-y-auto " +
+              "flex md:flex-row bg-white z-[101] flex-col gap-5 md:items-center items-start md:justify-between justify-start fixed md:static md:w-auto md:h-auto w-3/4 h-full top-0 transform transition-all duration-300 ease-out md:p-0 p-3 text-base md:text-base lg:text-lg md:overflow-y-visible overflow-y-auto rounded-r-3xl shadow-soft-lg " +
               (isOpen
                 ? "left-0 translate-x-0"
                 : "-left-full md:-translate-x-0 -translate-x-full")
@@ -178,7 +178,7 @@ const Navbar = () => {
           >
             <Link
               href="/best-deals"
-              className="flex flex-row gap-2 items-center"
+              className="flex flex-row gap-2 items-center text-petzy-slate hover:text-petzy-coral transition-colors duration-300 font-bold"
             >
               <Percentage className="text-2xl" />
               <div>Best Deals</div>
@@ -202,22 +202,22 @@ const Navbar = () => {
             />
             <MorePetsDropdown />
 
-            <Link href="/vets" className="flex flex-row gap-2 items-center">
+            <Link href="/vets" className="flex flex-row gap-2 items-center text-petzy-slate hover:text-petzy-coral transition-colors duration-300 font-bold">
               <Vet className="text-2xl" />
               <div>Vet Care</div>
             </Link>
             <Link
               href="/adoptions"
-              className="flex flex-row gap-2 items-center"
+              className="flex flex-row gap-2 items-center text-petzy-slate hover:text-petzy-coral transition-colors duration-300 font-bold"
             >
               <Adoption className="text-2xl" />
               <div>Adoptions</div>
             </Link>
-            <Link href="/" className="flex flex-row gap-2 items-center">
+            <Link href="/" className="flex flex-row gap-2 items-center text-petzy-slate hover:text-petzy-coral transition-colors duration-300 font-bold">
               <LiaDonateSolid className="text-2xl" />
               <div>Donate</div>
             </Link>
-            <Link href="/" className="flex flex-row gap-2 items-center">
+            <Link href="/" className="flex flex-row gap-2 items-center text-petzy-slate hover:text-petzy-coral transition-colors duration-300 font-bold">
               <Crown className="text-2xl" />
               <div>Pro</div>
             </Link>
@@ -231,27 +231,27 @@ const Navbar = () => {
 const MorePetsDropdown = () => {
   return (
     <div className="group relative cursor-pointer md:w-auto w-full">
-      <div className="flex flex-row gap-2 items-center">
+      <div className="flex flex-row gap-2 items-center text-petzy-slate hover:text-petzy-coral transition-colors duration-300 font-bold">
         <Rabbit className="text-2xl" />
         <div>More Pets</div>
         <svg width="10" height="6" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="5,5 1,1 9,1" fill="black" />
+          <polygon points="5,5 1,1 9,1" fill="currentColor" />
         </svg>
       </div>
 
-      <div className="group-hover:block md:absolute hidden left-0 h-auto rounded">
-        <ul className="top-0 md:my-0 my-2 md:py-0 py-2 md:border-t-0 border-t-black border-t-2 md:w-52 w-full text-base md:shadow md:border bg-white">
-          <li className="bg-white md:hover:bg-gray-100">
+      <div className="group-hover:block md:absolute hidden left-0 h-auto rounded-3xl">
+        <ul className="top-0 md:my-0 my-2 md:py-0 py-2 md:border-t-0 border-t-petzy-coral border-t-2 md:w-52 w-full text-base md:shadow-soft md:border-2 md:border-gray-200 bg-white rounded-3xl overflow-hidden">
+          <li className="bg-white md:hover:bg-petzy-mint-light transition-colors duration-300">
             <div
-              className="px-3 py-1 cursor-pointer"
+              className="px-4 py-3 cursor-pointer text-petzy-slate font-medium"
               onClick={() => (window.location.href = "/products?pet=rabbit")}
             >
               Rabbits
             </div>
           </li>
-          <li className="bg-white md:hover:bg-gray-100">
+          <li className="bg-white md:hover:bg-petzy-mint-light transition-colors duration-300">
             <div
-              className="px-3 py-1 cursor-pointer"
+              className="px-4 py-3 cursor-pointer text-petzy-slate font-medium"
               onClick={() => (window.location.href = "/products?pet=fish")}
             >
               Fish
@@ -269,7 +269,7 @@ const DropdownItem = ({ parent, category, icon }) => {
   return (
     <div className="group relative cursor-pointer md:w-auto w-full">
       <div
-        className="flex flex-row gap-2 items-center"
+        className="flex flex-row gap-2 items-center text-petzy-slate hover:text-petzy-coral transition-colors duration-300 font-bold"
         onClick={() =>
           activeSubCategory &&
           activeSubCategory.length > 0 &&
@@ -279,17 +279,17 @@ const DropdownItem = ({ parent, category, icon }) => {
         {icon}
         <div>{parent}</div>
         <svg width="10" height="6" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="5,5 1,1 9,1" fill="black" />
+          <polygon points="5,5 1,1 9,1" fill="currentColor" />
         </svg>
       </div>
 
-      <div className="group-hover:block md:absolute hidden left-0 h-auto rounded">
+      <div className="group-hover:block md:absolute hidden left-0 h-auto rounded-3xl">
         {category && (
-          <ul className="top-0 md:my-0 my-2 md:py-0 py-2 md:border-t-0 border-t-black border-t-2 md:w-52 w-full text-base md:shadow md:border bg-white">
+          <ul className="top-0 md:my-0 my-2 md:py-0 py-2 md:border-t-0 border-t-petzy-coral border-t-2 md:w-52 w-full text-base md:shadow-soft md:border-2 md:border-gray-200 bg-white rounded-3xl overflow-hidden">
             {category.categories.map((subCategory, i) => (
               <li
                 key={i}
-                className="relative bg-white md:hover:bg-gray-100"
+                className="relative bg-white md:hover:bg-petzy-mint-light transition-colors duration-300"
                 onMouseEnter={() =>
                   window.innerWidth >= 768 &&
                   setActiveSubCategory(subCategory.items)
@@ -303,17 +303,17 @@ const DropdownItem = ({ parent, category, icon }) => {
                     : setActiveSubCategory(subCategory.items)
                 }
               >
-                <div className="flex flex-row justify-between items-center px-3 py-1">
+                <div className="flex flex-row justify-between items-center px-4 py-3 text-petzy-slate font-medium">
                   {subCategory.name}
-                  {subCategory.items && <ArrowRight></ArrowRight>}
+                  {subCategory.items && <ArrowRight className="text-petzy-coral"></ArrowRight>}
                 </div>
                 {activeSubCategory === subCategory.items && (
-                  <div className="md:absolute md:px-0 px-5 md:border-b-0 border-b-black border-b-2 top-0 left-full h-auto text-base md:w-52 w-full md:border md:shadow bg-white">
+                  <div className="md:absolute md:px-0 px-5 md:border-b-0 border-b-petzy-coral border-b-2 top-0 left-full h-auto text-base md:w-52 w-full md:border-2 md:border-gray-200 md:shadow-soft bg-white rounded-3xl overflow-hidden">
                     <ul>
                       {activeSubCategory.map((item, j) => (
                         <li
                           key={j}
-                          className="bg-white px-3 hover:bg-gray-100 zmd:py-1 py-2 md:border-l-0 border-l-1"
+                          className="bg-white px-4 hover:bg-petzy-mint-light md:py-3 py-2 md:border-l-0 border-l-1 text-petzy-slate font-medium transition-colors duration-300"
                           onClick={() =>
                             (window.location.href = `/products?pet=${category.slug}&category=${subCategory.slug}&sub=${item.slug}`)
                           }

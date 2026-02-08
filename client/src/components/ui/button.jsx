@@ -11,9 +11,9 @@ const Button = ({
 }) => {
   let buttonStyle =
     type === "default"
-      ? "flex justify-center items-center whitespace-nowrap text-center bg-black px-12 py-4 font-medium rounded-lg text-white hover:bg-neutral-900 transition-all ease-in-out duration-300 uppercase disabled:opacity-75 disabled:cursor-not-allowed "
+      ? "flex justify-center items-center whitespace-nowrap text-center bg-petzy-coral px-6 md:px-10 lg:px-12 py-3 md:py-4 font-bold rounded-pill text-sm md:text-base text-white hover:bg-petzy-coral-dark transition-all ease-in-out duration-300 shadow-soft hover:shadow-soft-lg disabled:opacity-75 disabled:cursor-not-allowed "
       : type === "outline"
-      ? "flex justify-center items-center whitespace-nowrap text-center bg-transparent px-12 py-3 font-medium rounded-lg text-black border border-black hover:bg-black hover:text-white transition-all duration-300 ease-in-out uppercase disabled:opacity-75 disabled:cursor-not-allowed "
+      ? "flex justify-center items-center whitespace-nowrap text-center bg-transparent px-6 md:px-10 lg:px-12 py-2 md:py-3 font-bold rounded-pill text-sm md:text-base text-petzy-coral border-2 border-petzy-coral hover:bg-petzy-coral hover:text-white transition-all duration-300 ease-in-out disabled:opacity-75 disabled:cursor-not-allowed "
       : " ";
 
   let spinnerType = type === "default" ? "light" : "dark";

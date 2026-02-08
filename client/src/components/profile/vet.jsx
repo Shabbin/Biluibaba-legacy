@@ -72,7 +72,7 @@ const VetProfile = ({
       className="flex flex-col p-2 group cursor-pointer basis-1/3"
       onClick={() => router.push(`/vets/${id}?type=${type}`)}
     >
-      <div className="basis-1/2 border p-6 rounded-tr-lg rounded-tl-lg group-hover:bg-gray-50 py-14">
+      <div className="basis-1/2 border-2 border-petzy-periwinkle p-4 md:p-6 rounded-t-3xl group-hover:bg-petzy-blue-light transition-colors py-8 md:py-14">
         <div className="flex flex-col items-center justify-center gap-4">
           <img
             src={src}
@@ -80,13 +80,13 @@ const VetProfile = ({
             className="w-[100px] h-[100px] rounded-full"
           />
           <div className="text-center">
-            <div className="text-xl font-bold text-zinc-800 mb-1">{name}</div>
-            <div className="text-zinc-600">{designation}</div>
+            <div className="text-lg md:text-xl font-bold text-zinc-800 mb-1">{name}</div>
+            <div className="text-sm md:text-base text-zinc-600">{designation}</div>
           </div>
-          <div className="flex flex-row gap-3 text-sm items-center">
+          <div className="flex flex-row gap-2 md:gap-3 text-xs md:text-sm items-center">
             <div className="inline-flex gap-1 items-center">
-              <FaStar size="1em" />
-              <div className="font-semibold text-lg">{star}</div>
+              <FaStar size="0.9em" />
+              <div className="font-semibold text-base md:text-lg">{star}</div>
             </div>
             <div>&#183;</div>
             <div className="text-zinc-500">({reviews} Reviews)</div>
@@ -97,7 +97,7 @@ const VetProfile = ({
                 content="This vet has passed an extensive verification process with their ENG veterinarian license"
                 className="bg-zinc-900 text-white text-center px-4 py-2 rounded-3xl text-sm"
               >
-                <div className="flex flex-row items-center gap-2 bg-green-200 px-4 py-2 text-sm rounded-2xl">
+                <div className="flex flex-row items-center gap-2 bg-green-200 px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm rounded-pill">
                   <FaCheck size="1em" className="text-emerald-800" />
                   <div className="text-emerald-800 font-bold">
                     License verified
@@ -108,11 +108,11 @@ const VetProfile = ({
           ) : null}
         </div>
       </div>
-      <div className="basis-1/2 border p-6 rounded-br-lg rounded-bl-lg bg-gray-50">
+      <div className="basis-1/2 border-2 border-t-0 border-petzy-periwinkle p-4 md:p-6 rounded-b-3xl bg-petzy-mint-light shadow-soft">
         {getNextAvailableSlots(slots).map((slot, i) => (
           <div
             key={i}
-            className="border my-4 rounded-full text-black bg-white p-4 flex flex-row justify-between items-center hover:bg-gray-100 cursor-pointer text-lg px-8"
+            className="border-2 border-petzy-coral my-3 md:my-4 rounded-pill text-zinc-800 bg-white p-3 md:p-4 flex flex-row justify-between items-center hover:bg-petzy-coral hover:text-white transition-colors cursor-pointer text-sm md:text-base px-4 md:px-8"
             onClick={() =>
               router.push(
                 `/vets/${id}?day=${slot.day.toLowerCase()}&time=${slot.time}`
@@ -122,12 +122,12 @@ const VetProfile = ({
             <div>
               <span className="font-bold">{slot.day}</span> at {slot.time}
             </div>
-            <div className="text-xl text-red-500 font-bold">
+            <div className="text-base md:text-lg font-bold transition-colors">
               &#2547;{price || 0}
             </div>
           </div>
         ))}
-        <div className="text-green-600 text-center text-lg font-bold">
+        <div className="text-petzy-coral text-center text-sm md:text-base font-bold mt-2">
           See your prefer {type.toLowerCase()} timeslot
         </div>
       </div>

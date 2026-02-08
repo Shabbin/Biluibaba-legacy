@@ -44,16 +44,16 @@ const FeatureProducts = ({ category, type, router }) => {
     <div className="relative py-10">
       <div className="absolute h-full w-full flex flex-row items-center justify-between">
         <div
-          className="bg-white md:py-14 py-10 rounded-tr-lg rounded-br-lg cursor-pointer hover:bg-neutral-100 transition-all ease-in-out duration-300 shadow z-20"
+          className="bg-white md:py-14 py-10 rounded-pill cursor-pointer hover:bg-petzy-mint-light transition-all ease-in-out duration-300 shadow-soft hover:shadow-soft-lg z-20"
           onClick={() => swiperRef.current?.slidePrev()}
         >
-          <ArrowLeft className="px-2 text-[3em]" />
+          <ArrowLeft className="px-3 text-[3em] text-petzy-slate-light" />
         </div>
         <div
-          className="bg-white md:py-14 py-10 rounded-tl-lg rounded-bl-lg cursor-pointer hover:bg-neutral-100 transition-all ease-in-out duration-300 shadow z-20"
+          className="bg-white md:py-14 py-10 rounded-pill cursor-pointer hover:bg-petzy-mint-light transition-all ease-in-out duration-300 shadow-soft hover:shadow-soft-lg z-20"
           onClick={() => swiperRef.current?.slideNext()}
         >
-          <ArrowRight className="px-2 text-[3em]" />
+          <ArrowRight className="px-3 text-[3em] text-petzy-slate-light" />
         </div>
       </div>
       <Swiper

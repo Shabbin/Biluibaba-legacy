@@ -3,7 +3,14 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed": "node seeds/index.js",
+    "seed:clean": "node seeds/index.js clean",
+    "seed:products": "node seeds/index.js products",
+    "seed:users": "node seeds/index.js users",
+    "seed:orders": "node seeds/index.js orders",
+    "seed:vets": "node seeds/index.js vets",
+    "seed:adoptions": "node seeds/index.js adoptions"
   },
   "keywords": [],
   "author": "Aminul",
@@ -12,6 +19,7 @@
   "dependencies": {
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.3",
     "coders-logger": "^1.0.4",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",

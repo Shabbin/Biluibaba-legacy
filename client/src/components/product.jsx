@@ -56,83 +56,96 @@ const Product = ({
   }, [slug]);
 
   return (
-    <div className="md:max-w-[350px] max-w-full h-full min-h-full border rounded-2xl shadow-sm">
-      <div className="relative overflow-hidden">
+    <div className="md:max-w-[350px] max-w-full h-full min-h-full bg-white rounded-3xl shadow-soft hover:shadow-soft-lg transition-all duration-300 overflow-hidden group">
+      <div className="relative overflow-hidden rounded-3xl rounded-b-none">
         <img
           src={src}
           alt={name}
-          className="md:w-[500px] w-[500px] h-[300px] rounded-2xl rounded-b-none"
+          className="md:w-[500px] w-[500px] md:h-[300px] h-[200px] rounded-3xl rounded-b-none object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        <div className="top-3 right-3 absolute group cursor-pointer">
+        
+        {/* Badges */}
+        <div className="absolute top-3 left-3 flex flex-col gap-2">
+          {discount > 0 && (
+            <div className="bg-gradient-to-r from-petzy-coral to-pink-400 text-white font-bold px-3 py-1 rounded-pill text-xs shadow-glow">
+              {discount}% OFF
+            </div>
+          )}
+          {Math.random() > 0.7 && (
+            <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white font-bold px-3 py-1 rounded-pill text-xs shadow-soft">
+              NEW
+            </div>
+          )}
+        </div>
+
+        {/* Wishlist Button */}
+        <div className="top-3 right-3 absolute">
           {isInWishlist ? (
-            <div className="group cursor-pointer">
+            <div className="cursor-pointer bg-white/90 backdrop-blur-sm rounded-full p-2.5 shadow-soft hover:shadow-glow transition-all duration-300 hover:scale-110">
               <AiFillHeart
-                size="2.5em"
-                className="group-hover:hidden block transition-all ease-in-out duration-300 cursor-pointer"
-                onClick={handleClick}
-              />
-              <AiOutlineHeart
-                size="2.5em"
-                className="group-hover:block hidden transition-all ease-in-out duration-300 cursor-pointer"
+                size="1.5em"
+                className="text-petzy-coral cursor-pointer"
                 onClick={handleClick}
               />
             </div>
           ) : (
-            <div className="group cursor-pointer">
-              <AiFillHeart
-                size="2.5em"
-                className="group-hover:block hidden transition-all ease-in-out duration-300 cursor-pointer"
-                onClick={handleClick}
-              />
+            <div className="cursor-pointer bg-white/90 backdrop-blur-sm rounded-full p-2.5 shadow-soft hover:shadow-glow transition-all duration-300 hover:scale-110">
               <AiOutlineHeart
-                size="2.5em"
-                className="group-hover:hidden block transition-all ease-in-out duration-300 cursor-pointer"
+                size="1.5em"
+                className="text-petzy-slate-light cursor-pointer hover:text-petzy-coral transition-colors"
                 onClick={handleClick}
               />
             </div>
           )}
+        </div>
+
+        {/* Quick View Overlay - Shows on Hover */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
+          <button 
+            onClick={() => (window.location.href = `/products/${slug}`)}
+            className="bg-white text-petzy-coral font-bold px-6 py-2 rounded-pill text-sm shadow-soft hover:shadow-glow transform translate-y-4 group-hover:translate-y-0 transition-all duration-300"
+          >
+            <IoEyeOutline className="inline mr-2" size="1.2em" />
+            Quick View
+          </button>
         </div>
       </div>
       <div
-        className="border-t rounded-2xl rounded-t-none p-6 cursor-pointer h-[350px] flex flex-col justify-between"
+        className="rounded-3xl rounded-t-none p-4 md:p-6 cursor-pointer min-h-[280px] md:h-[350px] flex flex-col justify-between hover:bg-petzy-blue-light/30 transition-colors duration-300"
         onClick={() => (window.location.href = `/products/${slug}`)}
       >
         <div>
-          <div className="flex flex-row items-center gap-3 mb-4">
-            <div className="px-3 py-1 rounded bg-green-600 text-white flex flex-row items-center gap-1">
-              <FaStar size="1em" />
+          <div className="flex flex-row items-center justify-between gap-2 mb-3">
+            <div className="px-2.5 py-1 rounded-pill bg-gradient-to-r from-petzy-coral to-pink-400 text-white flex flex-row items-center gap-1.5 shadow-soft text-xs font-bold">
+              <FaStar size="0.9em" />
               <div>5.0</div>
             </div>
-            <div>(500)</div>
+            <div className="text-xs text-petzy-slate-light font-semibold">(500 reviews)</div>
           </div>
-          <div className="font-bold mb-4 h-[70px]">{name}</div>
-          <div className="flex flex-row items-center gap-3">
-            <div className="text-3xl font-bold text-red-600">
-              &#2547;{" "}
-              {Math.floor(
-                price - (discount > 0 ? (price * discount) / 100 : 0)
-              )}
-            </div>
-            <div className="text-xs">(&#2547;5/100 gm)</div>
+          <div className="font-bold mb-3 min-h-[60px] text-sm md:text-base text-petzy-slate line-clamp-2 group-hover:text-petzy-coral transition-colors">
+            {name}
           </div>
-          {discount > 0 && (
-            <div className="flex flex-row items-center gap-2 mb-4">
-              <div className="text-xl text-gray-400 line-through">
-                &#2547; {price}
-              </div>
-              <div className="bg-lime-100 text-green-600 font-medium px-2 text-xs py-1 rounded">
-                {discount}% off
-              </div>
+          <div className="flex flex-row items-end gap-2 mb-2">
+            <div className="text-2xl md:text-3xl font-extrabold text-petzy-coral">
+              &#2547;{Math.floor(price - (discount > 0 ? (price * discount) / 100 : 0))}
             </div>
-          )}
+            {discount > 0 && (
+              <div className="text-sm md:text-base text-petzy-slate-light line-through mb-1">
+                &#2547;{price}
+              </div>
+            )}
+          </div>
+          <div className="text-xs text-petzy-slate-light mb-3">
+            {category} • In Stock
+          </div>
         </div>
-        <div className="my-4">
+        <div className="my-3 md:my-4">
           <Button
             type="default"
-            text="Add to cart"
-            icon={<AddCart className="text-[1.5em]" />}
+            text="Add to Cart"
+            icon={<AddCart className="text-[1.2em] md:text-[1.5em]" />}
             iconAlign="left"
-            className="w-full !py-3"
+            className="w-full !py-2.5 md:!py-3 !px-4 md:!px-6 group-hover:shadow-glow"
           />
         </div>
       </div>
