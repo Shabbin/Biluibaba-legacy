@@ -8,6 +8,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
 
 import axios from "@/src/lib/axiosInstance";
+import { CardSkeleton, NoProductsFound } from "@/src/components/ui";
 
 import "swiper/css";
 import { PiGreaterThan, PiLessThan } from "react-icons/pi";
@@ -130,7 +131,11 @@ const Products = () => {
       <div className="flex md:flex-row flex-col m-4 gap-4 ">
         <div className="flex md:flex-row flex-col flex-wrap gap-y-10 items-center justify-start basis-full">
           {loading ? (
-            <div>Loading...</div>
+            <CardSkeleton count={8} type="product" />
+          ) : products.length === 0 ? (
+            <div className="w-full">
+              <NoProductsFound onReset={() => window.location.reload()} />
+            </div>
           ) : (
             products.map((product, index) => (
               <>

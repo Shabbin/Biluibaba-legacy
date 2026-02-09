@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 
 import axiosInstance from "@/src/lib/axiosInstance";
 import Product from "@/src/components/product";
+import { CardSkeleton, NoSearchResults } from "@/src/components/ui";
 
 export default function Search() {
   const searchParams = useSearchParams();
@@ -62,15 +63,13 @@ export default function Search() {
   return (
     <div className="p-5">
       {loading && (
-        <div className="text-center py-10">
-          <p>Searching for "{query}"...</p>
+        <div className="flex md:flex-row flex-col flex-wrap gap-y-10 items-center justify-start">
+          <CardSkeleton count={8} type="product" />
         </div>
       )}
 
       {!loading && query && results.length === 0 && (
-        <div className="text-center py-10">
-          <p>No results found for "{query}"</p>
-        </div>
+        <NoSearchResults query={query} />
       )}
 
       {!loading && results.length > 0 && (

@@ -1,13 +1,17 @@
-const Loading = () => {
-  return <div className="flex "></div>;
-};
+import { ProductSkeleton, CardSkeleton } from "@/src/components/ui/skeleton";
 
-const ProductLoading = () => {
+// Legacy loading component - use CardSkeleton or ProductSkeleton directly instead
+const Loading = () => {
   return (
-    <div className="max-w-[350px] w-full h-full border rounded-2xl shadow-sm">
-      <div className="w-[500px] h-full"></div>
+    <div className="flex flex-wrap gap-4">
+      <CardSkeleton count={8} type="product" />
     </div>
   );
 };
 
+const ProductLoading = () => {
+  return <ProductSkeleton />;
+};
+
 export default Loading;
+export { ProductLoading };

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import axios from "@/src/lib/axiosInstance";
+import { OrderSkeleton, NoBookings } from "@/src/components/ui";
 
 export default function VetBookings() {
   const searchParams = useSearchParams();
@@ -37,13 +38,13 @@ export default function VetBookings() {
           <h2 className="text-2xl font-bold mb-6">My Bookings</h2>
 
           {loading ? (
-            <div className="flex justify-center py-8">
-              <div className="text-gray-500">Loading bookings...</div>
+            <div className="space-y-4">
+              <OrderSkeleton />
+              <OrderSkeleton />
+              <OrderSkeleton />
             </div>
           ) : bookings.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              No bookings found
-            </div>
+            <NoBookings />
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">

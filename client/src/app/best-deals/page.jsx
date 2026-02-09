@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 
 import Button from "@/src/components/ui/button";
 import Select from "@/src/components/ui/select";
+import { CardSkeleton, NoProductsFound } from "@/src/components/ui";
 
 import Product from "@/src/components/product";
 
@@ -220,7 +221,11 @@ export default function Page() {
           <div className="flex md:flex-row flex-col m-4 gap-4 py-10">
             <div className="flex md:flex-row flex-col flex-wrap gap-y-10 items-center justify-between basis-full">
               {loading ? (
-                <div>Loading...</div>
+                <CardSkeleton count={8} type="product" />
+              ) : bestDeals.length === 0 ? (
+                <div className="w-full">
+                  <NoProductsFound onReset={() => window.location.reload()} />
+                </div>
               ) : (
                 bestDeals.map(({ id: product }) => (
                   <div className="md:basis-1/4 basis-full" key={product._id}>

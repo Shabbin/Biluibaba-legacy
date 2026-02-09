@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { PageLoader } from "@/src/components/ui";
 
 import axios from "@/src/lib/axiosInstance";
 
@@ -21,7 +22,7 @@ export async function generateStaticParams() {
 
 const VetProfile = ({ params }) => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<PageLoader />}>
       <Profile params={params} />
     </Suspense>
   );

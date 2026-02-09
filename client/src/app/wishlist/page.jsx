@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 
 import Button from "@/src/components/ui/button";
+import { CardSkeleton, EmptyWishlist } from "@/src/components/ui";
 
 import { Delete, AddCart } from "@/src/components/svg";
 
 export default function Page() {
   const [wishlist, setWishlist] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const handleSelectAll = (checked) => {
     const newSelected = checked ? wishlist.map((item) => item.slug) : [];
@@ -50,6 +52,7 @@ export default function Page() {
   useEffect(() => {
     const storedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
     setWishlist(storedWishlist);
+    setLoading(false);
   }, []);
 
   const isAllSelected =
@@ -59,7 +62,15 @@ export default function Page() {
 
   return (
     <div>
-      {wishlist.length > 0 ? (
+      {loading ? (
+        <div className="bg-neutral-100 py-8 px-5">
+          <div className="container mx-auto">
+            <div className="flex md:flex-row flex-col flex-wrap gap-y-10 items-center justify-start">
+              <CardSkeleton count={8} type="product" />
+            </div>
+          </div>
+        </div>
+      ) : wishlist.length > 0 ? (
         <div className="bg-neutral-100 py-8 px-5">
           <div className="container mx-auto">
             <div className="border-b bg-white p-6 my-5">
@@ -162,12 +173,7 @@ export default function Page() {
           </div>
         </div>
       ) : (
-        <div className="py-5 container mx-auto flex flex-col items-center justify-center gap-5">
-          <img src="/wishlist.png" alt="Wishlist"></img>
-          <h2 className="text-3xl font-bold">Your Wishlist is Empty</h2>
-          <p>Tap heart button to start saving your favourite items.</p>
-          <Button text="Add Now" type="outline" />
-        </div>
+        <EmptyWishlist />
       )}
     </div>
   );

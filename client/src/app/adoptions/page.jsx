@@ -10,6 +10,7 @@ import { Pagination } from "@heroui/pagination";
 import Adoption from "@/src/components/adoption";
 import Select from "@/src/components/ui/select";
 import Button from "@/src/components/ui/button";
+import { CardSkeleton, NoAdoptionsFound } from "@/src/components/ui";
 
 import AdoptionData from "@/src/app/demo.adoptions";
 
@@ -298,7 +299,27 @@ export default function Page() {
       <div className="py-8 text-5xl text-center font-bold">Available Pets</div>
 
       <div className="py-5">
-        {loading ? null : (
+        {loading ? (
+          <div className="flex md:flex-row flex-col flex-wrap justify-center gap-5">
+            <CardSkeleton count={8} type="adoption" />
+          </div>
+        ) : adoptions.length === 0 ? (
+          <NoAdoptionsFound onReset={() => {
+            setFilters({
+              age: "",
+              species: "",
+              breed: "",
+              gender: "",
+              size: "",
+              vaccinated: "",
+              color: "",
+              location: "",
+              neutered: "",
+            });
+            setCurrentPage(1);
+            fetchAdoptions(0, {});
+          }} />
+        ) : (
           <div className="flex md:flex-row flex-col flex-wrap justify-center gap-5">
             {adoptions.map((adoption, index) => (
               <>
@@ -333,8 +354,7 @@ export default function Page() {
         )}
       </div>
 
-      <div className="flex flex-row items-center justify-center py-5">
-        {!loading && totalPages > 1 && (
+      <div className="flex flex-row items-center justify-center py-5">\n        {!loading && totalPages > 1 && (
           <Pagination
             total={totalPages}
             initialPage={currentPage}

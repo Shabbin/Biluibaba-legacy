@@ -7,6 +7,7 @@ import axios from "@/src/lib/axiosInstance";
 
 import Filter from "@/src/components/filter/vet";
 import VetProfile from "@/src/components/profile/vet";
+import { CardSkeleton, NoVetsFound } from "@/src/components/ui";
 
 import VetsData from "@/src/app/vets/browse/vet.data";
 
@@ -84,7 +85,13 @@ export default function Page() {
 
       <div className="flex md:flex-row flex-col md:-m-2 mx-2 flex-wrap items-center">
         {loading ? (
-          <div>Loading vets...</div>
+          <div className="w-full flex flex-wrap gap-4">
+            <CardSkeleton count={6} type="vet" />
+          </div>
+        ) : vets.length === 0 ? (
+          <div className="w-full">
+            <NoVetsFound onReset={() => router.push("/vets")} />
+          </div>
         ) : (
           vets.map((vet, i) => (
             <VetProfile

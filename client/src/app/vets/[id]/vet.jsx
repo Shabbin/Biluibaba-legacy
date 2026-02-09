@@ -10,6 +10,7 @@ import { Pagination } from "@heroui/pagination";
 import axios from "@/src/lib/axiosInstance";
 
 import Button from "@/src/components/ui/button";
+import { ReviewSkeleton, NoReviews } from "@/src/components/ui";
 import Calendar from "@/src/components/calendar";
 import Textarea from "@/src/components/ui/textarea";
 import {
@@ -329,9 +330,7 @@ export default function Page() {
                   </div>
 
                   {currentReviews.length === 0 && (
-                    <div className="text-gray-500 text-center py-10">
-                      No reviews yet. Be the first to write a review!
-                    </div>
+                    <NoReviews />
                   )}
 
                   {currentReviews.map((review, index) => (

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import axios from "@/src/lib/axiosInstance";
 
 import VetProfile from "@/src/components/profile/vet";
+import { CardSkeleton } from "@/src/components/ui";
 
 export default function ExpertVets() {
   const [vets, setVets] = useState([]);
@@ -34,7 +35,9 @@ export default function ExpertVets() {
         Our Expert Vets
       </h1>
       {loading ? (
-        <div>Loading...</div>
+        <div className="flex md:flex-row flex-col md:-m-2 mx-2 flex-wrap items-center justify-between">
+          <CardSkeleton count={4} type="vet" />
+        </div>
       ) : (
         <div className="flex md:flex-row flex-col md:-m-2 mx-2 flex-wrap items-center justify-between ">
           {vets.map((vet, i) => (

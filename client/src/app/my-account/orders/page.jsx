@@ -1,9 +1,10 @@
 import { Suspense } from "react";
+import { PageLoader } from "@/src/components/ui";
 import Order from "./order";
 
-export default function OrdersPage() {
+export default function Page() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<PageLoader />}>
       <Order />
     </Suspense>
   );

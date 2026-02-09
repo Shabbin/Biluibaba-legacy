@@ -46,7 +46,7 @@ const initializeSiteSettings = async () => {
 const connectDB = async () => {
   // Connect to MongoDB
   mongoose.set("strictQuery", false);
-  await mongoose.connect("mongodb+srv://biluians:Password@cluster20.hvm9nbk.mongodb.net/test?retryWrites=true&w=majority");
+  await mongoose.connect(process.env.MONGO_URI);
   logger.success("MongoDB Connected");
 
   // Initialize site settings

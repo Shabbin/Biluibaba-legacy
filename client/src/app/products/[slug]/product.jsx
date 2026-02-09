@@ -9,6 +9,7 @@ import { Pagination } from "@heroui/pagination";
 import Textarea from "@/src/components/ui/textarea";
 import Button from "@/src/components/ui/button";
 import Quantity from "@/src/components/ui/quantity";
+import { ReviewSkeleton, NoReviews } from "@/src/components/ui";
 import ImageSlider from "@/src/components/image-slider";
 import ProductRatings from "@/src/components/produc-rating";
 
@@ -363,9 +364,7 @@ export default function Page() {
               </h2>
 
               {currentReviews.length === 0 && (
-                <div className="text-gray-500 text-center py-10">
-                  No reviews yet. Be the first to write a review!
-                </div>
+                <NoReviews />
               )}
 
               {currentReviews.map((review, index) => (
@@ -426,7 +425,7 @@ export default function Page() {
               <h2 className="py-5 text-2xl">Posted by</h2>
               <div className="flex flex-row gap-5 items-center">
                 <div className="bg-gray-200 w-[100px] h-[100px] rounded-full"></div>
-                <p className="text-3xl">{product.vendorId.storeName}</p>
+                <p className="text-3xl">{product?.vendorId?.storeName}</p>
               </div>
             </div>
           </div>

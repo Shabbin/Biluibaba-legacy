@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 import Button from "@/src/components/ui/button";
+import { CartItemSkeleton, EmptyCart } from "@/src/components/ui";
 import FeatureProducts from "../_components/home/FeatureProducts";
 import Link from "next/link";
 
@@ -109,28 +110,17 @@ export default function Cart() {
   return (
     <div className="bg-neutral-100">
       <div className="container mx-auto p-6">
-        {loading ? null : cartItems.length === 0 ? (
-          <div className="text-center flex flex-col items-center justify-center">
-            <img src="/empty-cart.webp" className="w-[400px] mx-auto mb-5" />
-            <div className="text-zinc-700 font-bold text-xl mb-5">
-              Your cart is empty!
-            </div>
-            <p className="mb-5 text-zinc-600 text-md mx-10">
-              Looks like you haven’t added anything to your cart. Go explore and
-              add product to the cart
-            </p>
-
-            <Button
-              text="Continue shopping"
-              type="default"
-              onClick={() => (window.location.href = "/products?pet=cat")}
-            />
+        {loading ? (
+          <div className="space-y-4">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <CartItemSkeleton key={i} />
+            ))}
           </div>
+        ) : cartItems.length === 0 ? (
+          <EmptyCart />
         ) : (
           <div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="col-span-2">
-                <div className="flex items-center justify-between mb-5 bg-white px-5 py-8 rounded-lg">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">\n              <div className="col-span-2">\n                <div className="flex items-center justify-between mb-5 bg-white px-5 py-8 rounded-lg">
                   <div className="flex items-center gap-5">
                     <input
                       type="checkbox"

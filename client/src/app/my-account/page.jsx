@@ -8,6 +8,7 @@ import { FaStar, FaCheck } from "react-icons/fa";
 import Link from "next/link";
 
 import Button from "@/src/components/ui/button";
+import { PageLoader } from "@/src/components/ui";
 
 import axios from "@/src/lib/axiosInstance";
 import Input from "@/src/components/ui/input";
@@ -110,7 +111,7 @@ export default function Page() {
   return (
     <div>
       {loading ? (
-        <div>Loading...</div>
+        <PageLoader />
       ) : (
         <>
           <h2 className="text-2xl">Manage My Account</h2>
