@@ -39,7 +39,7 @@ async function cleanDatabase() {
   console.log("\n🧹 Cleaning database...");
   
   await Products.deleteMany({});
-  await Users.deleteMany({ role: { $ne: "admin" } }); // Keep admin accounts
+  await Users.deleteMany({ authType: "email" }); // Keep any admin or special accounts
   await Orders.deleteMany({});
   await Vets.deleteMany({});
   await Adoptions.deleteMany({});

@@ -322,19 +322,25 @@ function generateProducts() {
           description: getRandomElement(descriptions),
           price,
           discount,
-          category,
-          animalType: animal,
-          brand: getRandomElement(brands),
-          stock,
-          rating: parseFloat(rating),
-          reviews,
+          categories: [{
+            parent: animal,
+            category: category,
+            sub: "",
+          }],
           images: [
-            `/products/placeholder-${animal}-${productId % 10}.jpg`,
+            { filename: `${animal}-${productId % 10}.jpg`, path: `/products/placeholder-${animal}-${productId % 10}.jpg` },
           ],
+          quantity: stock,
+          size: Math.floor(Math.random() * 5000) + 100, // Size in grams
+          ratings: parseFloat(rating),
+          totalRatings: reviews,
+          totalReviews: Math.floor(reviews * 0.3), // 30% leave written reviews
           featured: Math.random() > 0.85,
-          bestSeller: Math.random() > 0.9,
-          newArrival: Math.random() > 0.85,
-          inStock: stock > 0,
+          status: true,
+          tags: [animal, category, getRandomElement(brands)],
+          views: Math.floor(Math.random() * 1000),
+          orderCount: Math.floor(Math.random() * 100).toString(),
+          isDeleted: false,
         });
 
         productId++;
@@ -359,8 +365,8 @@ async function seedProducts() {
 
     console.log(`✅ Successfully seeded ${products.length} products!`);
     console.log(`   - Featured: ${products.filter(p => p.featured).length}`);
-    console.log(`   - Best Sellers: ${products.filter(p => p.bestSeller).length}`);
-    console.log(`   - New Arrivals: ${products.filter(p => p.newArrival).length}`);
+    console.log(`   - Active: ${products.filter(p => p.status).length}`);
+    console.log(`   - Total Views: ${products.reduce((sum, p) => sum + (p.views || 0), 0)}`);
 
   } catch (error) {
     console.error("❌ Error seeding products:", error);

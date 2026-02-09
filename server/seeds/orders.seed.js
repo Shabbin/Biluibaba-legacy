@@ -20,7 +20,7 @@ function getRandomSubset(array, min, max) {
 }
 
 async function generateOrders(count = 100) {
-  const users = await Users.find({ role: { $ne: "admin" } }).select("_id address");
+  const users = await Users.find({ authType: "email" }).select("_id name phoneNumber shipping");
   const products = await Products.find().select("_id name price discount images");
 
   if (users.length === 0 || products.length === 0) {
@@ -40,63 +40,64 @@ async function generateOrders(count = 100) {
       );
 
       return {
-        product: product._id,
+        id: product._id,
         name: product.name,
-        price: product.price,
-        discount: product.discount,
+        price: finalPrice,
         quantity,
-        image: product.images[0],
       };
     });
 
-    const subtotal = items.reduce((sum, item) => {
-      const itemPrice = Math.floor(item.price - (item.discount > 0 ? (item.price * item.discount) / 100 : 0));
-      return sum + (itemPrice * item.quantity);
-    }, 0);
-
-    const deliveryCharge = subtotal > 1000 ? 0 : 60;
-    const total = subtotal + deliveryCharge;
+    const totalAmount = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const shippingCost = totalAmount > 1000 ? 0 : 60;
 
     const status = orderStatuses[Math.floor(Math.random() * orderStatuses.length)];
     const paymentMethod = paymentMethods[Math.floor(Math.random() * paymentMethods.length)];
     const paymentStatus = 
-      status === "delivered" ? "completed" :
-      status === "cancelled" ? Math.random() > 0.5 ? "refunded" : "failed" :
-      paymentMethod === "Cash on Delivery" ? "pending" :
-      Math.random() > 0.3 ? "completed" : "pending";
+      status === "delivered" ? true :
+      status === "cancelled" ? false :
+      paymentMethod === "Cash on Delivery" ? false :
+      Math.random() > 0.3;
 
-    const createdAt = new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000); // Last 90 days
+    const createdAt = new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000);
     
-    let deliveredAt = null;
-    let shippedAt = null;
-
-    if (status === "delivered") {
-      deliveredAt = new Date(createdAt.getTime() + (Math.random() * 7 + 2) * 24 * 60 * 60 * 1000);
-      shippedAt = new Date(createdAt.getTime() + (Math.random() * 3 + 1) * 24 * 60 * 60 * 1000);
-    } else if (status === "shipped") {
-      shippedAt = new Date(createdAt.getTime() + (Math.random() * 3 + 1) * 24 * 60 * 60 * 1000);
-    }
+    const deliveryStatus = 
+      status === "delivered" ? "delivered" :
+      status === "shipped" ? "in-transit" :
+      status === "processing" ? "preparing" :
+      status === "cancelled" ? "cancelled" :
+      "pending";
 
     orders.push({
       orderId: generateOrderId(),
-      user: user._id,
-      items,
-      subtotal,
-      deliveryCharge,
-      total,
+      userId: user._id,
+      products: items,
+      totalAmount: totalAmount + shippingCost,
+      shippingCost,
       status,
+      type: "product",
       paymentMethod,
       paymentStatus,
-      paymentTransactionId: paymentStatus === "completed" ? `TXN${Date.now()}${Math.random().toString(36).substring(2, 8).toUpperCase()}` : null,
-      shippingAddress: user.address,
+      paymentSessionKey: paymentStatus ? `session_${Date.now()}_${Math.random().toString(36).substring(2, 8)}` : null,
+      deliveryStatus,
+      deliveryTrackingCode: status === "shipped" || status === "delivered" ? `TRACK${Date.now()}` : null,
+      name: user.name,
+      phoneNumber: user.phoneNumber || generatePhone(),
+      region: user.shipping?.state || "Dhaka",
+      area: user.shipping?.area || "Dhanmondi",
+      fullAddress: user.shipping?.address || "House 123, Road 45",
       notes: Math.random() > 0.7 ? "Please deliver between 2-5 PM" : "",
       createdAt,
-      shippedAt,
-      deliveredAt,
     });
   }
 
   return orders;
+}
+
+function generatePhone() {
+  const prefixes = ["017", "018", "019", "013", "014", "015", "016"];
+  const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+  const number = Math.floor(10000000 + Math.random() * 90000000);
+  return `${prefix}${number}`;
 }
 
 async function seedOrders() {

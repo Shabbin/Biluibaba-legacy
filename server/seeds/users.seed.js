@@ -61,17 +61,27 @@ async function generateUsers(count = 50) {
     const firstName = getRandomElement(firstNames);
     const lastName = getRandomElement(lastNames);
     const email = generateEmail(firstName, lastName);
+    const address = generateAddress();
 
     users.push({
-      firstName,
-      lastName,
+      name: `${firstName} ${lastName}`,
       email,
       password: hashedPassword,
-      phone: generatePhone(),
-      address: generateAddress(),
+      phoneNumber: generatePhone(),
+      authType: "email",
       verified: Math.random() > 0.2, // 80% verified
-      profilePicture: `/uploads/profile/user-${(i % 10) + 1}.jpg`,
-      createdAt: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000), // Random date within last year
+      promotionalEmails: Math.random() > 0.5,
+      package: getRandomElement(["free", "basic", "premium"]),
+      packageExpire: Date.now() + (Math.random() * 365 * 24 * 60 * 60 * 1000),
+      avatar: `/uploads/profile/user-${(i % 10) + 1}.jpg`,
+      shipping: {
+        state: address.city,
+        area: address.area,
+        district: address.city,
+        postcode: address.postalCode,
+        address: address.street,
+      },
+      createdAt: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000),
     });
   }
 
@@ -83,20 +93,30 @@ async function seedUsers() {
     console.log("🌱 Starting user seeding...");
 
     // Clear existing users (keep admin accounts)
-    await Users.deleteMany({ role: { $ne: "admin" } });
+    await Users.deleteMany({ authType: "email" });
     console.log("✅ Cleared existing users (kept admins)");
 
     // Create test user with known credentials
     const hashedPassword = await bcrypt.hash("password123", 10);
+    const address = generateAddress();
     const testUser = {
-      firstName: "Test",
-      lastName: "User",
+      name: "Test User",
       email: "test@biluibaba.com",
       password: hashedPassword,
-      phone: "01712345678",
-      address: generateAddress(),
+      phoneNumber: "01712345678",
+      authType: "email",
       verified: true,
-      profilePicture: "/uploads/profile/test-user.jpg",
+      promotionalEmails: true,
+      package: "premium",
+      packageExpire: Date.now() + (365 * 24 * 60 * 60 * 1000),
+      avatar: "/uploads/profile/test-user.jpg",
+      shipping: {
+        state: address.city,
+        area: address.area,
+        district: address.city,
+        postcode: address.postalCode,
+        address: address.street,
+      },
     };
 
     await Users.create(testUser);

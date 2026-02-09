@@ -118,41 +118,26 @@ function generateAdoptions(count = 40) {
     const views = Math.floor(Math.random() * 500) + 50;
 
     adoptions.push({
-      petType,
+      adoptionId: `ADOPT-${Date.now()}-${i}`,
+      species: petType,
       breed,
       name,
       age: ageString,
-      ageInMonths,
       gender,
-      color,
+      color: [color],
       size: petType === "dog" ? ["Small", "Medium", "Large"][Math.floor(Math.random() * 3)] : 
             petType === "rabbit" ? ["Small", "Medium"][Math.floor(Math.random() * 2)] : "Small",
-      temperament,
-      healthStatus,
-      vaccinated: Math.random() > 0.3, // 70% vaccinated
-      neutered: Math.random() > 0.5,
+      vaccinated: Math.random() > 0.3 ? "Yes" : "No",
+      neutered: Math.random() > 0.5 ? "Yes" : "No",
       description: `${name} is a lovely ${ageString} old ${gender} ${breed}. ${temperament}. ${healthStatus}. Looking for a caring forever home!`,
-      reason,
-      location: {
-        area: ["Dhanmondi", "Gulshan", "Banani", "Uttara", "Mirpur", "Mohammadpur"][Math.floor(Math.random() * 6)],
-        city: "Dhaka",
-        country: "Bangladesh",
-      },
-      contactName: `Pet Owner ${i + 1}`,
-      contactPhone: `017${Math.floor(10000000 + Math.random() * 90000000)}`,
-      contactEmail: `adopter${i + 1}@example.com`,
+      location: ["Dhanmondi", "Gulshan", "Banani", "Uttara", "Mirpur", "Mohammadpur"][Math.floor(Math.random() * 6)],
+      phoneNumber: `017${Math.floor(10000000 + Math.random() * 90000000)}`,
       images: [
-        `/uploads/adoptions/${petType}-${(i % 8) + 1}.jpg`,
-        `/uploads/adoptions/${petType}-${(i % 8) + 2}.jpg`,
+        { filename: `${petType}-${(i % 8) + 1}.jpg`, path: `/uploads/adoptions/${petType}-${(i % 8) + 1}.jpg` },
+        { filename: `${petType}-${(i % 8) + 2}.jpg`, path: `/uploads/adoptions/${petType}-${(i % 8) + 2}.jpg` },
       ],
-      adoptionFee: petType === "dog" ? Math.random() > 0.5 ? 0 : Math.floor(Math.random() * 3000) + 1000 :
-                    petType === "cat" ? Math.random() > 0.6 ? 0 : Math.floor(Math.random() * 2000) + 500 :
-                    0, // Birds and rabbits usually free
       status: isAdopted ? "adopted" : "available",
-      featured: Math.random() > 0.8,
-      urgent: Math.random() > 0.85,
-      views,
-      createdAt: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000), // Last 60 days
+      createdAt: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000),
     });
   }
 
@@ -172,10 +157,10 @@ async function seedAdoptions() {
     await Adoptions.insertMany(adoptions);
 
     console.log(`✅ Successfully seeded ${adoptions.length} pet adoptions!`);
-    console.log(`   - Dogs: ${adoptions.filter(a => a.petType === "dog").length}`);
-    console.log(`   - Cats: ${adoptions.filter(a => a.petType === "cat").length}`);
-    console.log(`   - Birds: ${adoptions.filter(a => a.petType === "bird").length}`);
-    console.log(`   - Rabbits: ${adoptions.filter(a => a.petType === "rabbit").length}`);
+    console.log(`   - Dogs: ${adoptions.filter(a => a.species === "dog").length}`);
+    console.log(`   - Cats: ${adoptions.filter(a => a.species === "cat").length}`);
+    console.log(`   - Birds: ${adoptions.filter(a => a.species === "bird").length}`);
+    console.log(`   - Rabbits: ${adoptions.filter(a => a.species === "rabbit").length}`);
     console.log(`   - Available: ${adoptions.filter(a => a.status === "available").length}`);
     console.log(`   - Adopted: ${adoptions.filter(a => a.status === "adopted").length}`);
 
