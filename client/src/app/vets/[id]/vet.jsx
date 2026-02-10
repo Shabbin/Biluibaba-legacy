@@ -76,16 +76,16 @@ export default function Page() {
     localStorage.setItem(
       "vet-appointment",
       JSON.stringify({
-        id: vet._id,
-        name: vet.name,
+        id: vet?._id,
+        name: vet?.name,
         date,
         time: selectedSlot,
-        totalAmount: vet.appointments[type].fee,
+        totalAmount: vet?.appointments[type]?.fee,
         type,
-        address: vet.address.fullAddress,
-        hospital: vet.hospital,
-        profilePicture: vet.profilePicture,
-        degree: vet.degree,
+        address: vet?.address?.fullAddress,
+        hospital: vet?.hospital,
+        profilePicture: vet?.profilePicture,
+        degree: vet?.degree,
       })
     );
 
@@ -100,7 +100,7 @@ export default function Page() {
     try {
       const { data } = await axios.post(`/api/vet/rating/`, {
         rating,
-        vetId: vet._id,
+        vetId: vet?._id,
         comment,
       });
 
@@ -410,7 +410,7 @@ export default function Page() {
                       <span className="font-bold">{date}</span> at {slot}
                     </div>
                     <div className="text-lg">
-                      &#2547;{vet.appointments[type].fee}
+                      &#2547;{vet?.appointments[type]?.fee}
                     </div>
                   </div>
                 ))}
@@ -425,7 +425,7 @@ export default function Page() {
                   </div>
                   <div className="text-right">
                     <div className="text-neutral-900 font-bold text-3xl">
-                      &#2547; {vet.appointments[type].fee + 150}
+                      &#2547; {vet?.appointments[type]?.fee + 150}
                     </div>
                     <div className="text-neutral-700">
                       {date} at {selectedSlot}

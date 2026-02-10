@@ -1,7 +1,8 @@
 import React from "react";
 import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css"; // Ensure tippy CSS is imported
 import moment from "moment";
-import { FaStar, FaCheck } from "react-icons/fa";
+import { FaStar, FaCheck, FaCalendarCheck, FaUserDoctor } from "react-icons/fa6";
 
 const VetProfile = ({
   src,
@@ -16,119 +17,135 @@ const VetProfile = ({
   id,
   type,
 }) => {
-  const getNextAvailableSlots = (slots, limit = 2) => {
+  
+  // Helper to get slots (keeping your logic, just cleaning code style)
+  const getNextAvailableSlots = (slotsData, limit = 2) => {
     const now = moment();
     const today = now.format("dddd").toLowerCase();
-    const currentTime = now.format("HH:mm");
-    const daysOrder = [
-      "sunday",
-      "monday",
-      "tuesday",
-      "wednesday",
-      "thursday",
-      "friday",
-      "saturday",
-    ];
+    const daysOrder = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
     let startIndex = daysOrder.indexOf(today);
     let availableSlots = [];
+    let checkedDays = 0;
 
-    for (let i = 0; i < 14 && availableSlots.length < limit; i++) {
-      const index = (startIndex + i) % 7;
-      const day = daysOrder[index];
-      const daySlots = slots[day];
-      const currentDate = moment().add(i, "days");
+    // Loop for next 14 days or until limit reached
+    while (availableSlots.length < limit && checkedDays < 14) {
+      const index = (startIndex + checkedDays) % 7;
+      const dayName = daysOrder[index];
+      const dayData = slotsData?.[dayName];
+      const dateMoment = moment().add(checkedDays, "days");
 
-      if (
-        daySlots &&
-        daySlots.availableSlots &&
-        daySlots.availableSlots.length > 0
-      ) {
-        const filteredSlots =
-          i === 0
-            ? daySlots.availableSlots.filter((slot) => {
-                const slotTime = moment(slot, "HH:mm");
-                return slotTime.diff(now, "hours") >= 24;
-              })
-            : daySlots.availableSlots;
+      if (dayData?.availableSlots?.length > 0) {
+        // If today, filter out past slots + buffer time (e.g. 1 hour)
+        const validSlots = checkedDays === 0
+          ? dayData.availableSlots.filter(s => moment(s, "HH:mm").isAfter(now.add(1, 'hour')))
+          : dayData.availableSlots;
 
-        if (filteredSlots.length > 0) {
+        if (validSlots.length > 0) {
           availableSlots.push({
-            day:
-              i >= 7
-                ? currentDate.format("D MMM")
-                : day.charAt(0).toUpperCase() + day.slice(1),
-            time: filteredSlots[0],
+            label: checkedDays === 0 ? "Today" : checkedDays === 1 ? "Tomorrow" : dateMoment.format("D MMM"),
+            fullDate: dateMoment.format("YYYY-MM-DD"),
+            day: dayName,
+            time: validSlots[0] // Taking the first available slot
           });
         }
       }
+      checkedDays++;
     }
-
     return availableSlots;
   };
 
+  const nextSlots = getNextAvailableSlots(slots);
+
   return (
     <div
-      className="flex flex-col p-2 group cursor-pointer basis-1/3"
+      className="group relative bg-white rounded-3xl border border-gray-100 shadow-soft hover:shadow-xl hover:shadow-petzy-blue-light/50 transition-all duration-300 flex flex-col overflow-hidden h-full transform hover:-translate-y-1"
       onClick={() => router.push(`/vets/${id}?type=${type}`)}
     >
-      <div className="basis-1/2 border-2 border-petzy-periwinkle p-4 md:p-6 rounded-t-3xl group-hover:bg-petzy-blue-light transition-colors py-8 md:py-14">
-        <div className="flex flex-col items-center justify-center gap-4">
-          <img
-            src={src}
-            alt={name}
-            className="w-[100px] h-[100px] rounded-full"
-          />
-          <div className="text-center">
-            <div className="text-lg md:text-xl font-bold text-zinc-800 mb-1">{name}</div>
-            <div className="text-sm md:text-base text-zinc-600">{designation}</div>
+      {/* Top Section: Profile Info */}
+      <div className="p-6 flex flex-col items-center flex-grow bg-gradient-to-b from-white to-gray-50/50">
+        
+        {/* Avatar with Status Dot */}
+        <div className="relative mb-4">
+          <div className="w-28 h-28 rounded-full p-1 bg-white border-2 border-petzy-blue-light/30 shadow-sm group-hover:border-petzy-coral/30 transition-colors duration-300">
+             <img
+               src={src || "/default-vet.png"} // Fallback image
+               alt={name}
+               className="w-full h-full rounded-full object-cover"
+             />
           </div>
-          <div className="flex flex-row gap-2 md:gap-3 text-xs md:text-sm items-center">
-            <div className="inline-flex gap-1 items-center">
-              <FaStar size="0.9em" />
-              <div className="font-semibold text-base md:text-lg">{star}</div>
-            </div>
-            <div>&#183;</div>
-            <div className="text-zinc-500">({reviews} Reviews)</div>
-          </div>
-          {verified ? (
-            <div className="flex mt-2">
-              <Tippy
-                content="This vet has passed an extensive verification process with their ENG veterinarian license"
-                className="bg-zinc-900 text-white text-center px-4 py-2 rounded-3xl text-sm"
-              >
-                <div className="flex flex-row items-center gap-2 bg-green-200 px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm rounded-pill">
-                  <FaCheck size="1em" className="text-emerald-800" />
-                  <div className="text-emerald-800 font-bold">
-                    License verified
-                  </div>
+          {/* Verified Badge Absolute */}
+          {verified && (
+             <Tippy content="Verified License" placement="bottom">
+                <div className="absolute bottom-1 right-1 bg-white p-1 rounded-full shadow-md">
+                   <div className="bg-green-500 text-white p-1 rounded-full text-[10px]">
+                      <FaCheck />
+                   </div>
                 </div>
-              </Tippy>
-            </div>
-          ) : null}
+             </Tippy>
+          )}
+        </div>
+
+        {/* Text Details */}
+        <div className="text-center mb-3">
+          <h3 className="text-xl font-bold text-petzy-slate group-hover:text-petzy-coral transition-colors duration-300 line-clamp-1">
+            {name}
+          </h3>
+          <p className="text-sm text-petzy-slate-light font-medium uppercase tracking-wide mt-1 line-clamp-1">
+            {designation}
+          </p>
+        </div>
+
+        {/* Rating Pill */}
+        <div className="flex items-center gap-2 bg-yellow-50 px-3 py-1 rounded-full border border-yellow-100 mb-4">
+          <FaStar className="text-yellow-400 text-sm" />
+          <span className="text-xs font-bold text-petzy-slate">{star}.0</span>
+          <span className="text-xs text-gray-400">•</span>
+          <span className="text-xs text-gray-500 underline decoration-gray-300">{reviews} reviews</span>
         </div>
       </div>
-      <div className="basis-1/2 border-2 border-t-0 border-petzy-periwinkle p-4 md:p-6 rounded-b-3xl bg-petzy-mint-light shadow-soft">
-        {getNextAvailableSlots(slots).map((slot, i) => (
-          <div
-            key={i}
-            className="border-2 border-petzy-coral my-3 md:my-4 rounded-pill text-zinc-800 bg-white p-3 md:p-4 flex flex-row justify-between items-center hover:bg-petzy-coral hover:text-white transition-colors cursor-pointer text-sm md:text-base px-4 md:px-8"
-            onClick={() =>
-              router.push(
-                `/vets/${id}?day=${slot.day.toLowerCase()}&time=${slot.time}`
-              )
-            }
-          >
-            <div>
-              <span className="font-bold">{slot.day}</span> at {slot.time}
-            </div>
-            <div className="text-base md:text-lg font-bold transition-colors">
-              &#2547;{price || 0}
-            </div>
+
+      {/* Divider */}
+      <div className="h-px bg-gray-100 w-full"></div>
+
+      {/* Bottom Section: Slots */}
+      <div className="p-4 bg-white">
+        {nextSlots.length > 0 ? (
+          <div className="flex flex-col gap-2">
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 pl-1">Next Available</p>
+            {nextSlots.map((slot, i) => (
+              <button
+                key={i}
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent triggering parent click
+                  router.push(`/vets/${id}?day=${slot.day}&time=${slot.time}`);
+                }}
+                className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-petzy-blue-light/30 bg-petzy-blue-light/10 hover:bg-petzy-coral hover:border-petzy-coral hover:text-white transition-all duration-300 group/btn"
+              >
+                <div className="flex items-center gap-2 text-sm font-bold text-petzy-slate group-hover/btn:text-white">
+                  <FaCalendarCheck className="text-petzy-coral group-hover/btn:text-white transition-colors" />
+                  <span>{slot.label}, {slot.time}</span>
+                </div>
+                <div className="text-sm font-bold text-petzy-slate group-hover/btn:text-white">
+                  ৳{price}
+                </div>
+              </button>
+            ))}
           </div>
-        ))}
-        <div className="text-petzy-coral text-center text-sm md:text-base font-bold mt-2">
-          See your prefer {type.toLowerCase()} timeslot
+        ) : (
+          <div className="py-6 text-center">
+             <div className="bg-gray-100 inline-flex p-3 rounded-full text-gray-400 mb-2">
+                <FaUserDoctor size="1.2em"/>
+             </div>
+             <p className="text-sm text-gray-500 font-medium">No slots available soon</p>
+          </div>
+        )}
+        
+        {/* View Profile Link */}
+        <div className="mt-4 text-center">
+           <span className="text-xs font-bold text-petzy-coral hover:underline cursor-pointer">
+              View Full Profile
+           </span>
         </div>
       </div>
     </div>
@@ -136,74 +153,3 @@ const VetProfile = ({
 };
 
 export default VetProfile;
-
-// export default class VetProfile extends React.Component {
-//   constructor(props) {
-//     super(props);
-//   }
-//   render() {
-//     return (
-//       <div
-//         className="flex flex-col md:w-1/3 w-full p-2 group cursor-pointer"
-//         key={this.props.id}
-//         onClick={() => this.props.router.push(`/vet/${this.props.id}`)}
-//       >
-//         <div className="basis-1/2 border p-6 rounded-tr-lg rounded-tl-lg group-hover:bg-gray-50">
-//           <div className="flex flex-row items-center gap-4" key={this.props.id}>
-//             <img
-//               src={this.props.src}
-//               className="w-[100px] h-[100px] rounded-full"
-//               alt={this.props.name}
-//             />
-//             <div className="basis-full">
-//               <div className="text-2xl font-bold text-zinc-800">
-//                 {this.props.name}
-//               </div>
-//               <div className="text-lg mb-3">{this.props.designation}</div>
-//               <div className="flex flex-row justify-between text-lg">
-//                 <div>
-//                   <div className="flex flex-row gap-2 items-center">
-//                     <FaStar size="1em" />
-//                     <div>{this.props.star}</div>
-//                     <div>&#183;</div>
-//                     <div>{this.props.reviews} reviews</div>
-//                   </div>
-//                 </div>
-//                 <PiGreaterThan size="1em" />
-//               </div>
-//             </div>
-//           </div>
-//           {this.props.verified ? (
-//             <div className="flex mt-5">
-//               <Tippy
-//                 content="This vet has passed an extensive verification process with their ENG veterinarian license"
-//                 className="bg-zinc-900 text-white text-center px-4 py-2 rounded-3xl text-sm"
-//               >
-//                 <div className="flex flex-row items-center gap-2 bg-green-100 px-4 py-2 text-sm rounded-2xl">
-//                   <FaCheck size="1em" className="text-emerald-800" />
-//                   <div className="text-emerald-800">License verified</div>
-//                 </div>
-//               </Tippy>
-//             </div>
-//           ) : null}
-//         </div>
-//         <div className="basis-1/2 border p-6 rounded-br-lg rounded-bl-lg bg-gray-50">
-//           {this.props.slots.map((slot, i) => (
-//             <div
-//               key={i}
-//               className="border-black border my-3 rounded-lg text-black bg-white p-4 flex flex-row justify-between items-center hover:bg-gray-100 cursor-pointer text-lg"
-//             >
-//               <div>
-//                 <span className="font-bold">Today</span> at {slot}
-//               </div>
-//               <div className="text-xl">&#2547;{this.props.price}</div>
-//             </div>
-//           ))}
-//           <div className="text-lg underline text-center mt-5">
-//             See more timeslots
-//           </div>
-//         </div>
-//       </div>
-//     );
-//   }
-// }

@@ -7,7 +7,7 @@ import { CardSkeleton } from "@/src/components/ui";
 
 import axios from "@/src/lib/axiosInstance";
 
-const ExpertVets = ({ vet, router }) => {
+const ExpertVets = ({ router }) => {
   const [loading, setLoading] = useState(true);
   const [vets, setVets] = useState([]);
 
@@ -29,26 +29,26 @@ const ExpertVets = ({ vet, router }) => {
   }, []);
 
   return (
-    <div className="py-10">
+    <div className="py-10 px-4 md:px-0">
       {loading ? (
-        <div className="flex md:flex-row flex-col md:-m-2 mx-2 flex-wrap items-center justify-between">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <CardSkeleton count={4} type="vet" />
         </div>
       ) : (
-        <div className="flex md:flex-row flex-col md:-m-2 mx-2 flex-wrap items-center justify-between ">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {vets.map((vet, i) => (
             <VetProfile
+              key={i}
               src={vet.profilePicture}
               id={vet._id}
               name={vet.name}
               designation={vet.degree}
-              star={5}
-              reviews={100}
+              star={5} // You might want to make this dynamic later
+              reviews={100} // You might want to make this dynamic later
               verified={vet.verified}
-              slots={vet.appointments.slots}
-              price={vet.appointments["online"]?.fee}
+              slots={vet.appointments?.slots || {}}
+              price={vet.appointments?.online?.fee || 0}
               type="online"
-              key={i}
               router={router}
             />
           ))}

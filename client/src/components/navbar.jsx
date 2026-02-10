@@ -168,7 +168,7 @@ const Navbar = () => {
                       icon={<FaCartShopping />}
                       text={isScrolled ? "" : "Cart"}
                       onClick={() => setCartOpen(true)}
-                      className={`!rounded-full !py-2.5 ${isScrolled ? "!px-3" : "!px-5"}`}
+                      className={`rounded-full flex items-center text-sm font-semibold py-2.5 ${isScrolled ? "!px-3" : "!px-5"}`}
                    />
                    {/* Cart Badge Placeholder if needed */}
                    {/* <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full border-2 border-white text-[10px] text-white flex items-center justify-center font-bold">2</span> */}

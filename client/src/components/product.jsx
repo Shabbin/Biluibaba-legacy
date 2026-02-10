@@ -1,19 +1,175 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 
-import { CiShoppingCart, CiHeart, CiShop } from "react-icons/ci";
-import { IoEyeOutline, IoCloseOutline } from "react-icons/io5";
-import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import { FaStar } from "react-icons/fa";
-import { AddCart } from "./svg";
+// Icons
+import { 
+  FaStar, 
+  FaRegHeart, 
+  FaHeart, 
+  FaCartPlus, 
+  FaEye, 
+  FaXmark,
+  FaCheck,
+  FaMinus,
+  FaPlus
+} from "react-icons/fa6";
 
+// Utils & Components
 import Button from "@/src/components/ui/button";
-import Quantity from "@/src/components/ui/quantity";
 
-import { convertSize } from "@/src/utils/sizeConverter";
+// --- QUICK VIEW MODAL COMPONENT ---
+const QuickViewModal = ({ product, isOpen, onClose }) => {
+  const [quantity, setQuantity] = useState(1);
+  const [isAdding, setIsAdding] = useState(false);
 
+  if (!isOpen) return null;
+
+  const handleAddToCart = () => {
+    setIsAdding(true);
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existingItem = cart.find((item) => item.id === product.id);
+
+    if (existingItem) {
+      existingItem.quantity += quantity;
+    } else {
+      cart.push({
+        id: product.id,
+        name: product.name,
+        src: product.src,
+        price: product.discount > 0 
+          ? product.price - (product.price * product.discount) / 100 
+          : product.price,
+        quantity: quantity,
+      });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    
+    // Dispatch event so Navbar can update count without reload
+    window.dispatchEvent(new Event("storage"));
+    
+    setTimeout(() => {
+      setIsAdding(false);
+      toast.success(
+        <div className="flex items-center gap-2">
+           <span className="bg-petzy-coral text-white rounded-full p-1"><FaCheck size={10}/></span>
+           <span>Added <b>{product.name}</b> to cart</span>
+        </div>
+      );
+      onClose();
+    }, 600);
+  };
+
+  const discountedPrice = product.discount > 0 
+    ? Math.floor(product.price - (product.price * product.discount) / 100) 
+    : product.price;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-petzy-slate/60 backdrop-blur-sm transition-opacity" 
+        onClick={onClose}
+      ></div>
+
+      {/* Modal Content */}
+      <div className="relative bg-white w-full max-w-4xl rounded-[2rem] shadow-2xl overflow-hidden flex flex-col md:flex-row animate-in fade-in zoom-in duration-300">
+        
+        {/* Close Button */}
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 z-10 p-2 bg-white/80 rounded-full hover:bg-petzy-coral hover:text-white transition-colors"
+        >
+          <FaXmark size="1.2em" />
+        </button>
+
+        {/* Image Section */}
+        <div className="w-full md:w-1/2 bg-gray-50 flex items-center justify-center p-8 relative">
+           <div className="relative w-full aspect-square mix-blend-multiply">
+              <img
+                src={product.src}
+                alt={product.name}
+                className="w-full h-full object-contain hover:scale-110 transition-transform duration-500"
+              />
+           </div>
+           {product.discount > 0 && (
+             <span className="absolute top-6 left-6 bg-petzy-coral text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg shadow-petzy-coral/30">
+               {product.discount}% OFF
+             </span>
+           )}
+        </div>
+
+        {/* Details Section */}
+        <div className="w-full md:w-1/2 p-8 md:p-10 flex flex-col h-full">
+          <div className="mb-auto">
+            <div className="flex items-center gap-2 mb-2">
+               <span className="text-xs font-bold text-petzy-coral uppercase tracking-wider bg-petzy-coral/10 px-2 py-0.5 rounded-md">
+                 {product.category}
+               </span>
+               <div className="flex items-center gap-1 text-yellow-400 text-sm">
+                 <FaStar /> <span className="text-petzy-slate-light font-medium">4.9 (120)</span>
+               </div>
+            </div>
+
+            <h2 className="text-3xl font-bold text-petzy-slate mb-4 leading-tight">{product.name}</h2>
+            <p className="text-petzy-slate-light mb-6 leading-relaxed line-clamp-3">
+              {product.description || "Premium quality product designed for your pet's happiness and health. Made with safe, durable materials."}
+            </p>
+
+            <div className="flex items-end gap-3 mb-8">
+              <span className="text-4xl font-bold text-petzy-slate">৳{discountedPrice}</span>
+              {product.discount > 0 && (
+                <span className="text-lg text-gray-400 line-through mb-1.5">৳{product.price}</span>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            {/* Controls */}
+            <div className="flex items-center gap-6">
+              <div className="flex items-center border border-gray-200 rounded-full p-1">
+                 <button 
+                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                   className="w-10 h-10 flex items-center justify-center text-petzy-slate hover:text-petzy-coral transition-colors"
+                 >
+                   <FaMinus size="0.8em" />
+                 </button>
+                 <span className="w-8 text-center font-bold text-petzy-slate">{quantity}</span>
+                 <button 
+                   onClick={() => setQuantity(quantity + 1)}
+                   className="w-10 h-10 flex items-center justify-center text-petzy-slate hover:text-petzy-coral transition-colors"
+                 >
+                   <FaPlus size="0.8em" />
+                 </button>
+              </div>
+              <div className="text-sm text-green-500 font-bold flex items-center gap-1">
+                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                 In Stock
+              </div>
+            </div>
+
+            {/* Action Button */}
+            <Button 
+               text={isAdding ? "Adding..." : "Add to Cart"}
+               icon={!isAdding && <FaCartPlus />} 
+               onClick={handleAddToCart}
+               className="w-full !py-4 text-lg shadow-xl shadow-petzy-coral/20 hover:shadow-petzy-coral/40"
+            />
+            
+            <div className="text-xs text-center text-gray-400">
+               Free shipping on orders over ৳2000 • 30 Day Returns
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- MAIN PRODUCT CARD COMPONENT ---
 const Product = ({
   id,
   src,
@@ -26,249 +182,147 @@ const Product = ({
   review,
   totalReview,
 }) => {
-  // const [productSize, setProductSize] = useState(sizes[0]);
-
-  const [toggle, setToggle] = useState(false);
+  const router = useRouter();
   const [isInWishlist, setIsInWishlist] = useState(false);
+  const [showQuickView, setShowQuickView] = useState(false);
 
-  const handleClick = () => {
-    const wishlistItems = JSON.parse(localStorage.getItem("wishlist")) || [];
-
-    if (wishlistItems.some((item) => item.slug === slug)) {
-      const updatedWishlist = wishlistItems.filter(
-        (item) => item.slug !== slug
-      );
-      localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
-      setIsInWishlist(false);
-    } else {
-      wishlistItems.push({ name, slug, src, price, discount });
-      localStorage.setItem("wishlist", JSON.stringify(wishlistItems));
-      setIsInWishlist(true);
-    }
-    return toast.success(
-      isInWishlist ? "Removed from wishlist" : "Added to wishlist"
-    );
-  };
-
+  // Initialize Wishlist State
   useEffect(() => {
     const wishlistItems = JSON.parse(localStorage.getItem("wishlist")) || [];
     setIsInWishlist(wishlistItems.some((item) => item.slug === slug));
   }, [slug]);
 
+  const toggleWishlist = (e) => {
+    e.stopPropagation();
+    const wishlistItems = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+    if (isInWishlist) {
+      const updated = wishlistItems.filter((item) => item.slug !== slug);
+      localStorage.setItem("wishlist", JSON.stringify(updated));
+      setIsInWishlist(false);
+      toast.error("Removed from wishlist");
+    } else {
+      wishlistItems.push({ name, slug, src, price, discount });
+      localStorage.setItem("wishlist", JSON.stringify(wishlistItems));
+      setIsInWishlist(true);
+      toast.success("Added to wishlist");
+    }
+  };
+
+  const handleQuickAdd = (e) => {
+    e.stopPropagation();
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const discountedPrice = discount > 0 ? price - (price * discount) / 100 : price;
+    
+    // Check if item exists to update quantity
+    const existing = cart.find(item => item.id === id);
+    if(existing) {
+        existing.quantity += 1;
+    } else {
+        cart.push({ id, name, src, price: discountedPrice, quantity: 1 });
+    }
+    
+    localStorage.setItem("cart", JSON.stringify(cart));
+    window.dispatchEvent(new Event("storage"));
+    toast.success("Added to cart!");
+  };
+
+  const discountedPrice = Math.floor(price - (discount > 0 ? (price * discount) / 100 : 0));
+
   return (
-    <div className="md:max-w-[350px] max-w-full h-full min-h-full bg-white rounded-3xl shadow-soft hover:shadow-soft-lg transition-all duration-300 overflow-hidden group">
-      <div className="relative overflow-hidden rounded-3xl rounded-b-none">
-        <img
-          src={src}
-          alt={name}
-          className="md:w-[500px] w-[500px] md:h-[300px] h-[200px] rounded-3xl rounded-b-none object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-        
-        {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
-          {discount > 0 && (
-            <div className="bg-gradient-to-r from-petzy-coral to-pink-400 text-white font-bold px-3 py-1 rounded-pill text-xs shadow-glow">
-              {discount}% OFF
-            </div>
-          )}
-          {Math.random() > 0.7 && (
-            <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white font-bold px-3 py-1 rounded-pill text-xs shadow-soft">
-              NEW
-            </div>
-          )}
-        </div>
-
-        {/* Wishlist Button */}
-        <div className="top-3 right-3 absolute">
-          {isInWishlist ? (
-            <div className="cursor-pointer bg-white/90 backdrop-blur-sm rounded-full p-2.5 shadow-soft hover:shadow-glow transition-all duration-300 hover:scale-110">
-              <AiFillHeart
-                size="1.5em"
-                className="text-petzy-coral cursor-pointer"
-                onClick={handleClick}
-              />
-            </div>
-          ) : (
-            <div className="cursor-pointer bg-white/90 backdrop-blur-sm rounded-full p-2.5 shadow-soft hover:shadow-glow transition-all duration-300 hover:scale-110">
-              <AiOutlineHeart
-                size="1.5em"
-                className="text-petzy-slate-light cursor-pointer hover:text-petzy-coral transition-colors"
-                onClick={handleClick}
-              />
-            </div>
-          )}
-        </div>
-
-        {/* Quick View Overlay - Shows on Hover */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
-          <button 
-            onClick={() => (window.location.href = `/products/${slug}`)}
-            className="bg-white text-petzy-coral font-bold px-6 py-2 rounded-pill text-sm shadow-soft hover:shadow-glow transform translate-y-4 group-hover:translate-y-0 transition-all duration-300"
-          >
-            <IoEyeOutline className="inline mr-2" size="1.2em" />
-            Quick View
-          </button>
-        </div>
-      </div>
-      <div
-        className="rounded-3xl rounded-t-none p-4 md:p-6 cursor-pointer min-h-[280px] md:h-[350px] flex flex-col justify-between hover:bg-petzy-blue-light/30 transition-colors duration-300"
-        onClick={() => (window.location.href = `/products/${slug}`)}
+    <>
+      <div 
+        className="group relative bg-white rounded-3xl border border-gray-100 overflow-hidden hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-300 h-full flex flex-col"
       >
-        <div>
-          <div className="flex flex-row items-center justify-between gap-2 mb-3">
-            <div className="px-2.5 py-1 rounded-pill bg-gradient-to-r from-petzy-coral to-pink-400 text-white flex flex-row items-center gap-1.5 shadow-soft text-xs font-bold">
-              <FaStar size="0.9em" />
-              <div>5.0</div>
-            </div>
-            <div className="text-xs text-petzy-slate-light font-semibold">(500 reviews)</div>
-          </div>
-          <div className="font-bold mb-3 min-h-[60px] text-sm md:text-base text-petzy-slate line-clamp-2 group-hover:text-petzy-coral transition-colors">
-            {name}
-          </div>
-          <div className="flex flex-row items-end gap-2 mb-2">
-            <div className="text-2xl md:text-3xl font-extrabold text-petzy-coral">
-              &#2547;{Math.floor(price - (discount > 0 ? (price * discount) / 100 : 0))}
-            </div>
+        {/* Top Image Section */}
+        <div className="relative aspect-[4/3] overflow-hidden bg-gray-50 p-4">
+          
+          {/* Main Image */}
+          <img
+            src={src}
+            alt={name}
+            onClick={() => router.push(`/products/${slug}`)}
+            className="w-full h-full object-contain mix-blend-multiply transition-transform duration-700 ease-in-out group-hover:scale-110 cursor-pointer"
+          />
+
+          {/* Badges */}
+          <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
             {discount > 0 && (
-              <div className="text-sm md:text-base text-petzy-slate-light line-through mb-1">
-                &#2547;{price}
-              </div>
+              <span className="bg-petzy-coral text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-sm">
+                -{discount}%
+              </span>
+            )}
+            {/* Simulated 'New' badge logic */}
+            {id % 2 === 0 && (
+               <span className="bg-petzy-mint text-petzy-slate text-[10px] font-bold px-2 py-1 rounded-md shadow-sm bg-teal-100">
+                NEW
+              </span>
             )}
           </div>
-          <div className="text-xs text-petzy-slate-light mb-3">
-            {category} • In Stock
+
+          {/* Action Buttons (Right Side) */}
+          <div className="absolute top-3 right-3 flex flex-col gap-2 translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300 z-20">
+            <button 
+              onClick={toggleWishlist}
+              className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center text-petzy-coral hover:bg-petzy-coral hover:text-white transition-colors"
+              title="Add to Wishlist"
+            >
+              {isInWishlist ? <FaHeart /> : <FaRegHeart />}
+            </button>
+            <button 
+              onClick={(e) => { e.stopPropagation(); setShowQuickView(true); }}
+              className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center text-petzy-slate hover:bg-petzy-slate hover:text-white transition-colors delay-75"
+              title="Quick View"
+            >
+              <FaEye />
+            </button>
+          </div>
+
+          {/* Quick Add Overlay Button */}
+          <button 
+            onClick={handleQuickAdd}
+            className="absolute bottom-0 left-0 w-full bg-petzy-slate/90 backdrop-blur-sm text-white font-bold py-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center gap-2"
+          >
+            <FaCartPlus /> Quick Add
+          </button>
+        </div>
+
+        {/* Content Section */}
+        <div className="p-5 flex flex-col flex-grow">
+          {/* Category & Rating */}
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">{category}</span>
+            <div className="flex items-center gap-1 text-yellow-400 text-xs font-bold">
+              <FaStar /> <span>{review || 4.5}</span>
+            </div>
+          </div>
+
+          {/* Title */}
+          <h3 
+            onClick={() => router.push(`/products/${slug}`)}
+            className="text-base font-bold text-petzy-slate mb-2 line-clamp-2 cursor-pointer hover:text-petzy-coral transition-colors"
+          >
+            {name}
+          </h3>
+
+          {/* Price */}
+          <div className="mt-auto flex items-end gap-2">
+            <span className="text-xl font-extrabold text-petzy-coral">৳{discountedPrice}</span>
+            {discount > 0 && (
+              <span className="text-sm text-gray-400 line-through mb-1">৳{price}</span>
+            )}
           </div>
         </div>
-        <div className="my-3 md:my-4">
-          <Button
-            type="default"
-            text="Add to Cart"
-            icon={<AddCart className="text-[1.2em] md:text-[1.5em]" />}
-            iconAlign="left"
-            className="w-full !py-2.5 md:!py-3 !px-4 md:!px-6 group-hover:shadow-glow"
-          />
-        </div>
       </div>
-    </div>
+
+      {/* Render Modal */}
+      <QuickViewModal 
+        product={{ id, src, name, price, discount, category, description }} 
+        isOpen={showQuickView} 
+        onClose={() => setShowQuickView(false)} 
+      />
+    </>
   );
 };
-
-class ProductModal extends React.Component {
-  constructor() {
-    super();
-
-    this.state = {
-      quantity: 1,
-    };
-
-    this.addToCart = this.addToCart.bind(this);
-  }
-
-  addToCart() {
-    let cart = JSON.parse(localStorage.getItem("cart"));
-
-    if (cart.length === 0) {
-      cart.push({
-        id: this.props.id,
-        name: this.props.name,
-        src: this.props.src,
-        price: this.props.newPrice,
-        size: this.props.size,
-        quantity: this.state.quantity,
-      });
-      localStorage.setItem("cart", JSON.stringify(cart));
-      toast.success(`${this.props.name} added to cart!`);
-      return setTimeout(() => window.location.reload(), 2000);
-    }
-
-    for (let i = 0; i < cart.length; i++) {
-      if (cart[i].id === this.props.id) {
-        cart[i].quantity += this.state.quantity;
-        localStorage.setItem("cart", JSON.stringify(cart));
-        toast.success(`${this.props.name} added to cart!`);
-        return setTimeout(() => window.location.reload(), 2000);
-      }
-    }
-
-    cart.push({
-      id: this.props.id,
-      name: this.props.name,
-      src: this.props.src,
-      price: this.props.newPrice,
-      size: this.props.size,
-      quantity: this.state.quantity,
-    });
-    localStorage.setItem("cart", JSON.stringify(cart));
-    toast.success(`${this.props.name} added to cart!`);
-    setTimeout(() => window.location.reload(), 2000);
-  }
-
-  render() {
-    return (
-      <div className="transition-opacity ease-in duration-100 fixed w-full h-full top-0 left-0 flex items-center md:flex-row flex-col justify-center z-50">
-        <div
-          className="absolute w-full h-full bg-stone-900 opacity-50"
-          onClick={() => this.props.handler(false)}
-        ></div>
-
-        <div className="bg-white z-20 md:w-8/12 w-full mx-auto md:rounded-3xl shadow-lg overflow-y-auto">
-          <div className="flex md:flex-row flex-col">
-            <div className="basis-1/2 overflow-hidden inline-block rounded-lg cursor-pointer">
-              <img
-                src={this.props.src}
-                alt={this.props.name}
-                className="w-full h-full transition-transform duration-500 hover:scale-110"
-              />
-            </div>
-
-            <div className="basis-1/2 px-5 py-5">
-              <div className="flex justify-end">
-                <IoCloseOutline
-                  size="3em"
-                  className="cursor-pointer"
-                  onClick={() => this.props.handler(false)}
-                />
-              </div>
-              <div>
-                <div className="my-5 text-3xl font-bold">{this.props.name}</div>
-                <div className="mb-5 text-lg">{this.props.description}</div>
-
-                <div className="flex gap-10 font-bold mb-5">
-                  <div>
-                    <h1 className="text-xl mb-2">Price</h1>
-                    <p className="text-2xl font-medium">
-                      &#2547;{this.props.newPrice}{" "}
-                      <span className="text-lg ms-1 line-through text-gray-500">
-                        &#2547;{this.props.oldPrice}
-                      </span>
-                    </p>
-                  </div>
-                  <div>
-                    <div className="text-2xl mb-2">Quantity</div>
-                    <Quantity
-                      value={this.state.quantity}
-                      onChange={(value) => this.setState({ quantity: value })}
-                    />
-                  </div>
-                </div>
-
-                <Button
-                  text="ADD TO CART"
-                  type="default"
-                  onClick={() => this.addToCart()}
-                ></Button>
-
-                <div className="mt-10 border border-t-gray-500 border-r-0 border-l-0 border-b-0 py-8 font-bold text-lg">
-                  <div className="mt-5">SKU: {this.props.id}</div>
-                  <div className="mt-5">Category: {this.props.category}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-}
 
 export default Product;
