@@ -11,6 +11,8 @@ const {
   updateUserInfo,
   getOrders,
   getBookings,
+  forgotPassword,
+  resetPassword,
 } = require("../controllers/auth");
 
 const { protectUser } = require("../middleware/auth");
@@ -19,6 +21,8 @@ router.route("/register").post(register);
 router.route("/login").post(login);
 router.route("/facebook").get(authenticateFacebook);
 router.route("/google").get(authenticateGoogle);
+router.route("/forgot-password").post(forgotPassword);
+router.route("/reset-password").post(resetPassword);
 
 router.use(protectUser);
 

@@ -1,6 +1,7 @@
 import "@/src/styles/globals.css";
 
-import { Toaster } from "react-hot-toast";
+import { Toaster as HotToaster } from "react-hot-toast";
+import { Toaster } from "@/src/components/ui/toaster";
 
 import { Inter } from "next/font/google";
 
@@ -27,7 +28,7 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <Navbar/>
           
-          <Toaster
+          <HotToaster
             position="bottom-right"
             toastOptions={{
               success: {
@@ -42,6 +43,7 @@ export default function RootLayout({ children }) {
               },
             }}
           />
+          <Toaster />
           <div className="pt-32">
           <ProgressBarProvider>{children}</ProgressBarProvider>
           </div>
