@@ -25,7 +25,8 @@ export default function RootLayout({ children }) {
     <html lang="en" className="selection:bg-stone-950 selection:text-white">
       <body className={inter.className}>
         <AuthProvider>
-          <Navbar></Navbar>
+          <Navbar/>
+          
           <Toaster
             position="bottom-right"
             toastOptions={{
@@ -42,7 +43,7 @@ export default function RootLayout({ children }) {
             }}
           />
           <ProgressBarProvider>{children}</ProgressBarProvider>
-          <Footer></Footer>
+          <Footer/>
         </AuthProvider>
       </body>
     </html>

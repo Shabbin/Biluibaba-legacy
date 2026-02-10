@@ -46,7 +46,7 @@ const initializeSiteSettings = async () => {
 const connectDB = async () => {
   // Connect to MongoDB
   mongoose.set("strictQuery", false);
-  await mongoose.connect(process.env.MONGO_URI);
+  await mongoose.connect(process.env.DBURL);
   logger.success("MongoDB Connected");
 
   // Initialize site settings
