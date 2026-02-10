@@ -21,7 +21,7 @@ const vetCategories = [
   { label: "Clinic Visit", src: "/vets/vet-physical.png", link: "/vets/browse?type=physical" },
   { label: "Home Service", src: "/vets/vet-home.png", link: "/vets/browse?type=homeService" },
   { label: "Emergency", src: "/vets/emergency.png", link: "/vets/browse?type=emergency" },
-  { label: "Vaccination", src: "/vets/vaccination.png", link: "/vets/browse?type=vaccination" },
+  { label: "Vaccination", src: "/vets/vaccination.png", link: "/vets/browse?type=vaccine" },
   { label: "Spay/Neuter", src: "/vets/spay-neuter.png", link: "/vets/browse?type=spay-neuter" },
 ];
 
@@ -245,7 +245,7 @@ const Vet = () => {
           {[
             { img: "/vets/vet-home2.png", title: "Home Services", link: "/vets/browse?type=homeService" },
             { img: "/vets/emergency2.png", title: "Emergency Care", link: "/vets/browse?type=emergency" },
-            { img: "/vets/vaccine2.png", title: "Vaccination", link: "/vets/browse?type=vaccination" },
+            { img: "/vets/vaccine2.png", title: "Vaccination", link: "/vets/browse?type=vaccine" },
             { img: "/vets/spay2.png", title: "Spay/Neuter", link: "/vets/browse?type=spay-neuter" }
           ].map((service, idx) => (
             <div key={idx} className="bg-white rounded-3xl border border-gray-100 shadow-soft hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
