@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import {
   Modal,
   ModalContent,
@@ -37,34 +38,28 @@ export default class Filter extends React.Component {
     this.state = {
       toggle: false,
     };
-
-    this.handleToggle = this.handleToggle.bind(this);
-  }
-
-  handleToggle() {
-    return (window.location.href = "/vets/filter");
   }
 
   render() {
     return (
       <div className="flex md:flex-row flex-col gap-3">
-        <div
+        <Link 
+          href="/vets/filter"
           className="flex flex-row items-center gap-2 border px-4 py-3 rounded-lg hover:shadow-lg cursor-pointer transition-all ease-in-out duration-300"
-          onClick={() => this.handleToggle()}
         >
           <IoLocationOutline size="1.2em" />
           <div>{this.props.location}</div>
-        </div>
-        <div
+        </Link>
+        <Link 
+          href="/vets/filter"
           className="flex flex-row items-center gap-2 border px-4 py-3 rounded-lg hover:shadow-lg cursor-pointer transition-all ease-in-out duration-300"
-          onClick={() => this.handleToggle()}
         >
           <IoCalendarClearOutline size="1.2em" />
           <div>{this.props.calendar}</div>
-        </div>
-        <div
+        </Link>
+        <Link 
+          href="/vets/filter"
           className="flex flex-row items-center gap-2 border px-4 py-3 rounded-lg hover:shadow-lg cursor-pointer transition-all ease-in-out duration-300"
-          onClick={() => this.handleToggle()}
         >
           {this.props.species === "Dog" ? (
             <Dog size="text-[1.2em]" />
@@ -72,14 +67,14 @@ export default class Filter extends React.Component {
             <Cat size="text-[1.2em]" />
           )}
           <div>{this.props.species.toUpperCase()}</div>
-        </div>
-        <div
+        </Link>
+        <Link 
+          href="/vets/filter"
           className="flex flex-row items-center gap-2 border px-4 py-3 rounded-lg hover:shadow-lg cursor-pointer transition-all ease-in-out duration-300 bg-zinc-950 text-white"
-          onClick={() => this.handleToggle()}
         >
           <IoSettingsOutline size="1.2em" />
           <div>All filters</div>
-        </div>
+        </Link>
       </div>
     );
   }

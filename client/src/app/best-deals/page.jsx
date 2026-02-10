@@ -238,7 +238,6 @@ export default function Page() {
                       category={product.category}
                       description={product.description}
                       slug={product.slug}
-                      router={router}
                       size={product.size}
                     />
                   </div>

@@ -42,7 +42,9 @@ export default function RootLayout({ children }) {
               },
             }}
           />
+          <div className="pt-32">
           <ProgressBarProvider>{children}</ProgressBarProvider>
+          </div>
           <Footer/>
         </AuthProvider>
       </body>

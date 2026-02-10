@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 const Category = ({ categories }) => {
   return (
     <div className="md:px-0 px-5">
@@ -12,13 +14,17 @@ const Category = ({ categories }) => {
 
         <div className="flex flex-row flex-wrap items-center justify-between">
           {categories.map((category, index) => (
-            <img
-              src={category.src}
-              alt={category.name}
+            <Link
               key={index}
+              href={category.link}
               className="md:w-[200px] w-[100px] cursor-pointer md:basis-1/6 basis-1/3 -me-2 px-2"
-              onClick={() => (window.location.href = category.link)}
-            ></img>
+            >
+              <img
+                src={category.src}
+                alt={category.name}
+                className="w-full hover:scale-105 transition-transform duration-300"
+              />
+            </Link>
           ))}
         </div>
       </div>

@@ -11,7 +11,7 @@ import Adoption from "@/src/components/adoption";
 import "swiper/css";
 import { ArrowLeft, ArrowRight } from "@/src/components/svg";
 
-const Adoptions = ({ AdoptionData, router }) => {
+const Adoptions = ({ AdoptionData }) => {
   const swiperRef = useRef();
 
   const [loading, setLoading] = useState(true);

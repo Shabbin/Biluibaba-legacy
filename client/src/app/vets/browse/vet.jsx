@@ -106,7 +106,6 @@ export default function Page() {
               price={vet.appointments[type].fee}
               key={i}
               type={type}
-              router={router}
             />
           ))
         )}

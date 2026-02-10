@@ -11,6 +11,10 @@ import { productCategories } from "@/src/lib/categories";
 // Components
 import MyCart from "@/src/components/cart";
 import Button from "@/src/components/ui/button";
+import NavItem from "@/src/components/navbar/NavItem";
+import Dropdown from "@/src/components/navbar/Dropdown";
+import MorePetsDropdown from "@/src/components/navbar/MorePetsDropdown";
+import MobileMenu from "@/src/components/navbar/MobileMenu";
 
 // Icons (Using React Icons for consistency and modern look)
 import { 
@@ -20,15 +24,10 @@ import {
   FaHeart, 
   FaLocationDot, 
   FaBars, 
-  FaXmark, 
   FaCat, 
   FaDog, 
-  FaDove, 
-  FaChevronDown, 
-  FaChevronRight,
-  FaArrowRight
+  FaDove
 } from "react-icons/fa6";
-import { GiRabbit, GiTropicalFish } from "react-icons/gi";
 import { MdLocalOffer, MdHealthAndSafety, MdVolunteerActivism } from "react-icons/md";
 import { RiVipCrownFill } from "react-icons/ri";
 
@@ -84,7 +83,7 @@ const Navbar = () => {
 
   const handleSearch = (e) => {
     if (e.key === 'Enter' || e.type === 'click') {
-      if (query.trim() === "") return router.push("/");
+      if (query.trim() === "") return;
       router.push(`/search?query=${query}`);
     }
   };
@@ -154,14 +153,14 @@ const Navbar = () => {
                   </div>
                 </Link>
 
-                <div 
-                  className="hidden md:flex flex-col items-center group cursor-pointer"
-                  onClick={() => user ? router.push("/my-account") : router.push("/login")}
+                <Link 
+                  href={user ? "/my-account" : "/login"}
+                  className="hidden md:flex flex-col items-center group"
                 >
                   <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-petzy-slate group-hover:bg-petzy-coral group-hover:text-white transition-all duration-300">
                     <FaUser size="1.1em" />
                   </div>
-                </div>
+                </Link>
 
                 <div className="relative">
                    <Button
@@ -249,142 +248,5 @@ const Navbar = () => {
     </>
   );
 };
-
-// --- SUB-COMPONENTS ---
-
-const NavItem = ({ href, icon, label, highlight }) => (
-  <Link 
-    href={href} 
-    className={`flex items-center gap-2 text-sm font-bold transition-colors duration-300 ${
-       highlight ? "text-petzy-coral hover:text-petzy-slate" : "text-petzy-slate hover:text-petzy-coral"
-    }`}
-  >
-    <span className="text-lg">{icon}</span>
-    <span>{label}</span>
-  </Link>
-);
-
-const Dropdown = ({ label, icon, category }) => {
-  return (
-    <div className="group relative py-2">
-      <button className="flex items-center gap-2 text-sm font-bold text-petzy-slate hover:text-petzy-coral transition-colors">
-        <span className="text-lg">{icon}</span>
-        <span>{label}</span>
-        <FaChevronDown className="text-[10px] opacity-50 group-hover:opacity-100 transition-opacity" />
-      </button>
-      
-      {/* Dropdown Card */}
-      <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-soft-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:-translate-y-1 z-50 overflow-hidden">
-         <div className="p-2">
-           {category?.categories.map((sub, idx) => (
-             <div key={idx} className="group/item relative">
-               <div className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-petzy-mint-light cursor-pointer text-petzy-slate text-sm font-medium transition-colors">
-                  {sub.name}
-                  {sub.items && <FaChevronRight className="text-xs text-petzy-coral opacity-0 group-hover/item:opacity-100" />}
-               </div>
-               
-               {/* Nested Sub-Menu */}
-               {sub.items && (
-                 <div className="absolute top-0 left-full ml-2 w-56 bg-white rounded-2xl shadow-soft-lg border border-gray-100 opacity-0 invisible group-hover/item:opacity-100 group-hover/item:visible transition-all duration-300 z-50 p-2">
-                    {sub.items.map((item, j) => (
-                      <Link 
-                        key={j}
-                        href={`/products?pet=${category.slug}&category=${sub.slug}&sub=${item.slug}`}
-                        className="block px-4 py-2.5 rounded-xl hover:bg-petzy-mint-light text-petzy-slate-light hover:text-petzy-slate text-sm transition-colors"
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
-                 </div>
-               )}
-             </div>
-           ))}
-         </div>
-      </div>
-    </div>
-  );
-};
-
-const MorePetsDropdown = () => (
-  <div className="group relative py-2">
-    <button className="flex items-center gap-2 text-sm font-bold text-petzy-slate hover:text-petzy-coral transition-colors">
-      <GiRabbit className="text-lg" />
-      <span>More Pets</span>
-      <FaChevronDown className="text-[10px] opacity-50 group-hover:opacity-100 transition-opacity" />
-    </button>
-    <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-2xl shadow-soft-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:-translate-y-1 z-50 p-2">
-       <Link href="/products?pet=rabbit" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-petzy-mint-light text-petzy-slate text-sm font-medium transition-colors">
-          <GiRabbit /> Rabbit
-       </Link>
-       <Link href="/products?pet=fish" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-petzy-mint-light text-petzy-slate text-sm font-medium transition-colors">
-          <GiTropicalFish /> Fish
-       </Link>
-    </div>
-  </div>
-);
-
-const MobileMenu = ({ isOpen, onClose, user }) => (
-  <>
-    {/* Overlay */}
-    <div 
-      className={`fixed inset-0 bg-petzy-slate/60 backdrop-blur-sm z-[90] transition-opacity duration-300 ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
-      onClick={onClose}
-    />
-    
-    {/* Side Sheet */}
-    <div className={`fixed top-0 left-0 h-full w-[85%] max-w-[320px] bg-white z-[100] shadow-2xl transition-transform duration-500 ease-out transform ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-       <div className="p-5 flex items-center justify-between border-b border-gray-100">
-          <Image src={Logo} width={140} alt="Logo" />
-          <button onClick={onClose} className="text-petzy-slate hover:text-petzy-coral p-2">
-             <FaXmark size="1.5em" />
-          </button>
-       </div>
-
-       <div className="p-5 overflow-y-auto h-[calc(100vh-80px)]">
-          {/* User Section Mobile */}
-          <div className="mb-6 p-4 bg-petzy-blue-light/20 rounded-2xl flex items-center gap-4">
-             <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-petzy-coral shadow-sm">
-                <FaUser />
-             </div>
-             <div>
-                {user ? (
-                   <>
-                     <div className="font-bold text-petzy-slate">Hello, User</div>
-                     <Link href="/my-account" className="text-xs text-petzy-coral font-bold hover:underline">My Account</Link>
-                   </>
-                ) : (
-                   <Link href="/login" className="font-bold text-petzy-slate hover:text-petzy-coral">Login / Register</Link>
-                )}
-             </div>
-          </div>
-
-          <nav className="flex flex-col gap-2">
-             <MobileLink href="/best-deals" icon={<MdLocalOffer />} label="Best Deals" />
-             <div className="my-2 border-t border-gray-100" />
-             
-             {/* Simple Expandable logic can be added here, for now linear list */}
-             <div className="text-xs font-bold text-petzy-slate-light uppercase tracking-wider mb-2 mt-2">Categories</div>
-             <MobileLink href="/products?pet=cat" icon={<FaCat />} label="Cat Supplies" />
-             <MobileLink href="/products?pet=dog" icon={<FaDog />} label="Dog Supplies" />
-             <MobileLink href="/products?pet=bird" icon={<FaDove />} label="Bird Supplies" />
-             <MobileLink href="/products?pet=rabbit" icon={<GiRabbit />} label="Small Pets" />
-
-             <div className="my-2 border-t border-gray-100" />
-             <div className="text-xs font-bold text-petzy-slate-light uppercase tracking-wider mb-2 mt-2">Services</div>
-             <MobileLink href="/vets" icon={<MdHealthAndSafety />} label="Vet Consultation" />
-             <MobileLink href="/adoptions" icon={<MdVolunteerActivism />} label="Adoptions" />
-             <MobileLink href="/wishlist" icon={<FaHeart />} label="My Wishlist" />
-          </nav>
-       </div>
-    </div>
-  </>
-);
-
-const MobileLink = ({ href, icon, label }) => (
-  <Link href={href} className="flex items-center gap-4 p-3 rounded-xl text-petzy-slate hover:bg-gray-50 hover:text-petzy-coral transition-colors font-medium">
-     <span className="text-lg opacity-70">{icon}</span>
-     {label}
-  </Link>
-);
 
 export default Navbar;

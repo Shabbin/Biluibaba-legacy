@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 import axios from "@/src/lib/axiosInstance";
 
@@ -9,8 +8,6 @@ import { CardSkeleton } from "@/src/components/ui";
 export default function ExpertVets() {
   const [vets, setVets] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const router = useRouter();
 
   const fetchVets = async () => {
     try {
@@ -53,7 +50,6 @@ export default function ExpertVets() {
               price={vet.appointments["online"]?.fee}
               type="online"
               key={i}
-              router={router}
             />
           ))}
         </div>

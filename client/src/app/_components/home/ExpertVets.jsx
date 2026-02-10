@@ -7,7 +7,7 @@ import { CardSkeleton } from "@/src/components/ui";
 
 import axios from "@/src/lib/axiosInstance";
 
-const ExpertVets = ({ router }) => {
+const ExpertVets = () => {
   const [loading, setLoading] = useState(true);
   const [vets, setVets] = useState([]);
 
@@ -49,7 +49,6 @@ const ExpertVets = ({ router }) => {
               slots={vet.appointments?.slots || {}}
               price={vet.appointments?.online?.fee || 0}
               type="online"
-              router={router}
             />
           ))}
         </div>

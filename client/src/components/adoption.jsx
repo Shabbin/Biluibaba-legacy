@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 
 import Button from "@/src/components/ui/button";
 
@@ -15,7 +16,6 @@ const Adoption = ({
   gender,
   breed,
   id,
-  router,
 }) => {
   const [isInWishlist, setIsInWishlist] = useState(false);
 
@@ -96,12 +96,13 @@ const Adoption = ({
             Breed: <span className="font-normal">{breed}</span>
           </div>
         </div>
-        <Button
-          type="default"
-          text="Take me home"
-          className="w-full"
-          onClick={() => (window.location.href = `/adoptions/${id}`)}
-        />
+        <Link href={`/adoptions/${id}`} className="block">
+          <Button
+            type="default"
+            text="Take me home"
+            className="w-full"
+          />
+        </Link>
       </div>
     </div>
   );

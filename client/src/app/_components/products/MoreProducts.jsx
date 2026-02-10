@@ -3,7 +3,6 @@
 import { useRef, useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
-import { useRouter } from "next/navigation";
 
 import Product from "@/src/components/product";
 
@@ -14,7 +13,6 @@ import { ArrowLeft, ArrowRight } from "@/src/components/svg";
 
 export default function MoreProducts({ products, type }) {
   const swiperRef = useRef(null);
-  const router = useRouter();
 
   return (
     <div className="relative py-10">
@@ -61,7 +59,6 @@ export default function MoreProducts({ products, type }) {
               category={product.category}
               description={product.description}
               slug={product.slug}
-              router={router}
               size={product.size}
             />
           </SwiperSlide>

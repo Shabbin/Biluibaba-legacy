@@ -85,7 +85,6 @@ export default function Search() {
                 category={product.category}
                 description={product.description}
                 slug={product.slug}
-                router={router}
                 size={product.size}
               />
             </div>

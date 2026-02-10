@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Button from "@/src/components/ui/button";
 import { FaArrowRight, FaStar } from "react-icons/fa6"; // Added icons
 import { WavyDivider } from "@/src/components/ui/dividers";
@@ -31,26 +31,25 @@ const productCategories = [
 ];
 
 // Helper for Section Headers
-const SectionHeader = ({ title, onSeeAll }) => (
+const SectionHeader = ({ title, seeAllLink }) => (
   <div className="flex flex-row items-end justify-between mb-8 md:mb-12 px-2 border-b border-petzy-slate/5 pb-4">
     <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-petzy-slate relative">
       {title}
       <span className="absolute -bottom-4 left-0 w-1/3 h-1 bg-petzy-coral rounded-full"></span>
     </h2>
-    {onSeeAll && (
-      <button
-        onClick={onSeeAll}
+    {seeAllLink && (
+      <Link
+        href={seeAllLink}
         className="group flex items-center gap-2 text-petzy-coral font-bold hover:text-petzy-slate transition-colors duration-300"
       >
         <span>See all</span>
         <FaArrowRight className="transform group-hover:translate-x-1 transition-transform" />
-      </button>
+      </Link>
     )}
   </div>
 );
 
 export default function Home() {
-  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [site, setSite] = useState({
     product_landing_slider: [],
@@ -142,7 +141,7 @@ export default function Home() {
       {/* --- FEATURED PRODUCTS --- */}
       <section className="container mx-auto px-5 mb-20">
         <SectionHeader title="Featured Products" />
-        <FeatureProducts type="featured" category="all" router={router} />
+        <FeatureProducts type="featured" category="all" />
       </section>
 
       {/* --- PROMOTIONAL AD 1 --- */}
@@ -172,18 +171,18 @@ export default function Home() {
       {/* --- BEST SELLERS --- */}
       <section className="container mx-auto px-5 mb-20">
         <SectionHeader title="Best Sellers" />
-        <FeatureProducts type="featured" category="all" router={router} />
+        <FeatureProducts type="featured" category="all" />
       </section>
 
       {/* --- SPECIFIC CATEGORIES --- */}
       <section className="container mx-auto px-5 mb-20">
-        <SectionHeader title="Cat Food" onSeeAll={() => router.push("/products?pet=cat")} />
-        <FeatureProducts type="featured" category="all" router={router} />
+        <SectionHeader title="Cat Food" seeAllLink="/products?pet=cat" />
+        <FeatureProducts type="featured" category="all" />
       </section>
 
       <section className="container mx-auto px-5 mb-24">
-        <SectionHeader title="Accessories" onSeeAll={() => router.push("/products?pet=cat")} />
-        <FeatureProducts type="featured" category="all" router={router} />
+        <SectionHeader title="Accessories" seeAllLink="/products?pet=cat" />
+        <FeatureProducts type="featured" category="all" />
       </section>
 
       {/* --- BRAND SPOTLIGHT --- */}
@@ -229,15 +228,16 @@ export default function Home() {
                 </h2>
               </div>
 
-              <ExpertVets router={router} VetsData={VetsData} />
+              <ExpertVets VetsData={VetsData} />
 
               <div className="flex justify-center mt-12">
-                <Button
-                  text="Book a Consultation"
-                  type="default"
-                  className="shadow-lg shadow-petzy-coral/30"
-                  onClick={() => router.push("/vets")}
-                />
+                <Link href="/vets">
+                  <Button
+                    text="Book a Consultation"
+                    type="default"
+                    className="shadow-lg shadow-petzy-coral/30"
+                  />
+                </Link>
               </div>
            </div>
         </div>
@@ -278,15 +278,16 @@ export default function Home() {
            <p className="text-petzy-slate-light">Open your heart and home to a pet in need.</p>
         </div>
 
-        <Adoptions AdoptionData={AdoptionData} router={router} />
+        <Adoptions AdoptionData={AdoptionData} />
 
         <div className="flex justify-center mt-12">
-          <Button
-            type="default"
-            text="View All Adoptions"
-            className="font-bold text-lg px-10 py-4 shadow-xl shadow-petzy-coral/20"
-            onClick={() => router.push("/adoptions")}
-          />
+          <Link href="/adoptions">
+            <Button
+              type="default"
+              text="View All Adoptions"
+              className="font-bold text-lg px-10 py-4 shadow-xl shadow-petzy-coral/20"
+            />
+          </Link>
         </div>
       </section>
 

@@ -14,7 +14,7 @@ import "swiper/css";
 import { PiGreaterThan, PiLessThan } from "react-icons/pi";
 import { ArrowRight, ArrowLeft } from "@/src/components/svg";
 
-const FeatureProducts = ({ category, type, router }) => {
+const FeatureProducts = ({ category, type }) => {
   const swiperRef = useRef(null);
 
   const [loading, setLoading] = useState(true);
@@ -84,7 +84,6 @@ const FeatureProducts = ({ category, type, router }) => {
               category={product.category}
               description={product.description}
               slug={product.slug}
-              router={router}
               size={product.size}
             />
           </SwiperSlide>

@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css"; // Ensure tippy CSS is imported
 import moment from "moment";
@@ -13,7 +14,6 @@ const VetProfile = ({
   slots,
   verified,
   price,
-  router,
   id,
   type,
 }) => {
@@ -58,9 +58,9 @@ const VetProfile = ({
   const nextSlots = getNextAvailableSlots(slots);
 
   return (
-    <div
+    <Link
+      href={`/vets/${id}?type=${type}`}
       className="group relative bg-white rounded-3xl border border-gray-100 shadow-soft hover:shadow-xl hover:shadow-petzy-blue-light/50 transition-all duration-300 flex flex-col overflow-hidden h-full transform hover:-translate-y-1"
-      onClick={() => router.push(`/vets/${id}?type=${type}`)}
     >
       {/* Top Section: Profile Info */}
       <div className="p-6 flex flex-col items-center flex-grow bg-gradient-to-b from-white to-gray-50/50">
@@ -114,12 +114,10 @@ const VetProfile = ({
           <div className="flex flex-col gap-2">
             <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 pl-1">Next Available</p>
             {nextSlots.map((slot, i) => (
-              <button
+              <Link
                 key={i}
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent triggering parent click
-                  router.push(`/vets/${id}?day=${slot.day}&time=${slot.time}`);
-                }}
+                href={`/vets/${id}?day=${slot.day}&time=${slot.time}`}
+                onClick={(e) => e.stopPropagation()}
                 className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-petzy-blue-light/30 bg-petzy-blue-light/10 hover:bg-petzy-coral hover:border-petzy-coral hover:text-white transition-all duration-300 group/btn"
               >
                 <div className="flex items-center gap-2 text-sm font-bold text-petzy-slate group-hover/btn:text-white">
@@ -129,7 +127,7 @@ const VetProfile = ({
                 <div className="text-sm font-bold text-petzy-slate group-hover/btn:text-white">
                   ৳{price}
                 </div>
-              </button>
+              </Link>
             ))}
           </div>
         ) : (
@@ -148,7 +146,7 @@ const VetProfile = ({
            </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

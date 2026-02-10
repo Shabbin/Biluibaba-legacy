@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import Button from "@/src/components/ui/button";
 
@@ -46,7 +46,6 @@ const services = [
 
 const Services = () => {
   const [contentID, setContentID] = useState(0);
-  const router = useRouter();
 
   return (
     <div className="bg-zinc-950 py-20 text-white">
@@ -84,13 +83,14 @@ const Services = () => {
             </div>
 
             <div>
-              <Button
-                text={services[contentID].button.text}
-                type="default"
-                icon={<FaPaw size="2em" color="white" />}
-                className="py-2"
-                onClick={() => router.push(services[contentID].button.link)}
-              ></Button>
+              <Link href={services[contentID].button.link}>
+                <Button
+                  text={services[contentID].button.text}
+                  type="default"
+                  icon={<FaPaw size="2em" color="white" />}
+                  className="py-2"
+                />
+              </Link>
             </div>
           </div>
         </div>
