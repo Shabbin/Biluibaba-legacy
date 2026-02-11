@@ -14,6 +14,8 @@ Monorepo with 5 apps sharing one Express backend. Each app is a separate Next.js
 
 All frontends call `server/` via axios at `NEXT_PUBLIC_API_URL` with `withCredentials: true`. API routes are prefixed `/api/{auth,product,order,vendor,vet,room,adoptions,admin,app}`.
 
+**Data flow**: DB auto-initializes site settings on first connect (`config/db.js`). Admin controllers are split into subdirectories (`controllers/admin/{users,vendors,adoptions,site-settings}.js`).
+
 ## Server Conventions (`server/`)
 
 ### Controller pattern
@@ -49,6 +51,9 @@ Use `utils/Upload.js` factory — pass a multer `storage` config, it adds a file
 ### ID generation
 `utils/GenerateId.js` has `generateRandomId(length)` (alphanumeric) and `generateRoomId()` (xxx-xxxx-xxx format for Twilio rooms).
 
+### SSLCommerz production mode
+`SSLCOMMERZ_IS_LIVE=true` switches from sandbox → production. Server validates all SSLCommerz env vars on startup and exits if missing. Use `./verify-sslcommerz.sh` to check config. Payment callbacks POST to `/api/{order,vet/appointment,adoptions}/validate` — must be publicly accessible for SSLCommerz to reach.
+
 ## Frontend Conventions
 
 ### `client/` (Customer — JavaScript)
@@ -73,12 +78,26 @@ Use `utils/Upload.js` factory — pass a multer `storage` config, it adds a file
 - Next.js 15 + React 19 + Tailwind v4 (CSS-first config, not `tailwind.config.ts`).
 - Twilio Video SDK — room name comes from `?room=` query param, validated against appointment DB records.
 
+## Development Workflows
+
+### Running locally
+Each app has independent dev server. Start server first (`cd server && node server.js`), then frontends (`npm run dev` in each app dir). Server runs on env `PORT`, clients on ports 3000/3001/3002/3003.
+
+### Database seeding
+Use `npm run seed` commands in `server/` to populate test data. Commands: `seed` (all), `seed:clean` (wipe + reseed), `seed:products`, `seed:users`, `seed:orders`, `seed:vets`, `seed:adoptions`. Seeds are in `server/seeds/*.seed.js`.
+
+### Testing
+Run `node test-product-endpoints.js` from root to verify product approval filtering works. Use `./verify-sslcommerz.sh` to validate payment config before production deploy.
+
+### Swagger docs
+Access interactive API docs at `http://localhost:PORT/api-docs`. Swagger specs in `server/swagger-docs/*.js`. Each route file can add JSDoc annotations for autodoc.
+
 ## Key Cross-Cutting Rules
 
 1. **Axios base URL**: Always use the configured axios instance (`import axios from "@/lib/axios"` or `@/src/lib/axiosInstance`), never raw `axios` or hardcoded URLs.
 2. **Cookie names matter**: `token` (users), `app-token` (vendors/vets), `super-token` (admin). Mismatched cookies = silent 401.
 3. **All static uploads** served at `/uploads/{type}` via `express.static` in `server.js`.
-4. **Swagger docs** available at `/api-docs` on the server (configured in `config/swagger.js`).
-5. **Utility filenames** are PascalCase (`ErrorResponse.js`, `SendMail.js`, `Payment.js`, `GeneratePDF.js`).
-6. **Model filenames** are kebab-case (`product.model.js`, `adoption-order.model.js`).
-7. When adding a new API route: create controller in `controllers/`, add route in `routes/`, register in `server.js` with `app.use("/api/xxx", require("./routes/xxx"))`.
+4. **Utility filenames** are PascalCase (`ErrorResponse.js`, `SendMail.js`, `Payment.js`, `GeneratePDF.js`).
+5. **Model filenames** are kebab-case (`product.model.js`, `adoption-order.model.js`).
+6. When adding a new API route: create controller in `controllers/`, add route in `routes/`, register in `server.js` with `app.use("/api/xxx", require("./routes/xxx"))`.
+7. **Product approval**: Public-facing product queries MUST filter `{ status: true }` — unapproved products are `status: false`.
