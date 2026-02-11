@@ -10,7 +10,7 @@ import {
   FaArrowRight,
   FaLocationDot,
 } from "react-icons/fa6";
-import { WavyDivider } from "./ui-old/dividers";
+import { WavyDivider } from "./ui";
 
 // Helper component for consistent, animated links
 const FooterLink = ({ href = "#", children }) => (

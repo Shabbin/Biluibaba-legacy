@@ -1,14 +1,18 @@
-// Export legacy button as default for backward compatibility
-export { default } from "./button-legacy";
+// Modern UI Component Library
+// Import all components from a single location
 
-// Export named exports from button-legacy (includes both legacy and new Button)
-export { Button, buttonVariants } from "./button-legacy";
+// Core Components
+export { default as Badge } from "./badge";
+export { default as Button } from "./button";
+export { default as Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "./card";
 
-// Re-export PageLoader from ui-old for backward compatibility
-export { PageLoader, ButtonSpinner } from "../ui-old/spinner";
-export { default as Spinner } from "../ui-old/spinner";
+// Form Components
+export { default as Input } from "./input";
+export { default as Select } from "./select";
+export { default as Textarea } from "./textarea";
+export { default as Quantity } from "./quantity";
 
-// Re-export skeleton components
+// Feedback Components
 export { 
   default as Skeleton, 
   ProductSkeleton, 
@@ -18,9 +22,9 @@ export {
   ReviewSkeleton, 
   CartItemSkeleton, 
   CardSkeleton 
-} from "../ui-old/skeleton";
-
-// Re-export empty state components
+} from "./skeleton";
+export { default as Spinner, PageLoader, ButtonSpinner } from "./spinner";
+export { default as Toast } from "./toast";
 export { 
   default as EmptyState,
   NoProductsFound,
@@ -32,4 +36,30 @@ export {
   NoBookings,
   NoReviews,
   NoSearchResults
-} from "../ui-old/empty-state";
+} from "./empty-state";
+
+// Layout Components
+export { default as Divider } from "./divider";
+
+// SVG/Icon Components (if needed, add them here)
+// export * from "./svg";
+
+/**
+ * Usage Examples:
+ * 
+ * // Single import
+ * import { Badge, Button, Card } from "@/src/components/ui";
+ * 
+ * // With subcomponents
+ * import { Card, CardHeader, CardTitle, CardContent } from "@/src/components/ui";
+ * 
+ * // Specific imports
+ * import { ProductSkeleton, PageLoader } from "@/src/components/ui";
+ * 
+ * // Empty states
+ * import { EmptyCart, NoProductsFound } from "@/src/components/ui";
+ * 
+ * // Skeletons by type
+ * import { CardSkeleton } from "@/src/components/ui";
+ * <CardSkeleton count={8} type="product" />
+ */

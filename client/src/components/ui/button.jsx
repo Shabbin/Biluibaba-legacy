@@ -1,49 +1,44 @@
-import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
-import { cva } from "class-variance-authority"
+"use client";
 
-import { cn } from "@/src/lib/utils"
+const Button = ({
+  text,
+  onClick,
+  icon,
+  className,
+  type,
+  disabled,
+  iconAlign,
+}) => {
+  let buttonStyle =
+    type === "default"
+      ? "flex justify-center items-center whitespace-nowrap text-center bg-petzy-coral px-6 md:px-10 lg:px-12 py-3 md:py-4 font-bold rounded-pill text-sm md:text-base text-white hover:bg-petzy-coral-dark transition-all ease-in-out duration-300 shadow-soft hover:shadow-soft-lg disabled:opacity-75 disabled:cursor-not-allowed "
+      : type === "outline"
+      ? "flex justify-center items-center whitespace-nowrap text-center bg-transparent px-6 md:px-10 lg:px-12 py-2 md:py-3 font-bold rounded-pill text-sm md:text-base text-petzy-coral border-2 border-petzy-coral hover:bg-petzy-coral hover:text-white transition-all duration-300 ease-in-out disabled:opacity-75 disabled:cursor-not-allowed "
+      : " ";
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-pill text-sm font-bold ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-  {
-    variants: {
-      variant: {
-        default: "bg-petzy-coral text-white hover:bg-petzy-coral-dark shadow-soft hover:shadow-soft-lg",
-        destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline:
-          "border-2 border-petzy-coral bg-transparent text-petzy-coral hover:bg-petzy-coral hover:text-white",
-        secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-      },
-      size: {
-        default: "px-10 md:px-12 py-3 md:py-4",
-        sm: "px-6 py-2",
-        lg: "px-14 py-4 md:py-5",
-        icon: "h-10 w-10",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  }
-)
+  let spinnerType = type === "default" ? "light" : "dark";
 
-const Button = React.forwardRef(({ className, variant, size, asChild = false, ...props }, ref) => {
-  const Comp = asChild ? Slot : "button"
   return (
-    <Comp
-      className={cn(buttonVariants({ variant, size, className }))}
-      ref={ref}
-      {...props}
-    />
-  )
-})
-Button.displayName = "Button"
+    <button
+      className={buttonStyle + className}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {iconAlign === "left" && <span className="mr-2">{icon}</span>}
+      {text} {iconAlign !== "left" && <span className="ml-2">{icon}</span>}
+      <span className={disabled ? "block ml-2" : "hidden"}>
+        {disabled ? <Spinner type={spinnerType} /> : null}
+      </span>
+    </button>
+  );
+};
 
-export { Button, buttonVariants }
-export default Button
+const Spinner = (type) => {
+  let style =
+    type === "light"
+      ? "border-4  border-zinc-800 rounded-xl w-7 h-7 animate-spin"
+      : "border-3 border-gray-500 border-t-white rounded-full w-6 h-6 animate-spin";
+  return <div className={style}></div>;
+};
+
+export default Button;

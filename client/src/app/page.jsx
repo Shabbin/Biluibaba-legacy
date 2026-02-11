@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Button from "@/src/components/ui/button";
 import { FaArrowRight, FaStar } from "react-icons/fa6"; // Added icons
-import { WavyDivider } from "../components/ui-old/dividers";
+import { WavyDivider } from "../components/ui";
 
 // Components
 import Services from "@/src/app/_components/home/Services";
