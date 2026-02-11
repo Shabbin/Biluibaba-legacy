@@ -6,9 +6,9 @@ import { useParams } from "next/navigation";
 
 import { Pagination } from "@heroui/pagination";
 
-import Textarea from "@/src/components/ui/textarea";
+import Textarea from "@/src/components/ui-old/textarea";
 import Button from "@/src/components/ui/button";
-import Quantity from "@/src/components/ui/quantity";
+import Quantity from "@/src/components/ui-old/quantity";
 import { ReviewSkeleton, NoReviews } from "@/src/components/ui";
 import ImageSlider from "@/src/components/image-slider";
 import ProductRatings from "@/src/components/produc-rating";

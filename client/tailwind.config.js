@@ -119,6 +119,5 @@ module.exports = {
     require("tailwind-scrollbar"),
     require("tailwindcss-animate"),
     require("@tailwindcss/typography"),
-    require("@tailwindcss/line-clamp"),
   ],
 };

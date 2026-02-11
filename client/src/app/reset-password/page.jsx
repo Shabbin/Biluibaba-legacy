@@ -8,8 +8,8 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Lock, CheckCircle } from "lucide-react";
 
-import { Button } from "@/src/components/ui/button";
-import { Input } from "@/src/components/ui/input";
+import { Button } from "@/src/components/ui/button-legacy";
+import { Input } from "@/src/components/ui/input-legacy";
 import {
   Card,
   CardContent,

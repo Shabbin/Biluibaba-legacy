@@ -1,4 +1,4 @@
-import { ProductSkeleton, CardSkeleton } from "@/src/components/ui/skeleton";
+import { ProductSkeleton, CardSkeleton } from "../../components/ui-old/skeleton";
 
 // Legacy loading component - use CardSkeleton or ProductSkeleton directly instead
 const Loading = () => {
