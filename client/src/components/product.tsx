@@ -15,6 +15,7 @@ import {
 
 // Utils & Components
 import QuickViewModal from "@/src/components/product/QuickViewModal";
+import { formatCurrency } from "@/src/lib/currency";
 
 // --- MAIN PRODUCT CARD COMPONENT ---
 const Product = ({
@@ -153,9 +154,9 @@ const Product = ({
 
           {/* Price */}
           <div className="mt-auto flex items-end gap-2">
-            <span className="text-xl font-extrabold text-petzy-coral">৳{discountedPrice}</span>
+            <span className="text-xl font-extrabold text-petzy-coral">৳{formatCurrency(discountedPrice)}</span>
             {discount > 0 && (
-              <span className="text-sm text-gray-400 line-through mb-1">৳{price}</span>
+              <span className="text-sm text-gray-400 line-through mb-1">৳{formatCurrency(price)}</span>
             )}
           </div>
         </div>

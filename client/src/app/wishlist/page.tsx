@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import Button from "@/src/components/ui/button";
 import { CardSkeleton, EmptyWishlist } from "@/src/components/ui";
+import { formatCurrency } from "@/src/lib/currency";
 
 import { Delete, AddCart } from "@/src/components/svg";
 
@@ -139,13 +140,15 @@ export default function Page() {
                         <div className="flex items-center space-x-2">
                           <span className="text-xl font-bold text-gray-900">
                             &#2547;{" "}
-                            {Math.floor(
-                              product.price -
-                                (product.price * product.discount) / 100
+                            {formatCurrency(
+                              Math.floor(
+                                product.price -
+                                  (product.price * product.discount) / 100
+                              )
                             )}
                           </span>
                           <span className="text-sm text-gray-400 line-through">
-                            TK {product.price.toLocaleString()}
+                            TK {formatCurrency(product.price)}
                           </span>
                           <span className="text-sm text-green-600 font-medium">
                             &#2547; {product.discount}% Saved

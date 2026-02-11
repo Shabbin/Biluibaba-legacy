@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Pagination } from "@heroui/pagination";
 
 import axios from "@/src/lib/axiosInstance";
+import { formatCurrency } from "@/src/lib/currency";
 
 import Button from "@/src/components/ui/button";
 import { ReviewSkeleton, NoReviews } from "@/src/components/ui";
@@ -410,7 +411,7 @@ export default function Page() {
                       <span className="font-bold">{date}</span> at {slot}
                     </div>
                     <div className="text-lg">
-                      &#2547;{vet?.appointments[type]?.fee}
+                      &#2547;{formatCurrency(vet?.appointments[type]?.fee)}
                     </div>
                   </div>
                 ))}
@@ -425,7 +426,7 @@ export default function Page() {
                   </div>
                   <div className="text-right">
                     <div className="text-neutral-900 font-bold text-3xl">
-                      &#2547; {vet?.appointments[type]?.fee + 150}
+                      &#2547; {formatCurrency(vet?.appointments[type]?.fee + 150)}
                     </div>
                     <div className="text-neutral-700">
                       {date} at {selectedSlot}

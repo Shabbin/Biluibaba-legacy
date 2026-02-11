@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 import axiosInstance from "@/src/lib/axiosInstance";
 
@@ -10,39 +11,31 @@ import Input from "@/src/components/ui/input";
 import Button from "@/src/components/ui/button";
 import Select from "@/src/components/ui/select";
 
-import { FaArrowRight, FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
+import { 
+  FaArrowRight, 
+  FaArrowLeft, 
+  FaEye, 
+  FaEyeSlash, 
+  FaStore, 
+  FaCheck,
+  FaFileArrowUp
+} from "react-icons/fa6";
 
 const Steps = [
-  {
-    id: 1,
-    name: "Personal Details",
-  },
-  {
-    id: 2,
-    name: "Store Address",
-  },
-  {
-    id: 3,
-    name: "Documents",
-  },
-  {
-    id: 4,
-    name: "Tax Information",
-  },
-  {
-    id: 5,
-    name: "Bank Details",
-  },
-  {
-    id: 6,
-    name: "Create Password and Continue",
-  },
+  { id: 1, name: "Personal Details" },
+  { id: 2, name: "Store Address" },
+  { id: 3, name: "Documents" },
+  { id: 4, name: "Tax Info" },
+  { id: 5, name: "Bank Details" },
+  { id: 6, name: "Security" },
 ];
 
 export default function Page() {
   const router = useRouter();
-
   const [step, setStep] = useState(1);
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [vendorData, setVendorData] = useState({
     type: "Individual",
     name: "",
@@ -68,158 +61,131 @@ export default function Page() {
     password: "",
     confirmPassword: "",
   });
-  const [success, setSuccess] = useState(false);
 
-  const handleVendorDataChange = (event) => {
-    const { name, value } = event.target;
-    setVendorData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+  const handleVendorDataChange = (e) => {
+    const { name, value } = e.target;
+    setVendorData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleVendorFileChange = (event) => {
-    const { name, files } = event.target;
-    console.log(name, files[0]);
-    setVendorData((prevState) => ({
-      ...prevState,
-      [name]: files[0],
-    }));
+  const handleVendorFileChange = (e) => {
+    const { name, files } = e.target;
+    if (files && files[0]) {
+      setVendorData((prev) => ({ ...prev, [name]: files[0] }));
+    }
   };
 
-  const handleSubmit = async (setLoading) => {
+  const handleSubmit = async () => {
     const formData = new FormData();
-
     Object.entries(vendorData).forEach(([key, value]) => {
-      if (value) {
-        formData.append(key, value);
-      }
+      if (value) formData.append(key, value);
     });
 
     try {
       setLoading(true);
-
-      const { data } = await axiosInstance.post(
-        "/api/vendor/create",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const { data } = await axiosInstance.post("/api/vendor/create", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       if (data.success) {
-        toast.success("Vendor application created successfully...");
+        toast.success("Vendor application created successfully!");
         setSuccess(true);
       }
     } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.error || "Something went wrong. Please try again.");
+    } finally {
       setLoading(false);
-      console.log(error);
-      return toast.error("Something went wrong. Please try again");
     }
   };
 
   return (
-    <div className="py-10">
-      <div className="container mx-auto md:px-0 px-5">
-        <div className="my-10 pb-5 border-b">
-          <h2 className="text-5xl font-bold">Become a seller</h2>
-          <p className="py-5 text-xl">
-            Join Biluibaba as a seller and grow your business with ease!
+    <div className="min-h-screen bg-gray-50 py-12 md:py-20">
+      <div className="container mx-auto px-5 max-w-6xl">
+        
+        {/* --- Header --- */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-petzy-coral/10 text-petzy-coral rounded-2xl mb-4 text-3xl">
+             <FaStore />
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold text-petzy-slate mb-4">
+            Become a Seller
+          </h1>
+          <p className="text-lg text-petzy-slate-light max-w-2xl mx-auto">
+            Join Biluibaba and start selling your pet products to thousands of customers today.
           </p>
         </div>
 
         {success ? (
-          <div className="text-center py-10">
-            <div className="text-4xl pb-10 md:w-2/3 w-full mx-auto">
-              Your vendor application on Biluibaba is complete! Please check
-              your email and click the verification link to confirm your
-              profile.
+          <div className="bg-white rounded-[2rem] shadow-xl p-10 md:p-20 text-center max-w-3xl mx-auto animate-in fade-in zoom-in duration-500">
+            <div className="w-24 h-24 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8 text-4xl shadow-inner">
+              <FaCheck />
             </div>
+            <h2 className="text-3xl font-bold text-petzy-slate mb-4">Application Submitted!</h2>
+            <p className="text-lg text-gray-500 mb-10 leading-relaxed">
+              Your vendor application on Biluibaba is complete! Please check your email inbox (and spam folder) for a verification link to confirm your profile and activate your store.
+            </p>
             <Button
               type="default"
               onClick={() => router.push("/")}
-              text="Return Home"
-              className="mx-auto"
+              text="Return to Home"
+              className="px-10 py-4 text-lg shadow-lg shadow-petzy-coral/20"
               icon={<FaArrowRight />}
             />
           </div>
         ) : (
-          <div className="flex md:flex-row flex-col gap-5 justify-between">
-            <div className="basis-1/3 md:border-r md:pb-20">
-              {Steps.map((s, i) => (
-                <div
-                  className={
-                    "flex flex-row items-center gap-5 mb-5  " +
-                    (step >= s.id ? "text-black" : "text-zinc-400")
-                  }
-                  key={i}
-                >
-                  <div
-                    className={
-                      "h-10 w-10 rounded-full inline-flex items-center justify-center " +
-                      (step >= s.id
-                        ? "bg-black text-white border-black border-2"
-                        : "border-zinc-400 border-1")
-                    }
-                  >
-                    <div>{s.id}</div>
-                  </div>
-                  <div className={"text-xl " + (step >= s.id && "font-bold")}>
-                    {s.name}
-                  </div>
+          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+            
+            {/* --- Sidebar Stepper --- */}
+            <div className="lg:w-1/4">
+              <div className="bg-white rounded-3xl p-6 shadow-soft sticky top-24">
+                <h3 className="font-bold text-gray-400 uppercase text-xs tracking-wider mb-6 ml-2">Progress</h3>
+                <div className="space-y-0 relative">
+                  {/* Connector Line */}
+                  <div className="absolute left-4 top-4 bottom-4 w-0.5 bg-gray-100 -z-10"></div>
+                  
+                  {Steps.map((s, i) => {
+                     const isActive = step === s.id;
+                     const isCompleted = step > s.id;
+                     
+                     return (
+                      <div key={i} className={`flex items-center gap-4 py-3 relative bg-white transition-all duration-300 ${isActive ? 'translate-x-2' : ''}`}>
+                         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all duration-300 z-10 
+                            ${isActive ? 'bg-petzy-coral border-petzy-coral text-white scale-110 shadow-lg shadow-petzy-coral/30' : 
+                              isCompleted ? 'bg-green-500 border-green-500 text-white' : 
+                              'bg-white border-gray-200 text-gray-400'}`}>
+                            {isCompleted ? <FaCheck /> : s.id}
+                         </div>
+                         <span className={`text-sm font-bold transition-colors ${isActive ? 'text-petzy-slate' : isCompleted ? 'text-petzy-slate-light' : 'text-gray-400'}`}>
+                            {s.name}
+                         </span>
+                      </div>
+                     )
+                  })}
                 </div>
-              ))}
+              </div>
             </div>
-            <div className="basis-full">
-              <div className="text-4xl font-bold">{Steps[step - 1].name}</div>
 
-              {step === 1 && (
-                <StepOne
-                  data={vendorData}
-                  handleDataChange={handleVendorDataChange}
-                  setStep={setStep}
-                />
-              )}
-              {step === 2 && (
-                <StepTwo
-                  data={vendorData}
-                  handleDataChange={handleVendorDataChange}
-                  setStep={setStep}
-                />
-              )}
-              {step === 3 && (
-                <StepThree
-                  data={vendorData}
-                  handleDataChange={handleVendorDataChange}
-                  handleFileChange={handleVendorFileChange}
-                  setStep={setStep}
-                />
-              )}
-              {step === 4 && (
-                <StepFour
-                  data={vendorData}
-                  handleDataChange={handleVendorDataChange}
-                  setStep={setStep}
-                />
-              )}
-              {step === 5 && (
-                <StepFive
-                  data={vendorData}
-                  handleDataChange={handleVendorDataChange}
-                  setStep={setStep}
-                />
-              )}
-              {step === 6 && (
-                <StepSix
-                  data={vendorData}
-                  handleDataChange={handleVendorDataChange}
-                  setStep={setStep}
-                  handleSubmit={handleSubmit}
-                />
-              )}
+            {/* --- Main Form Area --- */}
+            <div className="lg:w-3/4">
+              <div className="bg-white rounded-[2rem] shadow-xl border border-gray-100 p-8 md:p-12 relative overflow-hidden">
+                {/* Step Title */}
+                <div className="mb-8 pb-4 border-b border-gray-100 flex justify-between items-center">
+                   <h2 className="text-2xl font-bold text-petzy-slate">{Steps[step - 1].name}</h2>
+                   <span className="text-sm font-bold text-gray-400">Step {step} of 6</span>
+                </div>
+
+                {/* Step Content */}
+                <div className="animate-in fade-in slide-in-from-right-8 duration-500">
+                  {step === 1 && <StepOne data={vendorData} handleDataChange={handleVendorDataChange} setStep={setStep} />}
+                  {step === 2 && <StepTwo data={vendorData} handleDataChange={handleVendorDataChange} setStep={setStep} />}
+                  {step === 3 && <StepThree data={vendorData} handleDataChange={handleVendorDataChange} handleFileChange={handleVendorFileChange} setStep={setStep} />}
+                  {step === 4 && <StepFour data={vendorData} handleDataChange={handleVendorDataChange} setStep={setStep} />}
+                  {step === 5 && <StepFive data={vendorData} handleDataChange={handleVendorDataChange} setStep={setStep} />}
+                  {step === 6 && <StepSix data={vendorData} handleDataChange={handleVendorDataChange} setStep={setStep} handleSubmit={handleSubmit} loading={loading} />}
+                </div>
+              </div>
             </div>
+
           </div>
         )}
       </div>
@@ -227,517 +193,317 @@ export default function Page() {
   );
 }
 
+// --- SUB-COMPONENTS ---
+
+const Label = ({ children, required }) => (
+  <label className="block text-sm font-bold text-petzy-slate mb-2 ml-1">
+    {children} {required && <span className="text-red-500">*</span>}
+  </label>
+);
+
+const StepActions = ({ onBack, onNext, nextLabel = "Next", loading = false }) => (
+  <div className="flex justify-end gap-4 mt-10 pt-6 border-t border-gray-100">
+    {onBack && (
+      <Button
+        type="outline"
+        text="Back"
+        icon={<FaArrowLeft />}
+        iconAlign="left"
+        className="px-6"
+        onClick={onBack}
+        disabled={loading}
+      />
+    )}
+    <Button
+      type="default"
+      text={loading ? "Processing..." : nextLabel}
+      icon={!loading && <FaArrowRight />}
+      className="px-8 shadow-lg shadow-petzy-coral/20"
+      onClick={onNext}
+      disabled={loading}
+    />
+  </div>
+);
+
+
 function StepOne({ data, handleDataChange, setStep }) {
   const [loading, setLoading] = useState(false);
 
   const checkVendorEmail = async () => {
-    if (!data.name || data.name === "")
-      return toast.error("Please provide your full name.");
-    else if (!data.email || data.email === "" || !data.email.includes("@"))
-      return toast.error("Please provide a valid email address.");
-    else if (
-      !data.phoneNumber ||
-      data.phoneNumber === "" ||
-      data.phoneNumber.length < 11
-    )
-      return toast.error("Please provide a valid phone number.");
-    else if (!data.storeName || data.storeName === "")
-      return toast.error("Please provide a valid store name.");
+    // Validation
+    if (!data.name) return toast.error("Full name is required");
+    if (!data.email || !data.email.includes("@")) return toast.error("Valid email is required");
+    if (!data.phoneNumber || data.phoneNumber.length < 11) return toast.error("Valid phone number required");
+    if (!data.storeName) return toast.error("Store name is required");
 
     try {
       setLoading(true);
-
-      let { data: responseData } = await axiosInstance.post(
-        "/api/app/check-email",
-        {
-          email: data.email,
-        }
-      );
-
-      if (responseData.success) setStep(2);
+      const { data: res } = await axiosInstance.post("/api/app/check-email", { email: data.email });
+      if (res.success) setStep(2);
     } catch (error) {
-      setLoading(false);
       console.error(error);
-      return toast.error(error.response.data.error);
+      toast.error(error.response?.data?.error || "Email check failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="my-5 flex md:flex-row flex-col md:items-center justify-between gap-y-2 flex-wrap">
-      <div className="basis-1/2 -m-2 p-2">
-        <label htmlFor="type">Select vendor type</label>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="md:col-span-2">
+        <Label required>Vendor Type</Label>
         <Select
           value={data.type}
-          data={[
-            { text: "Individual", value: "Individual" },
-            { text: "Company", value: "Company" },
-          ]}
+          data={[{ text: "Individual", value: "Individual" }, { text: "Company", value: "Company" }]}
           onChange={handleDataChange}
           name="type"
+          className="bg-gray-50 border-gray-200"
         />
       </div>
-      <div className="basis-1/2 -m-2 p-2">
-        <label htmlFor="name">
-          {data.type === "Individual" ? "Your full name" : "Your company name"}
-        </label>
-        <Input
-          type="text"
-          name="name"
-          value={data.name}
-          onChange={handleDataChange}
+      <div>
+        <Label required>{data.type === "Individual" ? "Full Name" : "Company Name"}</Label>
+        <Input name="name" value={data.name} onChange={handleDataChange} placeholder="e.g. John Doe" />
+      </div>
+      <div>
+        <Label required>Phone Number</Label>
+        <Input 
+           name="phoneNumber" 
+           value={data.phoneNumber} 
+           onChange={handleDataChange} 
+           placeholder="e.g. 017xxxxxxxx"
+           onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} 
         />
       </div>
-      <div className="basis-1/2 -m-2 p-2">
-        <label htmlFor="phoneNumber">Your phone number</label>
-        <Input
-          type="text"
-          name="phoneNumber"
-          value={data.phoneNumber}
-          pattern="[0-9]*"
-          onChange={handleDataChange}
-          onKeyPress={(event) => {
-            if (!/[0-9]/.test(event.key)) {
-              event.preventDefault();
-            }
-          }}
-        />
+      <div>
+        <Label required>Email Address</Label>
+        <Input type="email" name="email" value={data.email} onChange={handleDataChange} placeholder="e.g. john@example.com" />
       </div>
-      <div className="basis-1/2 -m-2 p-2">
-        <label htmlFor="email">Your email address</label>
-        <Input
-          type="email"
-          name="email"
-          value={data.email}
-          onChange={handleDataChange}
-        />
+      <div>
+        <Label required>Store Name</Label>
+        <Input name="storeName" value={data.storeName} onChange={handleDataChange} placeholder="e.g. Pet Paradise" />
       </div>
-      <div className="basis-full">
-        <label htmlFor="storeName">Your store name</label>
-        <Input
-          text="text"
-          name="storeName"
-          value={data.storeName}
-          onChange={handleDataChange}
-        />
-      </div>
-      <div className="basis-full inline-flex justify-end">
-        <Button
-          type="default"
-          text="Next"
-          icon={<FaArrowRight />}
-          disabled={loading}
-          onClick={checkVendorEmail}
-        />
+      
+      <div className="md:col-span-2">
+        <StepActions onNext={checkVendorEmail} loading={loading} />
       </div>
     </div>
   );
 }
 
 function StepTwo({ data, handleDataChange, setStep }) {
-  const checkStoreAddress = () => {
-    if (!data.storeAddress || data.storeAddress === "")
-      return toast.error("Please provide a valid store address");
-    else if (!data.state || data.state === "")
-      return toast.error("Please provide a valid state");
-    else if (!data.area || data.area === "")
-      return toast.error("Please provide store's area");
-    else if (!data.district || data.district === "")
-      return toast.error("Please provide store's district");
-    else if (!data.postcode || data.postcode === "")
-      return toast.error("Please provide store's post code");
-    else if (!data.fullAddress || data.fullAddress === "")
-      return toast.error("Please provide your store's full address");
-    else if (!data.pickupAddress || data.pickupAddress === "")
-      return toast.error("Please provide your pickup address");
-    else setStep(3);
+  const validate = () => {
+    if (!data.storeAddress) return toast.error("Store address required");
+    if (!data.state) return toast.error("Division required");
+    if (!data.area) return toast.error("Area required");
+    if (!data.district) return toast.error("District required");
+    if (!data.postcode) return toast.error("Postcode required");
+    setStep(3);
   };
 
   return (
-    <div className="my-5 flex md:flex-row flex-col md:items-center justify-between gap-y-2 flex-wrap">
-      <div className="basis-1/2 -m-2 p-2">
-        <label htmlFor="storeAddress">Store address</label>
-        <Input
-          type="text"
-          name="storeAddress"
-          value={data.storeAddress}
-          onChange={handleDataChange}
-        />
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="md:col-span-2">
+        <Label required>Store Address (Line 1)</Label>
+        <Input name="storeAddress" value={data.storeAddress} onChange={handleDataChange} placeholder="House, Road, Block" />
       </div>
-      <div className="basis-1/2 -m-2 p-2">
-        <label htmlFor="state">Store division</label>
-        <Input
-          type="text"
-          name="state"
-          value={data.state}
-          onChange={handleDataChange}
-        />
+      <div>
+        <Label required>Division / State</Label>
+        <Input name="state" value={data.state} onChange={handleDataChange} placeholder="e.g. Dhaka" />
       </div>
-      <div className="basis-1/2 -m-2 p-2">
-        <label htmlFor="area">Store area</label>
-        <Input
-          type="text"
-          name="area"
-          value={data.area}
-          onChange={handleDataChange}
-        />
+      <div>
+        <Label required>District</Label>
+        <Input name="district" value={data.district} onChange={handleDataChange} placeholder="e.g. Dhaka" />
       </div>
-      <div className="basis-1/2 -m-2 p-2">
-        <label htmlFor="district">Store district</label>
-        <Input
-          type="text"
-          name="district"
-          value={data.district}
-          onChange={handleDataChange}
-        />
+      <div>
+        <Label required>Area / Thana</Label>
+        <Input name="area" value={data.area} onChange={handleDataChange} placeholder="e.g. Gulshan" />
       </div>
-      <div className="basis-1/2 -m-2 p-2">
-        <label htmlFor="postcode">Store postcode</label>
-        <Input
-          type="text"
-          name="postcode"
-          value={data.postcode}
-          onChange={handleDataChange}
-          pattern="[0-9]*"
-          onKeyPress={(event) => {
-            if (!/[0-9]/.test(event.key)) {
-              event.preventDefault();
-            }
-          }}
-        />
+      <div>
+        <Label required>Postcode</Label>
+        <Input name="postcode" value={data.postcode} onChange={handleDataChange} placeholder="e.g. 1212" onKeyPress={(e) => !/[0-9]/.test(e.key) && e.preventDefault()} />
       </div>
-      <div className="basis-1/2 -m-2 p-2">
-        <label htmlFor="fullAddress">Full store address</label>
-        <Input
-          type="text"
-          name="fullAddress"
-          value={data.fullAddress}
-          onChange={handleDataChange}
-        />
+      <div className="md:col-span-2">
+        <Label required>Full Pickup Address</Label>
+        <Input name="pickupAddress" value={data.pickupAddress} onChange={handleDataChange} placeholder="Exact address for courier pickup" />
       </div>
-      <div className="basis-full">
-        <label htmlFor="pickupAddress">Full pickup address</label>
-        <Input
-          type="text"
-          name="pickupAddress"
-          value={data.pickupAddress}
-          onChange={handleDataChange}
-        />
-      </div>
-
-      <div className="basis-full inline-flex justify-end gap-5">
-        <Button
-          type="outline"
-          text="Back"
-          icon={<FaArrowLeft />}
-          iconAlign="left"
-          onClick={() => setStep(1)}
-        />
-        <Button
-          type="default"
-          text="Next"
-          icon={<FaArrowRight />}
-          onClick={checkStoreAddress}
-        />
+      
+      <div className="md:col-span-2">
+         <StepActions onBack={() => setStep(1)} onNext={validate} />
       </div>
     </div>
   );
 }
 
-function StepThree({ data, handleDataChange, handleFileChange, setStep }) {
-  const checkDocuments = () => {
-    if (!data.nidFront || data.nidFront === null)
-      return toast.error("Please provide National ID Card (Front Side)");
-    else if (!data.nidBack || data.nidBack === null)
-      return toast.error("Please provide National ID Card (Back Side)");
-    if (!data.nidNumber || data.nidNumber === "")
-      return toast.error("Please provide National ID Card Number");
-    else setStep(4);
+function StepThree({ data, handleFileChange, handleDataChange, setStep }) {
+  const validate = () => {
+    if (!data.nidFront) return toast.error("NID Front image required");
+    if (!data.nidBack) return toast.error("NID Back image required");
+    if (!data.nidNumber) return toast.error("NID Number required");
+    setStep(4);
   };
 
+  const FilePreview = ({ file, label, name }) => (
+    <div className="border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center hover:border-petzy-coral transition-colors bg-gray-50">
+       {file ? (
+         <div className="relative h-40 w-full mb-4">
+            <img src={URL.createObjectURL(file)} alt="Preview" className="h-full w-full object-contain rounded-lg" />
+         </div>
+       ) : (
+         <div className="h-40 flex items-center justify-center text-gray-300 mb-4">
+            <FaFileArrowUp className="text-4xl" />
+         </div>
+       )}
+       <label className="cursor-pointer">
+          <span className="bg-white border border-gray-200 text-petzy-slate font-bold py-2 px-4 rounded-full text-sm hover:bg-petzy-slate hover:text-white transition-colors">
+            {file ? "Change File" : `Upload ${label}`}
+          </span>
+          <input type="file" name={name} accept="image/*" onChange={handleFileChange} className="hidden" />
+       </label>
+       <p className="text-xs text-gray-400 mt-2">Max 5MB (JPG, PNG)</p>
+    </div>
+  );
+
   return (
-    <div className="my-5 flex md:flex-row flex-col md:items-center justify-between gap-y-2 flex-wrap">
-      {data.nidFront !== null && (
-        <img
-          src={URL.createObjectURL(data.nidFront)}
-          alt="NID Front"
-          className="w-[300px]"
-        />
-      )}
-      <div className="basis-full">
-        <label htmlFor="nidFront">
-          National ID Card (Front Side) .jpg/.jpeg/.png
-        </label>
-        <Input
-          accept="image/jpg, image/jpeg, image/png"
-          type="file"
-          name="nidFront"
-          onChange={handleFileChange}
-        />
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+         <div>
+            <Label required>NID Front Side</Label>
+            <FilePreview file={data.nidFront} name="nidFront" label="Front" />
+         </div>
+         <div>
+            <Label required>NID Back Side</Label>
+            <FilePreview file={data.nidBack} name="nidBack" label="Back" />
+         </div>
       </div>
-      {data.nidBack !== null && (
-        <img
-          src={URL.createObjectURL(data.nidBack)}
-          alt="NID Back"
-          className="w-[300px]"
-        />
-      )}
-      <div className="basis-full">
-        <label htmlFor="nidBack">
-          National ID Card (Back Side) .jpg/.jpeg/.png
-        </label>
-        <Input
-          accept="image/jpg, image/jpeg, image/png"
-          type="file"
-          name="nidBack"
-          onChange={handleFileChange}
-        />
-      </div>
-      <div className="basis-full">
-        <label htmlFor="nidNumber">National ID Card Number</label>
-        <Input
-          type="text"
-          name="nidNumber"
-          value={data.nidNumber}
-          onChange={handleDataChange}
-        />
+      
+      <div>
+         <Label required>National ID Number</Label>
+         <Input name="nidNumber" value={data.nidNumber} onChange={handleDataChange} placeholder="Enter your NID number" />
       </div>
 
-      <div className="basis-full inline-flex justify-end gap-5">
-        <Button
-          type="outline"
-          text="Back"
-          icon={<FaArrowLeft />}
-          iconAlign="left"
-          onClick={() => setStep(2)}
-        />
-        <Button
-          type="default"
-          text="Next"
-          icon={<FaArrowRight />}
-          onClick={checkDocuments}
-        />
-      </div>
+      <StepActions onBack={() => setStep(2)} onNext={validate} />
     </div>
   );
 }
 
 function StepFour({ data, handleDataChange, setStep }) {
-  const checkTaxInformation = () => {
-    if (
-      (data.type === "Company" && !data.companyRegistration) ||
-      data.companyRegistration === ""
-    ) {
-      return toast.error("Please provide company registration number");
-    } else if (!data.tin || data.tin === "")
-      return toast.error("Please provide Tax Identification Number (TIN)");
-    else if (!data.tradeLicense || data.tradeLicense === "")
-      return toast.error("Please provide Trade License Number");
-    else setStep(5);
+  const validate = () => {
+    if (data.type === "Company" && !data.companyRegistration) return toast.error("Company Reg. No required");
+    if (!data.tin) return toast.error("TIN required");
+    if (!data.tradeLicense) return toast.error("Trade License required");
+    setStep(5);
   };
 
   return (
-    <div className="my-5 flex flex-row items-center justify-between gap-y-2 flex-wrap">
+    <div className="space-y-6">
       {data.type === "Company" && (
-        <div className="basis-full">
-          <label htmlFor="companyRegistration">
-            Company Registration Number
-          </label>
-          <Input
-            type="text"
-            value={data.companyRegistration}
-            name="companyRegistration"
-            onChange={handleDataChange}
-          />
+        <div>
+          <Label required>Company Registration Number</Label>
+          <Input name="companyRegistration" value={data.companyRegistration} onChange={handleDataChange} />
         </div>
       )}
-      <div className="basis-full">
-        <label htmlFor="tin">Tax Identification Number (TIN)</label>
-        <Input
-          type="text"
-          value={data.tin}
-          name="tin"
-          onChange={handleDataChange}
-        />
+      <div>
+        <Label required>Tax Identification Number (TIN)</Label>
+        <Input name="tin" value={data.tin} onChange={handleDataChange} />
       </div>
-      <div className="basis-full">
-        <label htmlFor="tradeLicense">Trade License Number</label>
-        <Input
-          type="text"
-          value={data.tradeLicense}
-          name="tradeLicense"
-          onChange={handleDataChange}
-        />
+      <div>
+        <Label required>Trade License Number</Label>
+        <Input name="tradeLicense" value={data.tradeLicense} onChange={handleDataChange} />
       </div>
-      <div className="basis-full inline-flex justify-end gap-5">
-        <Button
-          type="outline"
-          text="Back"
-          icon={<FaArrowLeft />}
-          iconAlign="left"
-          onClick={() => setStep(3)}
-        />
-        <Button
-          type="default"
-          text="Next"
-          icon={<FaArrowRight />}
-          onClick={checkTaxInformation}
-        />
-      </div>
+
+      <StepActions onBack={() => setStep(3)} onNext={validate} />
     </div>
   );
 }
 
 function StepFive({ data, handleDataChange, setStep }) {
-  const checkBankDetails = () => {
-    if (!data.bankAccountType || data.bankAccountType === "")
-      return toast.error("Please provide bank account type");
-    else if (!data.bankAccountName || data.bankAccountName === "")
-      return toast.error("Please provide bank account name");
-    else if (!data.bankAccountNumber || data.bankAccountNumber === "")
-      return toast.error("Please provide bank account type");
-    else setStep(6);
+  const validate = () => {
+    if (!data.bankAccountName || !data.bankAccountNumber) return toast.error("Bank details incomplete");
+    setStep(6);
   };
 
   return (
-    <div className="my-5 flex flex-row items-center justify-between gap-y-2 flex-wrap">
-      <div className="basis-full">
-        <label htmlFor="bankAccountType">Bank Account Type</label>
+    <div className="space-y-6">
+      <div>
+        <Label required>Bank Account Type</Label>
         <Select
-          data={[
-            { value: "Current", text: "Current" },
-            { value: "Saving", text: "Saving" },
-          ]}
           value={data.bankAccountType}
+          data={[{ value: "Current", text: "Current" }, { value: "Saving", text: "Saving" }]}
           name="bankAccountType"
           onChange={handleDataChange}
         />
       </div>
-      <div className="basis-full">
-        <label htmlFor="bankAccountType">Bank Account Name</label>
-        <Input
-          type="text"
-          value={data.bankAccountName}
-          name="bankAccountName"
-          onChange={handleDataChange}
-        />
+      <div>
+        <Label required>Account Holder Name</Label>
+        <Input name="bankAccountName" value={data.bankAccountName} onChange={handleDataChange} placeholder="e.g. John Doe" />
       </div>
-      <div className="basis-full">
-        <label htmlFor="bankAccountNumber">Bank Account Number</label>
-        <Input
-          type="text"
-          value={data.bankAccountNumber}
-          name="bankAccountNumber"
-          onChange={handleDataChange}
-        />
+      <div>
+        <Label required>Account Number</Label>
+        <Input name="bankAccountNumber" value={data.bankAccountNumber} onChange={handleDataChange} placeholder="e.g. 1234567890" />
       </div>
-      <div className="basis-full inline-flex justify-end gap-5">
-        <Button
-          type="outline"
-          text="Back"
-          icon={<FaArrowLeft />}
-          iconAlign="left"
-          onClick={() => setStep(4)}
-        />
-        <Button
-          type="default"
-          text="Next"
-          icon={<FaArrowRight />}
-          onClick={checkBankDetails}
-        />
-      </div>
+
+      <StepActions onBack={() => setStep(4)} onNext={validate} />
     </div>
   );
 }
 
-function StepSix({ data, handleDataChange, handleSubmit, setStep }) {
-  const [passwordType, setPasswordType] = useState("password");
-  const [confirmPasswordType, setConfirmPasswordType] = useState("password");
-  const [loading, setLoading] = useState(false);
+function StepSix({ data, handleDataChange, handleSubmit, setStep, loading }) {
+  const [showPass, setShowPass] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
-  const checkPasswordAndSubmit = () => {
-    if (!data.password || data.password === "")
-      return toast.error("Please provide a valid password");
-    else if (data.password.length < 8)
-      return toast.error("Password must be 8 characters long...");
-    else if (!data.confirmPassword || data.confirmPassword === "")
-      return toast.error("Please confirm your password");
-    else handleSubmit(setLoading);
+  const validate = () => {
+    if (!data.password || data.password.length < 8) return toast.error("Password must be at least 8 chars");
+    if (data.password !== data.confirmPassword) return toast.error("Passwords do not match");
+    handleSubmit();
   };
 
   return (
-    <div className="my-5 flex flex-row items-center justify-between gap-y-2 flex-wrap">
-      <div className="basis-full">
-        <label htmlFor="bankAccountType">Password</label>
-        <div className="relative block">
-          {passwordType === "password" ? (
-            <FaEyeSlash
-              size="1.5em"
-              className="absolute top-1/2 transform -translate-y-1/2 right-3 cursor-pointer"
-              onClick={() => setPasswordType("text")}
-            />
-          ) : (
-            <FaEye
-              size="1.5em"
-              className="absolute top-1/2 transform -translate-y-1/2 right-3 cursor-pointer"
-              onClick={() => setPasswordType("password")}
-            />
-          )}
+    <div className="space-y-6">
+      <div>
+        <Label required>Password</Label>
+        <div className="relative">
           <Input
-            type={passwordType}
-            value={data.password}
-            name="password"
-            onChange={handleDataChange}
+             type={showPass ? "text" : "password"} 
+             name="password" 
+             value={data.password} 
+             onChange={handleDataChange} 
+             className="pr-10"
           />
+          <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+             {showPass ? <FaEyeSlash /> : <FaEye />}
+          </button>
         </div>
       </div>
-      <div className="basis-full">
-        <label htmlFor="confirmPassword">Confirm Password</label>
-        <div className="relative block">
-          {confirmPasswordType === "password" ? (
-            <FaEyeSlash
-              size="1.5em"
-              className="absolute top-1/2 transform -translate-y-1/2 right-3 cursor-pointer"
-              onClick={() => setConfirmPasswordType("text")}
-            />
-          ) : (
-            <FaEye
-              size="1.5em"
-              className="absolute top-1/2 transform -translate-y-1/2 right-3 cursor-pointer"
-              onClick={() => setConfirmPasswordType("password")}
-            />
-          )}
-          <Input
-            type={confirmPasswordType}
-            value={data.confirmPassword}
-            name="confirmPassword"
-            onChange={handleDataChange}
+      
+      <div>
+        <Label required>Confirm Password</Label>
+        <div className="relative">
+          <Input 
+             type={showConfirm ? "text" : "password"} 
+             name="confirmPassword" 
+             value={data.confirmPassword} 
+             onChange={handleDataChange} 
+             className="pr-10"
           />
+          <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+             {showConfirm ? <FaEyeSlash /> : <FaEye />}
+          </button>
         </div>
       </div>
-      <div className="basis-full">
-        <p className="bg-gray-100 font-bold text-zinc-600 p-5 text-lg rounded-xl mb-5 ">
-          By using Biluibaba for order fulfillment, you agree to receive and
-          utilize packaging provided by us for delivering goods sold on our
-          platform. This ensures a consistent and reliable experience for both
-          vendors and customers.
+
+      <div className="bg-petzy-blue-light/20 p-6 rounded-2xl border border-petzy-blue-light/30">
+        <h4 className="font-bold text-petzy-slate mb-2 text-sm">Agreement</h4>
+        <p className="text-sm text-petzy-slate-light leading-relaxed">
+          By using Biluibaba for order fulfillment, you agree to receive and utilize packaging provided by us for delivering goods sold on our platform. This ensures a consistent and reliable experience for both vendors and customers.
         </p>
       </div>
-      <div className="basis-full inline-flex justify-end gap-5">
-        <Button
-          type="outline"
-          text="Back"
-          icon={<FaArrowLeft />}
-          iconAlign="left"
-          onClick={() => setStep(5)}
-        />
-        <Button
-          type="default"
-          text="Submit"
-          disabled={loading}
-          icon={<FaArrowRight />}
-          onClick={checkPasswordAndSubmit}
-        />
-      </div>
+
+      <StepActions 
+         onBack={() => setStep(5)} 
+         onNext={validate} 
+         nextLabel="Submit Application" 
+         loading={loading} 
+      />
     </div>
   );
 }

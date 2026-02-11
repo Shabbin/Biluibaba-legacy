@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import axios from "@/src/lib/axiosInstance";
 import { OrderSkeleton, NoBookings } from "@/src/components/ui";
+import { formatCurrency } from "@/src/lib/currency";
 
 export default function VetBookings() {
   const searchParams = useSearchParams();
@@ -102,7 +103,7 @@ export default function VetBookings() {
                           : "17/04/2024"}
                       </td>
                       <td className="py-6 px-2 font-semibold">
-                        ৳{booking.total || booking.amount || "500"}
+                        ৳{formatCurrency(booking.total || booking.amount || 500)}
                       </td>
                       <td className="py-6 px-2 text-right">
                         <button

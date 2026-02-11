@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa6";
 
 import Button from "@/src/components/ui/button";
+import { formatCurrency } from "@/src/lib/currency";
 
 const Cart = ({ toggle, toggler }) => {
   const router = useRouter();
@@ -158,7 +159,7 @@ const Cart = ({ toggle, toggler }) => {
                     </div>
 
                     <div className="flex items-end justify-between mt-3">
-                      <span className="font-bold text-petzy-coral text-base">৳{item.price * item.quantity}</span>
+                      <span className="font-bold text-petzy-coral text-base">৳{formatCurrency(item.price * item.quantity)}</span>
                       
                       {/* Quantity Control */}
                       <div className="flex items-center bg-white border border-gray-200 rounded-md h-7 shadow-sm">
@@ -195,7 +196,7 @@ const Cart = ({ toggle, toggler }) => {
               </div>
               <div className="flex justify-between items-center text-xl font-bold text-petzy-slate">
                 <span>Subtotal</span>
-                <span>৳{subTotal}</span>
+                <span>৳{formatCurrency(subTotal)}</span>
               </div>
               <div className="text-[11px] text-gray-400 text-center">
                 Shipping & taxes calculated at checkout

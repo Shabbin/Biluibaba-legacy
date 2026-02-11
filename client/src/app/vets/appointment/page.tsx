@@ -17,6 +17,7 @@ import Textarea from "@/src/components/ui/textarea";
 import Button from "@/src/components/ui/button";
 
 import VetsData from "@/src/app/demo.vets";
+import { formatCurrency } from "@/src/lib/currency";
 
 import { IoCalendarClearOutline } from "react-icons/io5";
 import {
@@ -301,13 +302,13 @@ export default withRouter(
                       <div className="flex flex-row justify-between my-2">
                         <div>Appointment</div>
                         <div className="text-xl">
-                          &#2547;{this.state.vet.fee}
+                          &#2547;{formatCurrency(this.state.vet.fee)}
                         </div>
                       </div>
                       <div className="flex flex-row justify-between my-2">
                         <div className="underline">Tax and fees</div>
                         <div className="text-xl">
-                          &#2547;{this.state.vet.totalFee - this.state.vet.fee}
+                          &#2547;{formatCurrency(this.state.vet.totalFee - this.state.vet.fee)}
                         </div>
                       </div>
                     </div>
@@ -315,7 +316,7 @@ export default withRouter(
                       <div className="flex flex-row justify-between">
                         <div className="underline text-lg">Total</div>
                         <div className="text-xl font-bold">
-                          &#2547;{this.state.vet.totalFee}
+                          &#2547;{formatCurrency(this.state.vet.totalFee)}
                         </div>
                       </div>
                     </div>

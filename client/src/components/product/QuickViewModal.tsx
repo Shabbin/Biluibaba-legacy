@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa6";
 
 import Button from "@/src/components/ui/button";
+import { formatCurrency } from "@/src/lib/currency";
 
 const QuickViewModal = ({ product, isOpen, onClose }) => {
   const [quantity, setQuantity] = useState(1);
@@ -112,9 +113,9 @@ const QuickViewModal = ({ product, isOpen, onClose }) => {
             </p>
 
             <div className="flex items-end gap-3 mb-8">
-              <span className="text-4xl font-bold text-petzy-slate">৳{discountedPrice}</span>
+              <span className="text-4xl font-bold text-petzy-slate">৳{formatCurrency(discountedPrice)}</span>
               {product.discount > 0 && (
-                <span className="text-lg text-gray-400 line-through mb-1.5">৳{product.price}</span>
+                <span className="text-lg text-gray-400 line-through mb-1.5">৳{formatCurrency(product.price)}</span>
               )}
             </div>
           </div>

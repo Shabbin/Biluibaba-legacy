@@ -16,6 +16,7 @@ import ProductRatings from "@/src/components/produc-rating";
 import MoreProducts from "@/src/app/_components/products/MoreProducts";
 
 import axios from "@/src/lib/axiosInstance";
+import { formatCurrency } from "@/src/lib/currency";
 
 import { formatDate } from "@/src/utils/formatDate";
 
@@ -211,12 +212,12 @@ export default function Page() {
                 <div className="border-t-2 border-b-2 py-5 my-5 text-xl">
                   <div className="flex flex-row items-center gap-5">
                     <div className="text-4xl font-semibold text-red-500">
-                      &#2547; {price}
+                      &#2547; {formatCurrency(price)}
                     </div>
                     {product.discount > 0 && (
                       <>
                         <div className="line-through text-2xl">
-                          &#2547; {product.price}
+                          &#2547; {formatCurrency(product.price)}
                         </div>
                         <div className="text-green-500 uppercase font-bold">
                           save {product.discount}%

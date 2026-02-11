@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import axios from "@/src/lib/axiosInstance";
 import { OrderSkeleton, NoOrders } from "@/src/components/ui";
+import { formatCurrency } from "@/src/lib/currency";
 
 export default function Order() {
   const searchParams = useSearchParams();
@@ -89,7 +90,7 @@ export default function Order() {
                         </div>
                       </td>
                       <td className="py-6 px-2 font-semibold">
-                        ৳{order.total || order.totalAmount || "0"}
+                        ৳{formatCurrency(order.total || order.totalAmount || 0)}
                       </td>
                       <td className="py-6 px-2 text-right">
                         <button

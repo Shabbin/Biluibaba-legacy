@@ -10,6 +10,7 @@ import Button from "@/src/components/ui/button";
 import { Hospital, Calendar } from "@/src/components/svg";
 
 import axios from "@/src/lib/axiosInstance";
+import { formatCurrency } from "@/src/lib/currency";
 
 export default function Page() {
   const [loading, setLoading] = useState(true);
@@ -193,11 +194,11 @@ export default function Page() {
                   <div className="py-5 border-t-2 px-6 text-xl space-y-5">
                     <div className="flex flex-row justify-between items-center">
                       <div>Appointment Fee</div>
-                      <div className="font-bold">&#2547; {vet.totalAmount}</div>
+                      <div className="font-bold">&#2547; {formatCurrency(vet.totalAmount)}</div>
                     </div>
                     <div className="flex flex-row justify-between items-center">
                       <div>Booking Fee</div>
-                      <div className="font-bold">&#2547; 150</div>
+                      <div className="font-bold">&#2547; {formatCurrency(150)}</div>
                     </div>
                   </div>
 
@@ -209,7 +210,7 @@ export default function Page() {
                       </div>
                       <div className="text-right">
                         <div className="text-2xl font-bold mb-2">
-                          &#2547; {vet.totalAmount + 150}
+                          &#2547; {formatCurrency(vet.totalAmount + 150)}
                         </div>
                         <div className="text-xs">
                           {vet.date} at {vet.time}

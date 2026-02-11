@@ -10,6 +10,7 @@ import FeatureProducts from "../_components/home/FeatureProducts";
 import Link from "next/link";
 
 import { Delete, HeartOutline, Heart } from "@/src/components/svg";
+import { formatCurrency } from "@/src/lib/currency";
 
 export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
@@ -186,16 +187,18 @@ export default function Cart() {
                             Size: {item.size} grams
                           </p>
                           <p className="text-2xl text-black font-bold">
-                            ৳{item.price * item.quantity}
+                            ৳{formatCurrency(item.price * item.quantity)}
                             {item.discount > 0 && (
                               <>
                                 <span className="line-through text-gray-400 text-sm ms-2">
-                                  ৳{item.originalPrice * item.quantity}
+                                  ৳{formatCurrency(item.originalPrice * item.quantity)}
                                 </span>{" "}
                                 <span className="text-green-600 text-sm ms-2">
                                   ৳
-                                  {(item.originalPrice - item.price) *
-                                    item.quantity}{" "}
+                                  {formatCurrency(
+                                    (item.originalPrice - item.price) *
+                                    item.quantity
+                                  )}{" "}
                                   Saved
                                 </span>
                               </>
@@ -258,11 +261,11 @@ export default function Cart() {
                   </h2>
                   <div className="flex justify-between mb-2">
                     <span>Total Taka</span>
-                    <span>৳{total}</span>
+                    <span>৳{formatCurrency(total)}</span>
                   </div>
                   <div className="flex justify-between mb-2">
                     <span>Discount</span>
-                    <span className="text-green-600">-৳{discount}</span>
+                    <span className="text-green-600">-৳{formatCurrency(discount)}</span>
                   </div>
                   <div className="flex justify-between mb-2 border-b-2 pb-2">
                     <span>Platform Fee</span>
@@ -270,7 +273,7 @@ export default function Cart() {
                   </div>
                   <div className="flex justify-between font-bold text-lg">
                     <span>Total Amount</span>
-                    <span>৳{total - discount + 10}</span>
+                    <span>৳{formatCurrency(total - discount + 10)}</span>
                   </div>
                   <div className="flex">
                     <Link

@@ -13,6 +13,7 @@ import Button from "@/src/components/ui/button";
 import Radio from "@/src/components/ui/radio";
 
 import axios from "@/src/lib/axiosInstance";
+import { formatCurrency } from "@/src/lib/currency";
 
 export default withRouter(
   class Checkout extends React.Component {
@@ -308,10 +309,10 @@ export default withRouter(
                           </div>
                           <div className="flex flex-row justify-between text-lg">
                             <div className="font-medium">
-                              {product.quantity} x &#2547;{product.price}
+                              {product.quantity} x &#2547;{formatCurrency(product.price)}
                             </div>
                             <div className="font-bold">
-                              &#2547;{product.quantity * product.price}
+                              &#2547;{formatCurrency(product.quantity * product.price)}
                             </div>
                           </div>
                         </div>
@@ -327,21 +328,21 @@ export default withRouter(
                       <div className="flex flex-row items-center justify-between my-4 text-lg">
                         <div>Sub Total</div>
                         <div className="font-semibold">
-                          &#2547;{this.subTotal()}
+                          &#2547;{formatCurrency(this.subTotal())}
                         </div>
                       </div>
 
                       <div className="flex flex-row items-center justify-between my-4 text-lg">
                         <div>Shipping Cost</div>
                         <div className="font-semibold">
-                          &#2547;{this.shippingCost()}
+                          &#2547;{formatCurrency(this.shippingCost())}
                         </div>
                       </div>
 
                       <div className="flex flex-row items-center justify-between my-4 text-lg border-b-1 pb-5">
                         <div>Platform Fee</div>
                         <div className="font-semibold">
-                          &#2547;{this.state.platformFee}
+                          &#2547;{formatCurrency(this.state.platformFee)}
                         </div>
                       </div>
 
@@ -349,9 +350,11 @@ export default withRouter(
                         <div>Total Amount</div>
                         <div>
                           &#2547;
-                          {this.subTotal() +
+                          {formatCurrency(
+                            this.subTotal() +
                             this.shippingCost() +
-                            this.state.platformFee}
+                            this.state.platformFee
+                          )}
                         </div>
                       </div>
 

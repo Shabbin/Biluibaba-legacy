@@ -4,6 +4,7 @@ import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css"; // Ensure tippy CSS is imported
 import moment from "moment";
 import { FaStar, FaCheck, FaCalendarCheck, FaUserDoctor } from "react-icons/fa6";
+import { formatCurrency } from "@/src/lib/currency";
 
 const VetProfile = ({
   src,
@@ -125,7 +126,7 @@ const VetProfile = ({
                   <span>{slot.label}, {slot.time}</span>
                 </div>
                 <div className="text-sm font-bold text-petzy-slate group-hover/btn:text-white">
-                  ৳{price}
+                  ৳{formatCurrency(price)}
                 </div>
               </Link>
             ))}
