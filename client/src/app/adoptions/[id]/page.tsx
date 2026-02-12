@@ -8,7 +8,7 @@ export function generateStaticParams() {
   }));
 }
 
-const Page = ({ params }) => {
+const Page = ({ params }: { params: { id: string } }) => {
   return <AdoptionProfile params={params} />;
 };
 

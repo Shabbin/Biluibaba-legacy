@@ -4,21 +4,28 @@ import { useRef, useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
 import toast from "react-hot-toast";
+import type { Swiper as SwiperType } from "swiper";
 
 import axiosInstance from "@/src/lib/axiosInstance";
 
 import Product from "@/src/components/product";
 import ProductLoading from "@/src/components/loading/product";
+import { Product as ProductType } from "@/src/types";
 
 import "swiper/css";
 import { PiGreaterThan, PiLessThan } from "react-icons/pi";
 import { ArrowRight, ArrowLeft } from "@/src/components/svg";
 
-const FeatureProducts = ({ category, type }) => {
-  const swiperRef = useRef(null);
+interface FeatureProductsProps {
+  category: string;
+  type: string;
+}
 
-  const [loading, setLoading] = useState(true);
-  const [products, setProducts] = useState([]);
+const FeatureProducts: React.FC<FeatureProductsProps> = ({ category, type }) => {
+  const swiperRef = useRef<SwiperType | null>(null);
+
+  const [loading, setLoading] = useState<boolean>(true);
+  const [products, setProducts] = useState<ProductType[]>([]);
 
   const fetchProducts = async () => {
     try {

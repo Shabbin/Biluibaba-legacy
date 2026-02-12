@@ -1,5 +1,17 @@
 // Wavy/scalloped SVG dividers for Petzy-style design
-export const WavyDivider = ({ className = "", flip = false }) => {
+
+import React from "react";
+
+interface DividerShapeProps {
+  className?: string;
+  flip?: boolean;
+}
+
+interface BlobShapeProps {
+  className?: string;
+}
+
+export const WavyDivider: React.FC<DividerShapeProps> = ({ className = "", flip = false }) => {
   return (
     <div className={`w-full ${flip ? 'rotate-180' : ''} ${className}`}>
       <svg
@@ -17,7 +29,7 @@ export const WavyDivider = ({ className = "", flip = false }) => {
   );
 };
 
-export const ScallopedDivider = ({ className = "", flip = false }) => {
+export const ScallopedDivider: React.FC<DividerShapeProps> = ({ className = "", flip = false }) => {
   return (
     <div className={`w-full ${flip ? 'rotate-180' : ''} ${className}`}>
       <svg
@@ -35,7 +47,7 @@ export const ScallopedDivider = ({ className = "", flip = false }) => {
   );
 };
 
-export const CloudDivider = ({ className = "", flip = false }) => {
+export const CloudDivider: React.FC<DividerShapeProps> = ({ className = "", flip = false }) => {
   return (
     <div className={`w-full ${flip ? 'rotate-180' : ''} ${className}`}>
       <svg
@@ -54,7 +66,7 @@ export const CloudDivider = ({ className = "", flip = false }) => {
 };
 
 // Organic blob shape for background decorations
-export const BlobShape = ({ className = "" }) => {
+export const BlobShape: React.FC<BlobShapeProps> = ({ className = "" }) => {
   return (
     <svg
       viewBox="0 0 200 200"

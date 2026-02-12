@@ -54,13 +54,39 @@ const Steps = [
   { id: 6, name: "Security", icon: <FaLock /> },
 ];
 
+interface VendorData {
+  type: string;
+  name: string;
+  phoneNumber: string;
+  email: string;
+  storeName: string;
+  storeAddress: string;
+  state: string;
+  area: string;
+  district: string;
+  postcode: string;
+  fullAddress: string;
+  pickupAddress: string;
+  nidFront: File | null;
+  nidBack: File | null;
+  nidNumber: string;
+  companyRegistration: string;
+  tin: string;
+  tradeLicense: string;
+  bankAccountType: string;
+  bankAccountName: string;
+  bankAccountNumber: string;
+  password: string;
+  confirmPassword: string;
+}
+
 export default function VendorRegistrationPage() {
   const router = useRouter();
-  const [step, setStep] = useState(1);
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState<number>(1);
+  const [success, setSuccess] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const [vendorData, setVendorData] = useState({
+  const [vendorData, setVendorData] = useState<VendorData>({
     type: "Individual",
     name: "",
     phoneNumber: "",
@@ -87,18 +113,18 @@ export default function VendorRegistrationPage() {
   });
 
   // Handle Standard Inputs
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setVendorData((prev) => ({ ...prev, [name]: value }));
   };
 
   // Handle Shadcn Select
-  const handleSelectChange = (name, value) => {
+  const handleSelectChange = (name: string, value: string): void => {
     setVendorData((prev) => ({ ...prev, [name]: value }));
   };
 
   // Handle File Inputs
-  const handleFileChange = (e) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, files } = e.target;
     if (files && files[0]) {
       setVendorData((prev) => ({ ...prev, [name]: files[0] }));
@@ -251,7 +277,14 @@ export default function VendorRegistrationPage() {
 
 // --- SUB-COMPONENTS (Refactored to Shadcn) ---
 
-const FormActions = ({ onBack, onNext, loading, nextLabel = "Next" }) => (
+interface FormActionsProps {
+  onBack?: () => void;
+  onNext: () => void;
+  loading?: boolean;
+  nextLabel?: string;
+}
+
+const FormActions: React.FC<FormActionsProps> = ({ onBack, onNext, loading, nextLabel = "Next" }) => (
   <div className="flex justify-end gap-3 mt-8 pt-4">
     {onBack && (
       <Button variant="outline" onClick={onBack} disabled={loading} type="button">
@@ -265,8 +298,18 @@ const FormActions = ({ onBack, onNext, loading, nextLabel = "Next" }) => (
   </div>
 );
 
-function StepOne({ data, onChange, onSelect, setStep }) {
-  const [loading, setLoading] = useState(false);
+interface StepProps {
+  data: VendorData;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  setStep: (step: number) => void;
+}
+
+interface StepOneProps extends StepProps {
+  onSelect: (name: string, value: string) => void;
+}
+
+function StepOne({ data, onChange, onSelect, setStep }: StepOneProps) {
+  const [loading, setLoading] = useState<boolean>(false);
 
   const validate = async () => {
     if (!data.name) return toast.error("Full Name is required");
@@ -326,7 +369,7 @@ function StepOne({ data, onChange, onSelect, setStep }) {
   );
 }
 
-function StepTwo({ data, onChange, setStep }) {
+function StepTwo({ data, onChange, setStep }: StepProps) {
   const validate = () => {
     if (!data.storeAddress || !data.state || !data.area || !data.district || !data.postcode) {
       return toast.error("Please fill all address fields");
@@ -370,13 +413,17 @@ function StepTwo({ data, onChange, setStep }) {
   );
 }
 
-function StepThree({ data, onFileChange, onChange, setStep }) {
+interface StepThreeProps extends StepProps {
+  onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+function StepThree({ data, onFileChange, onChange, setStep }: StepThreeProps) {
   const validate = () => {
     if (!data.nidFront || !data.nidBack || !data.nidNumber) return toast.error("NID documents and number required");
     setStep(4);
   };
 
-  const FileUploadBox = ({ label, name, file }) => (
+  const FileUploadBox = ({ label, name, file }: { label: string; name: string; file: File | null }) => (
     <div className="space-y-2">
       <Label>{label} <span className="text-red-500">*</span></Label>
       <div className="border-2 border-dashed border-slate-200 rounded-lg p-6 hover:bg-slate-50 transition-colors text-center cursor-pointer relative group">
@@ -425,7 +472,7 @@ function StepThree({ data, onFileChange, onChange, setStep }) {
   );
 }
 
-function StepFour({ data, onChange, setStep }) {
+function StepFour({ data, onChange, setStep }: StepProps) {
   const validate = () => {
     if (!data.tin || !data.tradeLicense) return toast.error("TIN and Trade License required");
     setStep(5);
@@ -452,7 +499,11 @@ function StepFour({ data, onChange, setStep }) {
   );
 }
 
-function StepFive({ data, onChange, onSelect, setStep }) {
+interface StepFiveProps extends StepProps {
+  onSelect: (name: string, value: string) => void;
+}
+
+function StepFive({ data, onChange, onSelect, setStep }: StepFiveProps) {
   const validate = () => {
     if (!data.bankAccountName || !data.bankAccountNumber) return toast.error("Bank details required");
     setStep(6);
@@ -485,9 +536,14 @@ function StepFive({ data, onChange, onSelect, setStep }) {
   );
 }
 
-function StepSix({ data, onChange, handleSubmit, setStep, loading }) {
-  const [showPass, setShowPass] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
+interface StepSixProps extends StepProps {
+  handleSubmit: () => void;
+  loading: boolean;
+}
+
+function StepSix({ data, onChange, handleSubmit, setStep, loading }: StepSixProps) {
+  const [showPass, setShowPass] = useState<boolean>(false);
+  const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
   const validate = () => {
     if (!data.password || data.password.length < 8) return toast.error("Password too short");

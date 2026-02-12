@@ -4,13 +4,23 @@ import Image from "next/image";
 import { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
 
 import "swiper/css";
 import { PiGreaterThan, PiLessThan } from "react-icons/pi";
 import { ArrowRight, ArrowLeft } from "@/src/components/svg";
+import { ProductImage } from "@/src/types";
 
-const Landing = ({ slider }) => {
-  const swiperRef = useRef(null); // Initialize with null
+interface SliderItem extends ProductImage {
+  _id: string;
+}
+
+interface LandingProps {
+  slider: SliderItem[];
+}
+
+const Landing: React.FC<LandingProps> = ({ slider }) => {
+  const swiperRef = useRef<SwiperType | null>(null); // Initialize with null
 
   return (
     <div className="relative">

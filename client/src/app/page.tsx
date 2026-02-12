@@ -31,7 +31,12 @@ const productCategories = [
 ];
 
 // Helper for Section Headers
-const SectionHeader = ({ title, seeAllLink }) => (
+interface SectionHeaderProps {
+  title: string;
+  seeAllLink?: string;
+}
+
+const SectionHeader: React.FC<SectionHeaderProps> = ({ title, seeAllLink }) => (
   <div className="flex flex-row items-end justify-between mb-8 md:mb-12 px-2 border-b border-petzy-slate/5 pb-4">
     <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-petzy-slate relative">
       {title}

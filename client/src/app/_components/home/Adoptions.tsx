@@ -3,19 +3,25 @@ import { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
 import toast from "react-hot-toast";
+import type { Swiper as SwiperType } from "swiper";
 
 import axios from "@/src/lib/axiosInstance";
 
 import Adoption from "@/src/components/adoption";
+import { Adoption as AdoptionType } from "@/src/types";
 
 import "swiper/css";
 import { ArrowLeft, ArrowRight } from "@/src/components/svg";
 
-const Adoptions = ({ AdoptionData }) => {
-  const swiperRef = useRef();
+interface AdoptionsSectionProps {
+  AdoptionData?: AdoptionType[];
+}
 
-  const [loading, setLoading] = useState(true);
-  const [adoptions, setAdoptions] = useState([]);
+const Adoptions: React.FC<AdoptionsSectionProps> = ({ AdoptionData }) => {
+  const swiperRef = useRef<SwiperType | undefined>();
+
+  const [loading, setLoading] = useState<boolean>(true);
+  const [adoptions, setAdoptions] = useState<AdoptionType[]>([]);
 
   const fetchAdoptions = async () => {
     try {

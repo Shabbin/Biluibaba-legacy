@@ -1,6 +1,17 @@
 "use client";
 
-const Card = ({ 
+import React from "react";
+
+type CardVariant = "default" | "elevated" | "outline" | "gradient" | "glass";
+
+interface CardProps {
+  children: React.ReactNode;
+  variant?: CardVariant;
+  hover?: boolean;
+  className?: string;
+}
+
+const Card: React.FC<CardProps> = ({ 
   children, 
   variant = "default", 
   hover = true,
@@ -27,7 +38,12 @@ const Card = ({
   );
 };
 
-export const CardHeader = ({ children, className = "" }) => {
+interface CardSubComponentProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const CardHeader: React.FC<CardSubComponentProps> = ({ children, className = "" }) => {
   return (
     <div className={`mb-4 ${className}`}>
       {children}
@@ -35,7 +51,7 @@ export const CardHeader = ({ children, className = "" }) => {
   );
 };
 
-export const CardTitle = ({ children, className = "" }) => {
+export const CardTitle: React.FC<CardSubComponentProps> = ({ children, className = "" }) => {
   return (
     <h3 className={`text-xl md:text-2xl font-bold text-petzy-slate ${className}`}>
       {children}
@@ -43,7 +59,7 @@ export const CardTitle = ({ children, className = "" }) => {
   );
 };
 
-export const CardDescription = ({ children, className = "" }) => {
+export const CardDescription: React.FC<CardSubComponentProps> = ({ children, className = "" }) => {
   return (
     <p className={`text-sm md:text-base text-petzy-slate-light mt-2 ${className}`}>
       {children}
@@ -51,7 +67,7 @@ export const CardDescription = ({ children, className = "" }) => {
   );
 };
 
-export const CardContent = ({ children, className = "" }) => {
+export const CardContent: React.FC<CardSubComponentProps> = ({ children, className = "" }) => {
   return (
     <div className={className}>
       {children}
@@ -59,7 +75,7 @@ export const CardContent = ({ children, className = "" }) => {
   );
 };
 
-export const CardFooter = ({ children, className = "" }) => {
+export const CardFooter: React.FC<CardSubComponentProps> = ({ children, className = "" }) => {
   return (
     <div className={`mt-4 pt-4 border-t border-gray-100 ${className}`}>
       {children}

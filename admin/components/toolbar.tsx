@@ -11,11 +11,11 @@ import {
   LuStrikethrough,
 } from "react-icons/lu";
 
-type Props = {
+interface ToolbarProps {
   editor: Editor | null;
-};
+}
 
-export default function ({ editor }: Props) {
+export default function Toolbar({ editor }: ToolbarProps) {
   if (!editor) {
     return null;
   }

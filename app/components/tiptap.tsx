@@ -6,15 +6,17 @@ import Heading from "@tiptap/extension-heading";
 
 import Toolbar from "@/components/toolbar";
 
-export default function ({
-  description,
-  placeholder,
-  onChange,
-}: {
+interface TiptapEditorProps {
   description: string;
   placeholder: string;
   onChange: (text: string) => void;
-}) {
+}
+
+export default function TiptapEditor({
+  description,
+  placeholder,
+  onChange,
+}: TiptapEditorProps) {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({}),

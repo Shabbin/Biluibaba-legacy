@@ -8,7 +8,7 @@ export function generateStaticParams() {
   }));
 }
 
-const Product = ({ params }) => {
+const Product = ({ params }: { params: { slug: string } }) => {
   return <DisplayProduct params={params} />;
 };
 

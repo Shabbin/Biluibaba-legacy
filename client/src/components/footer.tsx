@@ -1,4 +1,6 @@
+import React from "react";
 import Link from "next/link";
+import { IconType } from "react-icons";
 import {
   FaFacebook,
   FaInstagram,
@@ -12,8 +14,18 @@ import {
 } from "react-icons/fa6";
 import { WavyDivider } from "./ui";
 
+interface FooterLinkProps {
+  href?: string;
+  children: React.ReactNode;
+}
+
+interface SocialIconProps {
+  Icon: IconType;
+  href?: string;
+}
+
 // Helper component for consistent, animated links
-const FooterLink = ({ href = "#", children }) => (
+const FooterLink: React.FC<FooterLinkProps> = ({ href = "#", children }) => (
   <Link 
     href={href} 
     className="group flex items-center text-petzy-slate-light hover:text-petzy-coral transition-all duration-300 py-1"
@@ -27,7 +39,7 @@ const FooterLink = ({ href = "#", children }) => (
   </Link>
 );
 
-const SocialIcon = ({ Icon, href = "#" }) => (
+const SocialIcon: React.FC<SocialIconProps> = ({ Icon, href = "#" }) => (
   <a 
     href={href} 
     className="w-10 h-10 rounded-full bg-white text-petzy-slate hover:bg-petzy-coral hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1"

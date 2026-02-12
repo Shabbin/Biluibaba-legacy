@@ -277,7 +277,7 @@ export default function Page() {
                                             : "text-gray-400"
                                         }`}
                                       >
-                                        ★
+                                        <FaStar />
                                       </span>
                                     </div>
                                   ))}

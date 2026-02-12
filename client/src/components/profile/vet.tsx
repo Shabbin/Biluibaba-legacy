@@ -6,7 +6,29 @@ import moment from "moment";
 import { FaStar, FaCheck, FaCalendarCheck, FaUserDoctor } from "react-icons/fa6";
 import { formatCurrency } from "@/src/lib/currency";
 
-const VetProfile = ({
+import type { VetSlots } from "@/src/types";
+
+interface AvailableSlot {
+  label: string;
+  fullDate: string;
+  day: string;
+  time: string;
+}
+
+interface VetProfileProps {
+  src: string;
+  name: string;
+  designation: string;
+  star: number;
+  reviews: number;
+  slots: VetSlots;
+  verified?: boolean;
+  price: number;
+  id: string;
+  type: string;
+}
+
+const VetProfile: React.FC<VetProfileProps> = ({
   src,
   name,
   designation,
@@ -20,13 +42,13 @@ const VetProfile = ({
 }) => {
   
   // Helper to get slots (keeping your logic, just cleaning code style)
-  const getNextAvailableSlots = (slotsData, limit = 2) => {
+  const getNextAvailableSlots = (slotsData: VetSlots, limit: number = 2): AvailableSlot[] => {
     const now = moment();
     const today = now.format("dddd").toLowerCase();
     const daysOrder = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
     let startIndex = daysOrder.indexOf(today);
-    let availableSlots = [];
+    let availableSlots: AvailableSlot[] = [];
     let checkedDays = 0;
 
     // Loop for next 14 days or until limit reached

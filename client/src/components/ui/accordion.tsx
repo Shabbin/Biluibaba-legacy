@@ -1,11 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
+import { FAQItem } from "@/src/types";
 
-const Accordion = ({ items, className = "" }) => {
-  const [openItems, setOpenItems] = useState(new Set());
+interface AccordionProps {
+  items: FAQItem[];
+  className?: string;
+}
 
-  const toggleItem = (index) => {
+const Accordion: React.FC<AccordionProps> = ({ items, className = "" }) => {
+  const [openItems, setOpenItems] = useState<Set<number>>(new Set());
+
+  const toggleItem = (index: number): void => {
     const newOpenItems = new Set(openItems);
     if (newOpenItems.has(index)) {
       newOpenItems.delete(index);

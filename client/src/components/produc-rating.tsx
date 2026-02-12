@@ -1,8 +1,16 @@
 import React from "react";
 
 import { Star } from "./svg";
+import { RatingBreakdown } from "@/src/types";
 
-const ProductRatings = ({
+interface ProductRatingsProps {
+  ratings: number;
+  totalRatings: number;
+  totalReviews: number;
+  ratingBreakdown: RatingBreakdown;
+}
+
+const ProductRatings: React.FC<ProductRatingsProps> = ({
   ratings,
   totalRatings,
   totalReviews,
@@ -18,12 +26,12 @@ const ProductRatings = ({
   } = ratingBreakdown;
 
   // Format number with commas
-  const formatNumber = (num) => {
+  const formatNumber = (num: number): string => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   // Calculate percentage for progress bars
-  const calculatePercentage = (value, total) => {
+  const calculatePercentage = (value: number, total: number): number => {
     if (total === 0) return 0;
     return (value / total) * 100;
   };

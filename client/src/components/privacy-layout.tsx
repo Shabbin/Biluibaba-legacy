@@ -1,15 +1,25 @@
 "use client";
 
+import React from "react";
 import { FaShieldHalved, FaFileContract, FaRotateLeft, FaMoneyBillWave } from "react-icons/fa6";
 
-const iconMap = {
+type PolicyType = "privacy" | "terms" | "return" | "refund";
+
+const iconMap: Record<PolicyType, React.ReactNode> = {
   privacy: <FaShieldHalved />,
   terms: <FaFileContract />,
   return: <FaRotateLeft />,
   refund: <FaMoneyBillWave />,
 };
 
-const PolicyLayout = ({ title, lastUpdated, type = "privacy", children }) => {
+interface PolicyLayoutProps {
+  title: string;
+  lastUpdated: string;
+  type?: PolicyType;
+  children: React.ReactNode;
+}
+
+const PolicyLayout: React.FC<PolicyLayoutProps> = ({ title, lastUpdated, type = "privacy", children }) => {
   return (
     <div className="bg-white min-h-screen pb-20">
       {/* --- HERO HEADER --- */}

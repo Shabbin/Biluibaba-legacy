@@ -3,7 +3,17 @@
 import Link from "next/link";
 import { FaArrowRightLong } from "react-icons/fa6";
 
-const ProductCategory = ({ categories }) => {
+interface CategoryItem {
+  name?: string;
+  link: string;
+  src: string;
+}
+
+interface ProductCategoryProps {
+  categories: CategoryItem[];
+}
+
+const ProductCategory: React.FC<ProductCategoryProps> = ({ categories }) => {
   return (
     <section className="bg-petzy-periwinkle-light py-20 border-b border-petzy-slate/5">
       <div className="container mx-auto px-6">

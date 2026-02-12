@@ -2,7 +2,22 @@ import React from "react";
 
 import { FaCircleXmark, FaCircleCheck } from "react-icons/fa6";
 
-export default class BookingProfile extends React.Component {
+interface BookingProfileProps {
+  profilePic: React.ReactNode;
+  name: string;
+  status: string;
+  date: string;
+  slot: string;
+  pet: string;
+  concern: string;
+  sex: string;
+  breed: string;
+  birthdate: string;
+  reason: string;
+  bookedAt: string;
+}
+
+export default class BookingProfile extends React.Component<BookingProfileProps> {
   render() {
     return (
       <div className="my-2 px-5 py-10 border rounded-xl">

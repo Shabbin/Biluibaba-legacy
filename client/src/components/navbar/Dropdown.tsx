@@ -1,7 +1,16 @@
+import React from "react";
 import Link from "next/link";
 import { FaChevronDown, FaChevronRight } from "react-icons/fa6";
 
-const Dropdown = ({ label, icon, category }) => {
+import type { ProductCategory } from "@/src/types";
+
+interface DropdownProps {
+  label: string;
+  icon: React.ReactNode;
+  category?: ProductCategory;
+}
+
+const Dropdown: React.FC<DropdownProps> = ({ label, icon, category }) => {
   return (
     <div className="group relative py-2">
       <button className="flex items-center gap-2 text-sm font-bold text-petzy-slate hover:text-petzy-coral transition-colors">

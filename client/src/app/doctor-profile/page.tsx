@@ -5,9 +5,14 @@ import React from "react";
 import DoctorProfile from "@/src/app/doctor-profile/profile";
 import Booking from "@/src/app/doctor-profile/booking";
 
-export default class Doctor extends React.Component {
+interface DoctorState {
+  loading: boolean;
+  selected: number;
+}
+
+export default class Doctor extends React.Component<Record<string, never>, DoctorState> {
   constructor() {
-    super();
+    super({});
 
     this.state = {
       loading: true,

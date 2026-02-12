@@ -13,9 +13,24 @@ import Button from "@/src/components/ui/button";
 
 import axios from "@/src/lib/axiosInstance";
 
+import { WithRouterProps } from "@/src/app/controllers/router";
+
+interface AdoptionCheckoutState {
+  loading: boolean;
+  adoption: Record<string, unknown>;
+  region: string;
+  shippingCost: number;
+  name: string;
+  phoneNumber: string;
+  address: string;
+  whyAdopt: string;
+  petProof: string;
+  takeCareOfPet: string;
+}
+
 export default withRouter(
-  class Checkout extends React.Component {
-    constructor(props) {
+  class Checkout extends React.Component<WithRouterProps, AdoptionCheckoutState> {
+    constructor(props: WithRouterProps) {
       super(props);
 
       this.state = {
@@ -45,7 +60,7 @@ export default withRouter(
       }
     }
 
-    async onSubmit(event) {
+    async onSubmit(event: React.FormEvent<HTMLFormElement>) {
       event.preventDefault();
 
       if (

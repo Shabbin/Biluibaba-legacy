@@ -17,8 +17,21 @@ import {
 import QuickViewModal from "@/src/components/product/QuickViewModal";
 import { formatCurrency } from "@/src/lib/currency";
 
+interface ProductProps {
+  id: string;
+  src: string;
+  name: string;
+  slug: string;
+  price: number;
+  discount: number;
+  category?: string;
+  description?: string;
+  review?: number;
+  totalReview?: number;
+}
+
 // --- MAIN PRODUCT CARD COMPONENT ---
-const Product = ({
+const Product: React.FC<ProductProps> = ({
   id,
   src,
   name,
@@ -39,7 +52,7 @@ const Product = ({
     setIsInWishlist(wishlistItems.some((item) => item.slug === slug));
   }, [slug]);
 
-  const toggleWishlist = (e) => {
+  const toggleWishlist = (e: React.MouseEvent) => {
     e.stopPropagation();
     const wishlistItems = JSON.parse(localStorage.getItem("wishlist")) || [];
 
@@ -56,7 +69,7 @@ const Product = ({
     }
   };
 
-  const handleQuickAdd = (e) => {
+  const handleQuickAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     const discountedPrice = discount > 0 ? price - (price * discount) / 100 : price;

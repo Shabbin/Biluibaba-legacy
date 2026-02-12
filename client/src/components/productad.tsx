@@ -1,6 +1,13 @@
+import React from "react";
 import Button from "@/src/components/ui/button";
 
-const ProductAd = ({ title, desc, buttonText }) => {
+interface ProductAdProps {
+  title: string;
+  desc: string;
+  buttonText: string;
+}
+
+const ProductAd: React.FC<ProductAdProps> = ({ title, desc, buttonText }) => {
   return (
     <div className="flex md:flex-row flex-col md:px-0 px-5">
       <div className="basis-1/2 bg-petzy-periwinkle h-full md:min-h-[400px] min-h-[250px] rounded-tl-3xl md:rounded-bl-3xl rounded-tr-3xl md:rounded-tr-none"></div>

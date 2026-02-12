@@ -1,4 +1,10 @@
-const Radio = ({ value, className, onChange, ...props }) => {
+interface RadioProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  value: string;
+  className?: string;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+}
+
+const Radio: React.FC<RadioProps> = ({ value, className, onChange, ...props }) => {
   return (
     <input
       type="checkbox"

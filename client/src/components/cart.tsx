@@ -15,9 +15,16 @@ import {
 import Button from "@/src/components/ui/button";
 import { formatCurrency } from "@/src/lib/currency";
 
-const Cart = ({ toggle, toggler }) => {
+import type { CartItem } from "@/src/types";
+
+interface CartProps {
+  toggle: boolean;
+  toggler: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Cart: React.FC<CartProps> = ({ toggle, toggler }) => {
   const router = useRouter();
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
   const [isClient, setIsClient] = useState(false);
 
   // --- 1. Load & Sync Cart Data ---
@@ -43,7 +50,7 @@ const Cart = ({ toggle, toggler }) => {
   }, [toggle]);
 
   // --- 2. Cart Logic Handlers ---
-  const updateQuantity = (id, change) => {
+  const updateQuantity = (id: string, change: number) => {
     const updatedCart = cart.map((item) => {
       if (item.id === id) {
         const newQuantity = Math.max(1, item.quantity + change);
@@ -54,12 +61,12 @@ const Cart = ({ toggle, toggler }) => {
     saveAndNotify(updatedCart);
   };
 
-  const removeItem = (id) => {
+  const removeItem = (id: string) => {
     const updatedCart = cart.filter((item) => item.id !== id);
     saveAndNotify(updatedCart);
   };
 
-  const saveAndNotify = (newCart) => {
+  const saveAndNotify = (newCart: CartItem[]) => {
     setCart(newCart);
     localStorage.setItem("cart", JSON.stringify(newCart));
     window.dispatchEvent(new Event("storage"));

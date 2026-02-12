@@ -73,11 +73,41 @@ const concerns = [
   { value: "New parent", label: "New parent" },
 ];
 
+interface SpecializedZone {
+  pet: string;
+  concerns: { value: string; label: string }[];
+}
+
+interface VetData {
+  name: string;
+  phoneNumber: string;
+  email: string;
+  gender: string;
+  state: string;
+  district: string;
+  postcode: string;
+  fullAddress: string;
+  nidFront: File | null;
+  nidBack: File | null;
+  nidNumber: string;
+  certificate: File | null;
+  degree: string;
+  license: string;
+  hospital: string;
+  tin: string;
+  specializedZone: SpecializedZone[];
+  bankAccountType: string;
+  bankAccountName: string;
+  bankAccountNumber: string;
+  password: string;
+  confirmPassword: string;
+}
+
 export default function Page() {
   const router = useRouter();
 
-  const [step, setStep] = useState(1);
-  let [vetData, setVetData] = useState({
+  const [step, setStep] = useState<number>(1);
+  let [vetData, setVetData] = useState<VetData>({
     name: "",
     phoneNumber: "",
     email: "",
@@ -106,9 +136,9 @@ export default function Page() {
     password: "",
     confirmPassword: "",
   });
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState<boolean>(false);
 
-  const handleVetDataChange = (event) => {
+  const handleVetDataChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
     const { name, value } = event.target;
     setVetData((prevState) => ({
       ...prevState,
@@ -116,7 +146,7 @@ export default function Page() {
     }));
   };
 
-  const handleSpecializedZoneChange = (index, event) => {
+  const handleSpecializedZoneChange = (index: number, event: { target: { name: string; value: unknown } }): void => {
     const { name, value } = event.target;
     const specializedZone = [...vetData.specializedZone];
 
@@ -136,14 +166,14 @@ export default function Page() {
     }));
   };
 
-  const handleSpecializedZoneRemoveFields = (index) => {
+  const handleSpecializedZoneRemoveFields = (index: number): void => {
     if (vetData.specializedZone.length === 1) return;
     const specializedZone = [...vetData.specializedZone];
     specializedZone.splice(index, 1);
     setVetData({ ...vetData, specializedZone });
   };
 
-  const handleVetFileChange = (event) => {
+  const handleVetFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, files } = event.target;
     setVetData((prevState) => ({
       ...prevState,
@@ -151,7 +181,7 @@ export default function Page() {
     }));
   };
 
-  const handleSubmit = async (setLoading) => {
+  const handleSubmit = async (setLoading: (v: boolean) => void): Promise<void> => {
     const formData = new FormData();
 
     Object.entries(vetData).forEach(([key, value]) => {
@@ -307,8 +337,18 @@ export default function Page() {
   );
 }
 
-function StepOne({ data, handleDataChange, setStep }) {
-  const [loading, setLoading] = useState(false);
+interface VetStepProps {
+  data: VetData;
+  handleDataChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  setStep: (step: number) => void;
+}
+
+interface VetStepTwoProps extends VetStepProps {
+  handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+function StepOne({ data, handleDataChange, setStep }: VetStepProps) {
+  const [loading, setLoading] = useState<boolean>(false);
 
   const checkVetEmail = async () => {
     if (!data.name || data.name === "")
@@ -405,7 +445,7 @@ function StepOne({ data, handleDataChange, setStep }) {
   );
 }
 
-function StepTwo({ data, handleDataChange, handleFileChange, setStep }) {
+function StepTwo({ data, handleDataChange, handleFileChange, setStep }: VetStepTwoProps) {
   const checkDocuments = () => {
     if (!data.nidFront || data.nidFront === null)
       return toast.error("Please provide National ID Card (Front Side)");
@@ -528,7 +568,7 @@ function StepTwo({ data, handleDataChange, handleFileChange, setStep }) {
   );
 }
 
-function StepThree({ data, handleDataChange, setStep }) {
+function StepThree({ data, handleDataChange, setStep }: VetStepProps) {
   const checkAddress = () => {
     if (!data.hospital || data.hospital === "")
       return toast.error("Please provide your hospital name.");
@@ -620,7 +660,7 @@ function StepThree({ data, handleDataChange, setStep }) {
   );
 }
 
-function StepFour({ data, handleDataChange, setStep }) {
+function StepFour({ data, handleDataChange, setStep }: VetStepProps) {
   const checkTaxInformation = () => {
     setStep(5);
   };
@@ -657,13 +697,21 @@ function StepFour({ data, handleDataChange, setStep }) {
   );
 }
 
+interface VetStepFiveProps {
+  data: VetData;
+  handleSpecializedZoneChange: (index: number, event: { target: { name: string; value: unknown } }) => void;
+  handleSpecializedZoneAddFields: () => void;
+  handleSpecializedZoneRemoveFields: (index: number) => void;
+  setStep: (step: number) => void;
+}
+
 function StepFive({
   data,
   handleSpecializedZoneChange,
   handleSpecializedZoneAddFields,
   handleSpecializedZoneRemoveFields,
   setStep,
-}) {
+}: VetStepFiveProps) {
   const checkSpecializedZone = () => {
     if (data.specializedZone.length === 0)
       return toast.error("Please add at least one specialized zone");
@@ -747,7 +795,7 @@ function StepFive({
   );
 }
 
-function StepSix({ data, handleDataChange, setStep }) {
+function StepSix({ data, handleDataChange, setStep }: VetStepProps) {
   const checkBankDetails = () => {
     if (!data.bankAccountType || data.bankAccountType === "")
       return toast.error("Please provide bank account type");
@@ -810,9 +858,13 @@ function StepSix({ data, handleDataChange, setStep }) {
   );
 }
 
-function StepSeven({ data, handleDataChange, setStep, handleSubmit }) {
-  const [passwordType, setPasswordType] = useState("password");
-  const [loading, setLoading] = useState(false);
+interface VetStepSevenProps extends VetStepProps {
+  handleSubmit: (setLoading: (v: boolean) => void) => Promise<void>;
+}
+
+function StepSeven({ data, handleDataChange, setStep, handleSubmit }: VetStepSevenProps) {
+  const [passwordType, setPasswordType] = useState<string>("password");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const checkPasswordAndSubmit = () => {
     if (!data.password || data.password === "")

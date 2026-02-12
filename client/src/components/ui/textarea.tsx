@@ -1,4 +1,13 @@
-const Textarea = ({ placeholder, value, onChange, className, ...props }) => {
+import React from "react";
+
+interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+  placeholder?: string;
+  value?: string;
+  onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
+  className?: string;
+}
+
+const Textarea: React.FC<TextareaProps> = ({ placeholder, value, onChange, className = "", ...props }) => {
   return (
     <textarea
       value={value}

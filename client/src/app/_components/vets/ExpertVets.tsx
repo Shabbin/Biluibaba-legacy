@@ -5,9 +5,21 @@ import axios from "@/src/lib/axiosInstance";
 import VetProfile from "@/src/components/profile/vet";
 import { CardSkeleton } from "@/src/components/ui";
 
+interface VetData {
+  _id: string;
+  name: string;
+  profilePicture: string;
+  degree: string;
+  verified: boolean;
+  appointments: {
+    slots: Record<string, { availableSlots: string[] }>;
+    online?: { fee: number };
+  };
+}
+
 export default function ExpertVets() {
-  const [vets, setVets] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [vets, setVets] = useState<VetData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const fetchVets = async () => {
     try {

@@ -60,10 +60,21 @@ export default function Page() {
   );
 }
 
-const Adoption = ({ pic, pet, name, location, age, gender, breed, id }) => {
+interface MyAdoptionCardProps {
+  pic: string;
+  pet: string;
+  name: string;
+  location: string;
+  age: string;
+  gender: string;
+  breed: string;
+  id: string;
+}
+
+const Adoption: React.FC<MyAdoptionCardProps> = ({ pic, pet, name, location, age, gender, breed, id }) => {
   const [loading, setLoading] = useState(false);
 
-  const deleteAdoption = async (adoptionId) => {
+  const deleteAdoption = async (adoptionId: string) => {
     setLoading(true);
     try {
       const { data } = await axios.post(`/api/adoptions/delete/${adoptionId}`);

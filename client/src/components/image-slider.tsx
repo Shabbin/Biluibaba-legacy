@@ -1,22 +1,27 @@
 import React, { useState } from "react";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
+import { ProductImage } from "@/src/types";
 
-export default function ImageSlider({ images }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+interface ImageSliderProps {
+  images: ProductImage[];
+}
 
-  const goToPrevious = () => {
+export default function ImageSlider({ images }: ImageSliderProps) {
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+
+  const goToPrevious = (): void => {
     const isFirstSlide = currentIndex === 0;
     const newIndex = isFirstSlide ? images.length - 1 : currentIndex - 1;
     setCurrentIndex(newIndex);
   };
 
-  const goToNext = () => {
+  const goToNext = (): void => {
     const isLastSlide = currentIndex === images.length - 1;
     const newIndex = isLastSlide ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
   };
 
-  const goToSlide = (index) => {
+  const goToSlide = (index: number): void => {
     setCurrentIndex(index);
   };
 

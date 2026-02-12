@@ -2,8 +2,15 @@
 
 import React from "react";
 
-export default class ReviewCard extends React.Component {
-  constructor(props) {
+interface ReviewCardProps {
+  review: string;
+  profilePic: React.ReactNode;
+  name: string;
+  date: string;
+}
+
+export default class ReviewCard extends React.Component<ReviewCardProps> {
+  constructor(props: ReviewCardProps) {
     super(props);
   }
 

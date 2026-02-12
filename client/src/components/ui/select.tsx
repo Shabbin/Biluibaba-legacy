@@ -1,5 +1,19 @@
 import React from "react";
 
+interface SelectOption {
+  value: string;
+  text: string;
+}
+
+interface SelectProps {
+  data: SelectOption[];
+  placeholder?: string;
+  value?: string;
+  className?: string;
+  onChange?: React.ChangeEventHandler<HTMLSelectElement>;
+  name?: string;
+}
+
 export default function Select({
   data,
   placeholder,
@@ -8,7 +22,7 @@ export default function Select({
   onChange,
   name,
   ...props
-}) {
+}: SelectProps) {
   const textColor = value ? "text-petzy-slate" : "text-petzy-slate-light/50";
 
   return (

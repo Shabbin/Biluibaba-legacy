@@ -14,7 +14,23 @@ import {
 import Button from "@/src/components/ui/button";
 import { formatCurrency } from "@/src/lib/currency";
 
-const QuickViewModal = ({ product, isOpen, onClose }) => {
+interface QuickViewProduct {
+  id: string;
+  src: string;
+  name: string;
+  price: number;
+  discount: number;
+  category?: string;
+  description?: string;
+}
+
+interface QuickViewModalProps {
+  product: QuickViewProduct;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClose }) => {
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
 

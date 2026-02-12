@@ -15,9 +15,25 @@ import Radio from "@/src/components/ui/radio";
 import axios from "@/src/lib/axiosInstance";
 import { formatCurrency } from "@/src/lib/currency";
 
+import { WithRouterProps } from "@/src/app/controllers/router";
+
+interface CheckoutState {
+  loading: boolean;
+  cart: { quantity: number; price: number; name: string; src: string; size?: number }[];
+  region: number;
+  fullName: string;
+  phoneNumber: string;
+  area: string;
+  fullAddress: string;
+  notes: string;
+  orderLoading: boolean;
+  paymentMethod: string;
+  platformFee: number;
+}
+
 export default withRouter(
-  class Checkout extends React.Component {
-    constructor(props) {
+  class Checkout extends React.Component<WithRouterProps, CheckoutState> {
+    constructor(props: WithRouterProps) {
       super(props);
 
       this.state = {

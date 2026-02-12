@@ -1,6 +1,17 @@
 "use client";
 
-const Spinner = ({ 
+import React from "react";
+
+type SpinnerSize = "sm" | "md" | "lg" | "xl";
+type SpinnerColor = "coral" | "white" | "slate" | "periwinkle";
+
+interface SpinnerProps {
+  size?: SpinnerSize;
+  color?: SpinnerColor;
+  className?: string;
+}
+
+const Spinner: React.FC<SpinnerProps> = ({ 
   size = "md", 
   color = "coral",
   className = "" 
@@ -28,7 +39,11 @@ const Spinner = ({
   );
 };
 
-export const PageLoader = ({ message = "Loading..." }) => {
+interface PageLoaderProps {
+  message?: string;
+}
+
+export const PageLoader: React.FC<PageLoaderProps> = ({ message = "Loading..." }) => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-petzy-blue-light">
       <Spinner size="xl" color="coral" />

@@ -1,6 +1,13 @@
 import { HiPlusCircle, HiMinusCircle } from "react-icons/hi";
 
-const Quantity = ({ value, onChange, className, id }) => {
+interface QuantityProps {
+  value: number;
+  onChange: (value: number) => void;
+  className?: string;
+  id?: string;
+}
+
+const Quantity: React.FC<QuantityProps> = ({ value, onChange, className = "", id }) => {
   return (
     <div className={"flex flex-row gap-3 items-center " + className}>
       <HiMinusCircle

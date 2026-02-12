@@ -30,10 +30,38 @@ import { CiMedicalClipboard } from "react-icons/ci";
 import { FaStar } from "react-icons/fa";
 import { MdOutlineAddLocationAlt } from "react-icons/md";
 
+import { WithRouterProps } from "@/src/app/controllers/router";
+import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+
+interface VetInfo {
+  name: string;
+  profilePic: string;
+  star: number;
+  designation: string;
+  review: number;
+  fee: number;
+  totalFee: number;
+}
+
+interface AppointmentState {
+  vet: VetInfo | string;
+  slot: string;
+  date: string;
+  pet: string;
+  concerns: string;
+  reason: string;
+  togglePetForm: boolean;
+  toggleConcernForm: boolean;
+  toggleReasonForm: boolean;
+  meetingMode: string;
+}
+
 export default withRouter(
-  class Appointment extends React.Component {
-    constructor({ router }) {
-      super();
+  class Appointment extends React.Component<WithRouterProps, AppointmentState> {
+    router: AppRouterInstance;
+
+    constructor({ router }: WithRouterProps) {
+      super({ router });
 
       this.state = {
         vet: "",
@@ -331,8 +359,14 @@ export default withRouter(
   }
 );
 
-class PetForm extends React.Component {
-  constructor(props) {
+interface PetFormProps {
+  isOpen: boolean;
+  pet: string;
+  onClose: (toggle: boolean) => void;
+}
+
+class PetForm extends React.Component<PetFormProps> {
+  constructor(props: PetFormProps) {
     super(props);
   }
 
@@ -383,8 +417,14 @@ class PetForm extends React.Component {
   }
 }
 
-class ConcernForm extends React.Component {
-  constructor(props) {
+interface ConcernFormProps {
+  isOpen: boolean;
+  concern: string;
+  onClose: (toggle: boolean) => void;
+}
+
+class ConcernForm extends React.Component<ConcernFormProps> {
+  constructor(props: ConcernFormProps) {
     super(props);
   }
 
@@ -420,8 +460,14 @@ class ConcernForm extends React.Component {
   }
 }
 
-class ReasonForm extends React.Component {
-  constructor(props) {
+interface ReasonFormProps {
+  isOpen: boolean;
+  reason: string;
+  onClose: (toggle: boolean) => void;
+}
+
+class ReasonForm extends React.Component<ReasonFormProps> {
+  constructor(props: ReasonFormProps) {
     super(props);
   }
 

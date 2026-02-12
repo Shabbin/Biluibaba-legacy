@@ -55,7 +55,7 @@ const Navbar = () => {
   }, []);
 
   // Location Logic
-  const getUserCoordinates = () => {
+  const getUserCoordinates = (): Promise<{ lat: number; lng: number }> => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) reject(new Error("Geolocation not supported"));
       navigator.geolocation.getCurrentPosition(
@@ -82,7 +82,7 @@ const Navbar = () => {
     getLocation();
   }, []);
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement> | React.MouseEvent<HTMLButtonElement>) => {
     if (e.key === 'Enter' || e.type === 'click') {
       if (query.trim() === "") return;
       router.push(`/search?query=${query}`);

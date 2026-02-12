@@ -8,8 +8,20 @@ import { CiSearch } from "react-icons/ci";
 import Input from "@/src/components/ui/input";
 import Button from "@/src/components/ui/button";
 
-export default class Filter extends React.Component {
-  constructor(props) {
+interface AdoptionFilterState {
+  categories: string[];
+  gender: string[];
+  size: string[];
+  age: string[];
+  selectedCat: string;
+  selectedGender: string;
+  selectedSize: string;
+  selectedAge: string;
+  vaccinated: string;
+}
+
+export default class Filter extends React.Component<Record<string, never>, AdoptionFilterState> {
+  constructor(props: Record<string, never>) {
     super(props);
 
     this.state = {

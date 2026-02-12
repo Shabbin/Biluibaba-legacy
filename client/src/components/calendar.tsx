@@ -3,17 +3,34 @@
 import { useRef, useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
 
 import "swiper/css";
 import "swiper/css/navigation";
 import { ArrowRight, ArrowLeft } from "@/src/components/svg";
 import { IoCalendarClearOutline } from "react-icons/io5";
+import { VetSlots } from "@/src/types";
 
-const Calendar = ({ date, setDate, availableSlots }) => {
-  const swiperRef = useRef(null);
-  const [slots, setSlots] = useState([]);
-  const [slotDate, setSlotDate] = useState(date);
-  const [initialLoad, setInitialLoad] = useState(true);
+interface CalendarSlot {
+  date: number;
+  day: string;
+  fullDate: string;
+  available: boolean;
+  current: boolean;
+  dateObj: Date;
+}
+
+interface CalendarProps {
+  date: string;
+  setDate: (date: string) => void;
+  availableSlots: VetSlots;
+}
+
+const Calendar: React.FC<CalendarProps> = ({ date, setDate, availableSlots }) => {
+  const swiperRef = useRef<SwiperType | null>(null);
+  const [slots, setSlots] = useState<CalendarSlot[]>([]);
+  const [slotDate, setSlotDate] = useState<string>(date);
+  const [initialLoad, setInitialLoad] = useState<boolean>(true);
 
   useEffect(() => {
     const dates = [];
@@ -96,7 +113,7 @@ const Calendar = ({ date, setDate, availableSlots }) => {
     }
   }, [date, availableSlots, setDate, initialLoad]);
 
-  const handleDateSelect = (slot) => {
+  const handleDateSelect = (slot: CalendarSlot): void => {
     if (slot.available) {
       const newDate = slot.fullDate;
       setSlotDate(newDate);

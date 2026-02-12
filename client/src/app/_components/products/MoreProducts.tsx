@@ -3,16 +3,23 @@
 import { useRef, useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
 
 import Product from "@/src/components/product";
+import { Product as ProductType } from "@/src/types";
 
 import "swiper/css";
 
 import { PiGreaterThan, PiLessThan } from "react-icons/pi";
 import { ArrowLeft, ArrowRight } from "@/src/components/svg";
 
-export default function MoreProducts({ products, type }) {
-  const swiperRef = useRef(null);
+interface MoreProductsProps {
+  products: ProductType[];
+  type: string;
+}
+
+export default function MoreProducts({ products, type }: MoreProductsProps) {
+  const swiperRef = useRef<SwiperType | null>(null);
 
   return (
     <div className="relative py-10">

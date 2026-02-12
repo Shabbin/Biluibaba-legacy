@@ -1,6 +1,18 @@
 "use client";
 
-const Badge = ({ 
+import React from "react";
+
+type BadgeVariant = "default" | "outline" | "success" | "warning" | "danger" | "info" | "secondary" | "gradient";
+type BadgeSize = "sm" | "md" | "lg";
+
+interface BadgeProps {
+  children: React.ReactNode;
+  variant?: BadgeVariant;
+  size?: BadgeSize;
+  className?: string;
+}
+
+const Badge: React.FC<BadgeProps> = ({ 
   children, 
   variant = "default", 
   size = "md", 

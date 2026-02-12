@@ -31,6 +31,7 @@ import {
   ModalBody,
 } from "@heroui/modal";
 import Link from "next/link";
+import { FaStar as FaStarIcon } from "react-icons/fa";
 import { Star, Share, HeartOutline, AddCart } from "@/src/components/svg";
 
 export default function Page() {
@@ -315,7 +316,7 @@ export default function Page() {
                                         : "text-gray-400"
                                     }`}
                                   >
-                                    ★
+                                    <FaStarIcon />
                                   </span>
                                 </div>
                               ))}

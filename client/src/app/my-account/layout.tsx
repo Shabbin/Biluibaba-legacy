@@ -1,6 +1,6 @@
 import Sidebar from "./sidebar";
 
-export default function AccountLayoout({ children }) {
+export default function AccountLayoout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-row pt-20">
       <div className="basis-1/5">

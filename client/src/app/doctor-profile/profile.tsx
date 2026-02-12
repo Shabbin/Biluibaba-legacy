@@ -37,9 +37,23 @@ let modules = {
   ],
 };
 
-export default class DoctorProfile extends React.Component {
+interface DaySlotConfig {
+  startTime: string;
+  endTime: string;
+  duration: string;
+  interval: string;
+}
+
+interface DoctorProfileState {
+  loading: boolean;
+  slots: {
+    slots: Record<string, DaySlotConfig>;
+  };
+}
+
+export default class DoctorProfile extends React.Component<Record<string, never>, DoctorProfileState> {
   constructor() {
-    super();
+    super({});
 
     this.state = {
       loading: true,
@@ -252,9 +266,18 @@ export default class DoctorProfile extends React.Component {
   }
 }
 
-class DaySlots extends React.Component {
+interface DaySlotsProps {
+  day: string;
+}
+
+interface DaySlotsState {
+  duration: { value: string; text: string }[];
+  interval: { value: string; text: string }[];
+}
+
+class DaySlots extends React.Component<DaySlotsProps, DaySlotsState> {
   constructor() {
-    super();
+    super({ day: "" });
 
     this.state = {
       duration: [

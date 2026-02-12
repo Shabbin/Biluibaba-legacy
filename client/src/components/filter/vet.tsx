@@ -31,8 +31,18 @@ import {
 } from "react-icons/fa";
 import { Cat, Dog } from "../svg";
 
-export default class Filter extends React.Component {
-  constructor(props) {
+interface VetFilterProps {
+  location: string;
+  calendar: string;
+  species: string;
+}
+
+interface VetFilterState {
+  toggle: boolean;
+}
+
+export default class Filter extends React.Component<VetFilterProps, VetFilterState> {
+  constructor(props: VetFilterProps) {
     super(props);
 
     this.state = {
@@ -80,8 +90,33 @@ export default class Filter extends React.Component {
   }
 }
 
-class FilterModal extends React.Component {
-  constructor(props) {
+interface FilterModalProps {
+  isOpen: boolean;
+  calendar: string;
+  setCalendar: (date: string) => void;
+  species: string;
+  setSpecies: (species: string) => void;
+}
+
+interface FilterModalState {
+  concern: string;
+}
+
+interface SpeciesOption {
+  name: string;
+  icon: React.ReactNode;
+}
+
+interface ConcernOption {
+  name: string;
+  icon: React.ReactNode;
+}
+
+class FilterModal extends React.Component<FilterModalProps, FilterModalState> {
+  species: SpeciesOption[];
+  concerns: ConcernOption[];
+
+  constructor(props: FilterModalProps) {
     super(props);
 
     this.state = {

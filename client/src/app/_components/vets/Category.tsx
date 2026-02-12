@@ -2,7 +2,17 @@
 
 import Link from "next/link";
 
-const Category = ({ categories }) => {
+interface VetCategoryItem {
+  name: string;
+  link: string;
+  src: string;
+}
+
+interface VetCategoryProps {
+  categories: VetCategoryItem[];
+}
+
+const Category: React.FC<VetCategoryProps> = ({ categories }) => {
   return (
     <div className="md:px-0 px-5">
       <div className="container mx-auto pt-5 pb-20">

@@ -1,6 +1,15 @@
 "use client";
 
-const Skeleton = ({ className = "", variant = "default" }) => {
+import React from "react";
+
+type SkeletonVariant = "default" | "shimmer" | "pulse";
+
+interface SkeletonProps {
+  className?: string;
+  variant?: SkeletonVariant;
+}
+
+const Skeleton: React.FC<SkeletonProps> = ({ className = "", variant = "default" }) => {
   const variants = {
     default: "bg-gray-200",
     shimmer: "bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer",
@@ -147,7 +156,14 @@ export const CartItemSkeleton = () => {
   );
 };
 
-export const CardSkeleton = ({ count = 1, type = "product" }) => {
+type SkeletonType = "product" | "adoption" | "vet" | "order" | "review" | "cart";
+
+interface CardSkeletonProps {
+  count?: number;
+  type?: SkeletonType;
+}
+
+export const CardSkeleton: React.FC<CardSkeletonProps> = ({ count = 1, type = "product" }) => {
   const SkeletonComponent = {
     product: ProductSkeleton,
     adoption: AdoptionSkeleton,

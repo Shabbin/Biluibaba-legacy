@@ -5,13 +5,15 @@ import { Button } from "@/components/ui/button";
 
 import { LuX } from "react-icons/lu";
 
-export default function ({
+interface TagInputProps {
+  value?: string[];
+  onChange: (tags: string[]) => void;
+}
+
+export default function TagInput({
   value = [],
   onChange,
-}: {
-  value: string[] | undefined;
-  onChange: (tags: string[]) => void;
-}) {
+}: TagInputProps) {
   const [inputValue, setInputValue] = useState("");
 
   const addTag = () => {

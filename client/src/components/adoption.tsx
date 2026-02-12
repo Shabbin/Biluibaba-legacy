@@ -7,7 +7,18 @@ import { FaLocationDot } from "react-icons/fa6";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import toast from "react-hot-toast";
 
-const Adoption = ({
+interface AdoptionCardProps {
+  pic: string;
+  pet: string;
+  name: string;
+  location: string;
+  age: string;
+  gender: string;
+  breed: string;
+  id: string;
+}
+
+const Adoption: React.FC<AdoptionCardProps> = ({
   pic,
   pet,
   name,

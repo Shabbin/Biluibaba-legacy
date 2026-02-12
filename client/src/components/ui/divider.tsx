@@ -1,6 +1,13 @@
 "use client";
 
-const Divider = ({ className = "", text = null }) => {
+import React from "react";
+
+interface DividerProps {
+  className?: string;
+  text?: string | null;
+}
+
+const Divider: React.FC<DividerProps> = ({ className = "", text = null }) => {
   if (text) {
     return (
       <div className={`flex items-center gap-4 my-6 ${className}`}>

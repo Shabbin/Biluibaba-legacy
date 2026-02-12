@@ -1,3 +1,4 @@
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { FaXmark, FaUser, FaHeart } from "react-icons/fa6";
@@ -5,9 +6,17 @@ import { FaCat, FaDog, FaDove } from "react-icons/fa6";
 import { GiRabbit } from "react-icons/gi";
 import { MdLocalOffer, MdHealthAndSafety, MdVolunteerActivism } from "react-icons/md";
 
+import type { User } from "@/src/types";
+
 import Logo from "@/public/logo-black.png";
 
-const MobileMenu = ({ isOpen, onClose, user }) => (
+interface MobileMenuProps {
+  isOpen: boolean;
+  onClose: () => void;
+  user: User | null;
+}
+
+const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, user }) => (
   <>
     {/* Overlay */}
     <div 
@@ -64,7 +73,13 @@ const MobileMenu = ({ isOpen, onClose, user }) => (
   </>
 );
 
-const MobileLink = ({ href, icon, label }) => (
+interface MobileLinkProps {
+  href: string;
+  icon: React.ReactNode;
+  label: string;
+}
+
+const MobileLink: React.FC<MobileLinkProps> = ({ href, icon, label }) => (
   <Link href={href} className="flex items-center gap-4 p-3 rounded-xl text-petzy-slate hover:bg-gray-50 hover:text-petzy-coral transition-colors font-medium">
      <span className="text-lg opacity-70">{icon}</span>
      {label}
