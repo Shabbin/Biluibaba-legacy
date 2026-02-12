@@ -2,7 +2,7 @@ import Sidebar from "./sidebar";
 
 export default function AccountLayoout({ children }) {
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row pt-20">
       <div className="basis-1/5">
         <Sidebar></Sidebar>
       </div>

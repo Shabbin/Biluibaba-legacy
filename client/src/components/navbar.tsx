@@ -26,7 +26,8 @@ import {
   FaBars, 
   FaCat, 
   FaDog, 
-  FaDove
+  FaDove,
+  FaArrowRightToBracket
 } from "react-icons/fa6";
 import { MdLocalOffer, MdHealthAndSafety, MdVolunteerActivism } from "react-icons/md";
 import { RiVipCrownFill } from "react-icons/ri";
@@ -158,7 +159,7 @@ const Navbar = () => {
                   className="hidden md:flex flex-col items-center group"
                 >
                   <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-petzy-slate group-hover:bg-petzy-coral group-hover:text-white transition-all duration-300">
-                    <FaUser size="1.1em" />
+                    {user?<FaUser size="1.1em" />:<FaArrowRightToBracket size="1.1em" />}
                   </div>
                 </Link>
 
