@@ -2,89 +2,120 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import { 
+  FaStar, 
+  FaHeart, 
+  FaRegHeart, 
+  FaShareNodes, 
+  FaCartPlus, 
+  FaBolt, 
+  FaStore, 
+  FaCheck
+} from "react-icons/fa6";
 
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@heroui/modal";
 import { Pagination } from "@heroui/pagination";
 
-import { Textarea } from "@/src/components/ui";
+// Components
 import Button from "@/src/components/ui/button";
 import { Quantity } from "@/src/components/ui";
 import { ReviewSkeleton, NoReviews } from "@/src/components/ui";
-import ImageSlider from "@/src/components/image-slider";
-import ProductRatings from "@/src/components/produc-rating";
-
+import ImageSlider from "@/src/components/image-slider"; // Ensure this component is also updated for modern looks
+import ProductRatings from "@/src/components/produc-rating"; // Ensure this component handles the progress bars
 import MoreProducts from "@/src/app/_components/products/MoreProducts";
+import { Textarea } from "@/src/components/ui";
 
 import axios from "@/src/lib/axiosInstance";
 import { formatCurrency } from "@/src/lib/currency";
-
 import { formatDate } from "@/src/utils/formatDate";
-
 import { useAuth } from "@/src/components/providers/AuthProvider";
 
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  useDisclosure,
-  ModalBody,
-} from "@heroui/modal";
-import Link from "next/link";
-import { FaStar as FaStarIcon } from "react-icons/fa";
-import { Star, Share, HeartOutline, AddCart } from "@/src/components/svg";
-
-export default function Page() {
+export default function ProductDetail() {
   const { user } = useAuth();
+  const params = useParams();
+  const router = useRouter();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+  // State
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState({});
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [quantity, setQuantity] = useState(1);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [isInWishlist, setIsInWishlist] = useState(false);
 
-  const [rating, setRating] = useState(1);
+  // Review State
+  const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [reviewStatus, setReviewStatus] = useState(false);
+  const [reviewPage, setReviewPage] = useState(1);
+  const reviewsPerPage = 3;
 
-  const [reviewCurrentPage, setReviewCurrentPage] = useState(1);
-  const reviewsPerPage = 2;
-
-  const indexOfLastReview = reviewCurrentPage * reviewsPerPage;
-  const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
-  const currentReviews = product.reviews
-    ?.reverse()
-    .slice(indexOfFirstReview, indexOfLastReview);
-
-  const price = Math.floor(
-    product.price -
-      (product.discount > 0 ? (product.price * product.discount) / 100 : 0)
-  );
-
-  const params = useParams();
+  // Derived Values
+  const price = Math.floor(product.price - (product.discount > 0 ? (product.price * product.discount) / 100 : 0));
+  
+  // Review Pagination Logic
+  const reviews = product.reviews ? [...product.reviews].reverse() : [];
+  const totalPages = Math.ceil(reviews.length / reviewsPerPage);
+  const currentReviews = reviews.slice((reviewPage - 1) * reviewsPerPage, reviewPage * reviewsPerPage);
 
   const fetchProduct = async () => {
     try {
       const { data } = await axios.get(`/api/product/get/${params.slug}`);
-
       if (data.success) {
         setProduct(data.product);
         setFeaturedProducts(data.products);
+        // Check wishlist status here if you have that endpoint
       }
     } catch (error) {
       console.error(error);
+      toast.error("Failed to load product");
     } finally {
       setLoading(false);
     }
   };
 
-  const submitReview = async (onClose) => {
-    if (!rating || rating < 1) {
-      return toast.error(
-        "Please provide a valid rating (1-5) and a comment with at least 10 characters."
-      );
+  useEffect(() => {
+    setLoading(true);
+    fetchProduct();
+  }, [params.slug]);
+
+  const handleAddToCart = (action) => {
+    // Basic Cart Logic (Ideally move this to a CartContext)
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const item = {
+      id: product._id,
+      name: product.name,
+      src: product.images[0].path,
+      price: price,
+      size: product.size,
+      discount: product.discount,
+      quantity: quantity,
+      vendorId: product.vendorId._id,
+      slug: product.slug,
+    };
+
+    const existingIndex = cart.findIndex(c => c.id === item.id);
+    if (existingIndex > -1) {
+      cart[existingIndex].quantity += quantity;
+    } else {
+      cart.push(item);
     }
 
+    localStorage.setItem("cart", JSON.stringify(cart));
+    window.dispatchEvent(new Event("storage")); // Update Navbar Cart Count
+    
+    toast.success(`${product.name} added to cart!`);
+    
+    if (action === "buy") {
+      router.push("/checkout");
+    }
+  };
+
+  const submitReview = async (onClose) => {
+    if (rating < 1 || comment.length < 5) return toast.error("Please provide a rating and a short comment.");
+    
     setReviewStatus(true);
     try {
       const { data } = await axios.post("/api/product/rating", {
@@ -92,354 +123,292 @@ export default function Page() {
         comment,
         rating,
       });
-
       if (data.success) {
-        toast.success("Review submitted successfully!");
+        toast.success("Review submitted!");
         setComment("");
-        setRating(1);
+        setRating(0);
         onClose();
         fetchProduct();
-      } else {
-        toast.error("Failed to submit review.");
       }
     } catch (error) {
-      console.error("Error submitting review:", error);
-      toast.error("An error occurred while submitting your review.");
+      toast.error("Failed to submit review");
     } finally {
       setReviewStatus(false);
     }
   };
 
-  const addToCart = (type) => {
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    if (cart.length === 0) {
-      cart.push({
-        id: product._id,
-        name: product.name,
-        src: product.images[0].path,
-        price: price,
-        size: product.size,
-        discount: product.discount,
-        originalPrice: product.price,
-        quantity: quantity,
-        vendorId: product.vendorId._id,
-        slug: product.slug,
-      });
-      localStorage.setItem("cart", JSON.stringify(cart));
-      toast.success(`${product.name} added to cart!`);
-      return setTimeout(
-        () =>
-          type === "add"
-            ? (window.location.href = `/products/${product.slug}`)
-            : (window.location.href = "/checkout"),
-        2000
-      );
-    }
-
-    for (let i = 0; i < cart.length; i++) {
-      if (cart[i].id === product._id) {
-        cart[i].quantity += quantity;
-        localStorage.setItem("cart", JSON.stringify(cart));
-        toast.success(`${product.name} added to cart!`);
-        return setTimeout(
-          () =>
-            type === "add"
-              ? (window.location.href = `/products/${product.slug}`)
-              : (window.location.href = "/checkout"),
-          2000
-        );
-      }
-    }
-
-    cart.push({
-      id: product._id,
-      name: product.name,
-      src: product.images[0].path,
-      price: price,
-      size: product.size,
-      discount: product.discount,
-      originalPrice: product.price,
-      quantity: quantity,
-      vendorId: product.vendorId._id,
-      slug: product.slug,
-    });
-    localStorage.setItem("cart", JSON.stringify(cart));
-    toast.success(`${product.name} added to cart!`);
-    setTimeout(
-      () =>
-        type === "add"
-          ? (window.location.href = `/products/${product.slug}`)
-          : (window.location.href = "/checkout"),
-      1000
-    );
-  };
-
-  useEffect(() => {
-    setLoading(true);
-    fetchProduct();
-  }, []);
+  if (loading) return <div className="min-h-screen bg-white" />; // Or a skeleton loader
 
   return (
-    <div className="py-20">
-      {loading ? null : (
-        <div className="container mx-auto">
-          <div className="flex md:flex-row flex-col gap-10 justify-between">
-            <div className="basis-1/2 border overflow-hidden inline-block rounded-3xl cursor-pointer">
-              <ImageSlider images={product.images} />
-            </div>
-            <div className="basis-1/2 md:mx-0 mx-5 flex flex-col justify-between">
-              <div>
-                <div className="my-5 text-xl font-bold">{product.name}</div>
+    <div className="bg-gray-50 min-h-screen pb-20">
+      
+      {/* --- BREADCRUMBS (Optional) --- */}
+      <div className="container mx-auto px-5 py-4 text-sm text-gray-500">
+        <Link href="/" className="hover:text-petzy-coral">Home</Link> / 
+        <Link href="/products" className="hover:text-petzy-coral mx-1">Products</Link> / 
+        <span className="text-petzy-slate font-medium mx-1">{product.name}</span>
+      </div>
 
-                <div className="flex items-center justify-between py-4">
-                  <div className="flex items-center gap-2">
-                    <div className="bg-green-600 text-white px-3 text-xs py-2 rounded-full inline-flex items-center justify-center gap-1">
-                      <Star className="text-[1em]" /> {product.ratings}
-                    </div>
-
-                    <div className="divide-x-3 text-gray-400 inline-flex items-center justify-center font-semibold">
-                      <div className="px-2">{product.totalRatings} Ratings</div>
-                      <div className="px-2">{product.totalReviews} Reviews</div>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-row items-center gap-2">
-                    <Share className="text-[2em]" />
-                    <HeartOutline className="text-[2em]" />
-                  </div>
-                </div>
-
-                <div className="border-t-2 border-b-2 py-5 my-5 text-xl">
-                  <div className="flex flex-row items-center gap-5">
-                    <div className="text-4xl font-semibold text-red-500">
-                      &#2547; {formatCurrency(price)}
-                    </div>
-                    {product.discount > 0 && (
-                      <>
-                        <div className="line-through text-2xl">
-                          &#2547; {formatCurrency(product.price)}
-                        </div>
-                        <div className="text-green-500 uppercase font-bold">
-                          save {product.discount}%
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                <div className="py-5">
-                  <h2 className="text-2xl">
-                    <span className="font-bold">Size: </span> {product.size}
-                  </h2>
-                </div>
-                <div className="py-5">
-                  <h2 className="text-2xl">
-                    <span className="font-bold">Quantity: </span>{" "}
-                    {product.quantity} left
-                  </h2>
-                </div>
-              </div>
-
-              <div>
-                <div className="flex flex-row items-center py-5 gap-5">
-                  <div className="text-2xl">Quantity</div>
-                  <Quantity
-                    value={quantity}
-                    onChange={(value) => {
-                      if (product.quantity < value)
-                        return toast.error(`Not enough quantity available`);
-                      else setQuantity(value);
-                    }}
-                  />
-                </div>
-
-                <div className="flex md:flex-row flex-col gap-5 items-center justify-between">
-                  <Button
-                    text="ADD TO CART"
-                    type="outline"
-                    onClick={() => addToCart("add")}
-                    icon={<AddCart className="text-[1.5em]" />}
-                    iconAlign={"left"}
-                    className="basis-1/2 md:w-auto w-full"
-                  ></Button>
-                  <Button
-                    text="BUY NOW"
-                    onClick={() => addToCart("buy")}
-                    type="default"
-                    className="basis-1/2 md:w-auto w-full"
-                  ></Button>
-                </div>
-              </div>
+      <div className="container mx-auto px-5">
+        
+        {/* --- MAIN PRODUCT SECTION --- */}
+        <div className="bg-white rounded-[2rem] shadow-sm p-6 md:p-10 lg:flex gap-12 mb-12">
+          
+          {/* Left: Images */}
+          <div className="lg:w-1/2 mb-8 lg:mb-0">
+            <div className="sticky top-24">
+               <ImageSlider images={product.images} />
             </div>
           </div>
 
-          <div className="py-5 border my-14 shadow rounded-lg">
-            <ProductRatings
-              ratings={product.ratings}
-              totalRatings={product.totalRatings}
-              totalReviews={product.totalReviews}
-              ratingBreakdown={product.ratingBreakdown}
-            />
-
-            <div className="border-b border-t flex md:flex-row flex-col items-center justify-between gap-10 p-10 shadow">
-              <h2 className="text-4xl font-bold">What's on your mind?</h2>
-
-              {user && user.id ? (
-                <>
-                  <Button
-                    text="Write a Review"
-                    type="outline"
-                    className="text-lg md:w-auto w-full"
-                    onClick={onOpen}
-                  />
-
-                  <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="4xl">
-                    <ModalContent>
-                      {(onClose) => (
-                        <>
-                          <ModalHeader className="flex flex-col gap-1">
-                            Write a review
-                          </ModalHeader>
-                          <ModalBody>
-                            <div className="flex flex-row gap-5 items-center justify-center">
-                              {[1, 2, 3, 4, 5].map((star) => (
-                                <div
-                                  key={star}
-                                  className="flex flex-row items-center gap-2 cursor-pointer py-5"
-                                  onClick={() => setRating(star)}
-                                >
-                                  <span
-                                    className={`text-5xl ${
-                                      rating >= star
-                                        ? "text-yellow-500"
-                                        : "text-gray-400"
-                                    }`}
-                                  >
-                                    <FaStarIcon />
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
-                            <div>Your Comment</div>
-                            <Textarea
-                              placeholder="Write your review here..."
-                              value={comment}
-                              onChange={(e) => setComment(e.target.value)}
-                              rows="5"
-                            />
-                          </ModalBody>
-                          <ModalFooter>
-                            <Button
-                              onClick={onClose}
-                              text="Close"
-                              type="outline"
-                            ></Button>
-                            <Button
-                              onClick={() => submitReview(onClose)}
-                              text="Submit"
-                              type="default"
-                              disabled={reviewStatus}
-                            ></Button>
-                          </ModalFooter>
-                        </>
-                      )}
-                    </ModalContent>
-                  </Modal>
-                </>
-              ) : (
-                <div className="text-2xl">
-                  <Link
-                    href={`/login?from=/products/${product.slug}`}
-                    className="text-blue-500 underline"
-                  >
-                    Login
-                  </Link>{" "}
-                  to write a review.
+          {/* Right: Details */}
+          <div className="lg:w-1/2 flex flex-col">
+            
+            {/* Header */}
+            <div className="mb-6">
+              <div className="flex justify-between items-start">
+                <h1 className="text-3xl md:text-4xl font-bold text-petzy-slate mb-2 leading-tight">{product.name}</h1>
+                <button 
+                  onClick={() => setIsInWishlist(!isInWishlist)}
+                  className="p-3 rounded-full bg-gray-50 hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
+                >
+                  {isInWishlist ? <FaHeart size="1.5em" /> : <FaRegHeart size="1.5em" />}
+                </button>
+              </div>
+              
+              <div className="flex items-center gap-4 text-sm mt-2">
+                <div className="flex items-center gap-1 text-yellow-400">
+                   <FaStar /> <span className="font-bold text-petzy-slate text-base">{product.ratings || 0}</span>
                 </div>
-              )}
-            </div>
-
-            <div className="px-10 py-14">
-              <h2 className="text-4xl font-bold mb-5">
-                All Reviews ({product.totalReviews})
-              </h2>
-
-              {currentReviews.length === 0 && (
-                <NoReviews />
-              )}
-
-              {currentReviews.map((review, index) => (
-                <div key={review.id}>
-                  <div className="py-4 border-b flex flex-col gap-4">
-                    <div className="flex items-center gap-4 mb-2">
-                      <img
-                        src={review.userId.avatar}
-                        alt={review.userId.name}
-                        className="w-[50px] h-[50px] rounded-full"
-                      />
-                      <h3 className="text-xl text-gray-600">
-                        {review.userId.name}
-                      </h3>
-                    </div>
-
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="bg-green-600 text-white px-2 py-1 rounded-full text-xs flex items-center gap-1 font-bold">
-                        <Star className="text-[1em]" />
-                        {review.rating.toFixed(1)}
-                      </div>
-                      <span className="text-gray-500">
-                        Posted on {formatDate(review.date)}
-                      </span>
-                    </div>
-
-                    <p className="my-2 text-xl">{review.comment}</p>
-                  </div>
-                </div>
-              ))}
-
-              <div className="flex justify-center mt-8">
-                {!loading && product.reviews.length > 2 && (
-                  <Pagination
-                    total={Math.ceil(product.reviews.length / reviewsPerPage)}
-                    initialPage={1}
-                    page={reviewCurrentPage}
-                    onChange={setReviewCurrentPage}
-                    classNames={{
-                      cursor: "bg-zinc-950 border-zinc-950 ",
-                    }}
-                    variant="flat"
-                    showControls
-                  />
-                )}
+                <span className="text-gray-300">|</span>
+                <span className="text-petzy-slate-light font-medium">{product.totalReviews} Reviews</span>
+                <span className="text-gray-300">|</span>
+                <span className="text-green-600 font-bold bg-green-50 px-2 py-0.5 rounded-md">In Stock</span>
               </div>
             </div>
 
-            <div className="px-10 py-14 border rounded-lg">
-              <div className="text-2xl py-5 text-center">Description</div>
-              <article
-                className="prose-xl my-5"
-                dangerouslySetInnerHTML={{ __html: product.description }}
-              ></article>
+            {/* Price */}
+            <div className="mb-8 p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center gap-4">
+               <span className="text-4xl font-bold text-petzy-coral">৳{formatCurrency(price)}</span>
+               {product.discount > 0 && (
+                 <div className="flex flex-col">
+                    <span className="text-lg text-gray-400 line-through">৳{formatCurrency(product.price)}</span>
+                    <span className="text-xs font-bold text-white bg-petzy-coral px-2 py-0.5 rounded-full w-fit">
+                       -{product.discount}% OFF
+                    </span>
+                 </div>
+               )}
             </div>
 
-            <div className="px-10 py-14 border rounded-xl">
-              <h2 className="py-5 text-2xl">Posted by</h2>
-              <div className="flex flex-row gap-5 items-center">
-                <div className="bg-gray-200 w-[100px] h-[100px] rounded-full"></div>
-                <p className="text-3xl">{product?.vendorId?.storeName}</p>
-              </div>
+            {/* Variants / Info */}
+            <div className="space-y-6 mb-8">
+               <div className="flex items-center gap-4">
+                  <span className="w-20 font-bold text-petzy-slate">Size:</span>
+                  <span className="px-4 py-2 border-2 border-petzy-slate rounded-lg font-bold text-petzy-slate bg-gray-50">{product.size}</span>
+               </div>
+               
+               <div className="flex items-center gap-4">
+                  <span className="w-20 font-bold text-petzy-slate">Quantity:</span>
+                  <Quantity 
+                     value={quantity} 
+                     onChange={(v) => setQuantity(Math.min(v, product.quantity))} 
+                  />
+                  <span className="text-xs text-gray-400">{product.quantity} available</span>
+               </div>
             </div>
-          </div>
-          <div className="py-14">
-            <h2 className="text-5xl py-5 text-center font-bold">
-              More Things Your Pet Will Like
-            </h2>
 
-            <MoreProducts products={featuredProducts} />
+            {/* Vendor Info (Mini) */}
+            <div className="flex items-center gap-3 p-3 bg-blue-50/50 rounded-xl mb-8 border border-blue-100">
+               <div className="bg-white p-2 rounded-full shadow-sm text-blue-500">
+                  <FaStore />
+               </div>
+               <div className="text-sm">
+                  <span className="text-gray-500">Sold by </span>
+                  <Link href={`/store/${product.vendorId?._id}`} className="font-bold text-petzy-slate hover:underline">
+                     {product.vendorId?.storeName || "Official Store"}
+                  </Link>
+               </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-4 mt-auto">
+               <Button 
+                  text="Add to Cart" 
+                  type="outline" 
+                  icon={<FaCartPlus />} 
+                  iconAlign="left"
+                  className="flex-1 py-4 text-lg"
+                  onClick={() => handleAddToCart("add")}
+               />
+               <Button 
+                  text="Buy Now" 
+                  type="default" 
+                  icon={<FaBolt />} 
+                  className="flex-1 py-4 text-lg shadow-lg shadow-petzy-coral/30"
+                  onClick={() => handleAddToCart("buy")}
+               />
+            </div>
+
           </div>
         </div>
-      )}
+
+        {/* --- DESCRIPTION & REVIEWS GRID --- */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
+           
+           {/* Left Column: Description */}
+           <div className="lg:col-span-8 space-y-8">
+              <div className="bg-white rounded-[2rem] shadow-sm p-8 md:p-10">
+                 <h2 className="text-2xl font-bold text-petzy-slate mb-6">Product Description</h2>
+                 <article 
+                    className="prose prose-slate max-w-none prose-img:rounded-xl prose-headings:text-petzy-slate prose-a:text-petzy-coral"
+                    dangerouslySetInnerHTML={{ __html: product.description }}
+                 />
+              </div>
+
+              {/* Reviews List */}
+              <div className="bg-white rounded-[2rem] shadow-sm p-8 md:p-10" id="reviews">
+                 <div className="flex justify-between items-center mb-8">
+                    <h2 className="text-2xl font-bold text-petzy-slate">Customer Reviews ({product.totalReviews})</h2>
+                    {user ? (
+                       <button onClick={onOpen} className="text-petzy-coral font-bold hover:underline">Write a Review</button>
+                    ) : (
+                       <Link href={`/login?from=/products/${product.slug}`} className="text-petzy-coral font-bold hover:underline">Login to Review</Link>
+                    )}
+                 </div>
+
+                 {currentReviews.length === 0 ? (
+                    <NoReviews />
+                 ) : (
+                    <div className="space-y-6">
+                       {currentReviews.map((review, i) => (
+                          <div key={i} className="border-b border-gray-100 last:border-0 pb-6 last:pb-0">
+                             <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-3">
+                                   <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden">
+                                      <img src={review.userId?.avatar || "/default-avatar.png"} alt="User" className="w-full h-full object-cover" />
+                                   </div>
+                                   <div>
+                                      <h4 className="font-bold text-petzy-slate text-sm">{review.userId?.name}</h4>
+                                      <div className="flex text-yellow-400 text-xs mt-0.5">
+                                         {[...Array(5)].map((_, idx) => (
+                                            <FaStar key={idx} className={idx < review.rating ? "" : "text-gray-200"} />
+                                         ))}
+                                      </div>
+                                   </div>
+                                </div>
+                                <span className="text-xs text-gray-400">{formatDate(review.date)}</span>
+                             </div>
+                             <p className="text-gray-600 text-sm leading-relaxed">{review.comment}</p>
+                          </div>
+                       ))}
+                    </div>
+                 )}
+
+                 {totalPages > 1 && (
+                    <div className="flex justify-center mt-8">
+                       <Pagination 
+                          total={totalPages} 
+                          page={reviewPage} 
+                          onChange={setReviewPage} 
+                          color="danger" // Matches your coral theme usually
+                       />
+                    </div>
+                 )}
+              </div>
+           </div>
+
+           {/* Right Column: Ratings Summary & Vendor */}
+           <div className="lg:col-span-4 space-y-8">
+              
+              {/* Ratings Card */}
+              <div className="bg-white rounded-[2rem] shadow-sm p-8">
+                 <h3 className="text-xl font-bold text-petzy-slate mb-6">Rating Overview</h3>
+                 <div className="flex items-center gap-4 mb-6 bg-yellow-50 p-4 rounded-xl">
+                    <div className="text-4xl font-bold text-yellow-500">{product.ratings?.toFixed(1)}</div>
+                    <div>
+                       <div className="flex text-yellow-400 text-sm mb-1">
+                          {[...Array(5)].map((_, i) => (
+                             <FaStar key={i} className={i < Math.round(product.ratings) ? "" : "text-gray-300"} />
+                          ))}
+                       </div>
+                       <p className="text-xs text-yellow-700 font-medium">Based on {product.totalReviews} reviews</p>
+                    </div>
+                 </div>
+                 {/* Rating Breakdown Bar Component */}
+                 <ProductRatings 
+                    ratings={product.ratings} 
+                    totalReviews={product.totalReviews} 
+                    ratingBreakdown={product.ratingBreakdown} // Ensure component handles props correctly
+                    simple={true} // Optional prop to tell component to render minimal view
+                 />
+              </div>
+
+              {/* Delivery Info (Static for now) */}
+              <div className="bg-white rounded-[2rem] shadow-sm p-8 space-y-4">
+                 <h3 className="text-lg font-bold text-petzy-slate mb-2">Delivery & Returns</h3>
+                 <div className="flex items-start gap-3">
+                    <div className="bg-gray-100 p-2 rounded-lg text-gray-500"><FaStore /></div>
+                    <div>
+                       <p className="text-sm font-bold text-petzy-slate">Standard Delivery</p>
+                       <p className="text-xs text-gray-500">3-5 working days</p>
+                    </div>
+                 </div>
+                 <div className="flex items-start gap-3">
+                    <div className="bg-gray-100 p-2 rounded-lg text-gray-500"><FaCheck /></div>
+                    <div>
+                       <p className="text-sm font-bold text-petzy-slate">7 Days Return</p>
+                       <p className="text-xs text-gray-500">Change of mind applicable</p>
+                    </div>
+                 </div>
+              </div>
+
+           </div>
+        </div>
+
+        {/* --- RELATED PRODUCTS --- */}
+        <div className="mb-20">
+           <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold text-petzy-slate">You Might Also Like</h2>
+           </div>
+           <MoreProducts products={featuredProducts} />
+        </div>
+
+      </div>
+
+      {/* --- REVIEW MODAL --- */}
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>Write a Review</ModalHeader>
+              <ModalBody>
+                <div className="flex justify-center gap-2 mb-4">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button 
+                      key={star} 
+                      onClick={() => setRating(star)} 
+                      className={`text-3xl transition-colors ${rating >= star ? "text-yellow-400" : "text-gray-300"}`}
+                    >
+                      <FaStar />
+                    </button>
+                  ))}
+                </div>
+                <Textarea 
+                  placeholder="Share your experience with this product..." 
+                  value={comment} 
+                  onChange={(e) => setComment(e.target.value)} 
+                  rows={4}
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button text="Cancel" type="outline" onClick={onClose} />
+                <Button text="Submit Review" type="default" onClick={() => submitReview(onClose)} disabled={reviewStatus} />
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
     </div>
   );
 }

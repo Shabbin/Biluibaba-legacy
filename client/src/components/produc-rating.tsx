@@ -27,7 +27,7 @@ const ProductRatings: React.FC<ProductRatingsProps> = ({
 
   // Format number with commas
   const formatNumber = (num: number): string => {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return Number(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   // Calculate percentage for progress bars
