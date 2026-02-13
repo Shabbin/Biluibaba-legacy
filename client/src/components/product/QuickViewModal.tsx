@@ -38,8 +38,9 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
 
   const handleAddToCart = () => {
     setIsAdding(true);
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingItem = cart.find((item) => item.id === product.id);
+    interface LocalCartItem { id: string; name: string; src: string; price: number; quantity: number; }
+    const cart: LocalCartItem[] = JSON.parse(localStorage.getItem("cart") || "[]");
+    const existingItem = cart.find((item: LocalCartItem) => item.id === product.id);
 
     if (existingItem) {
       existingItem.quantity += quantity;

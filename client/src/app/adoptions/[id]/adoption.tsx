@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import type { Adoption, AdoptionWishlistItem, ApiAxiosError } from "@/src/types";
 import dynamic from "next/dynamic";
 import { toast } from "react-hot-toast";
 
@@ -17,24 +18,24 @@ import Adoption from "@/src/components/adoption";
 import axios from "@/src/lib/axiosInstance";
 
 export default function Page() {
-  const [loading, setLoading] = useState(true);
-  const [adoption, setAdoption] = useState({});
-  const [moreAdoptions, setMoreAdoptions] = useState([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [adoption, setAdoption] = useState<Partial<Adoption>>({});
+  const [moreAdoptions, setMoreAdoptions] = useState<Adoption[]>([]);
 
   const auth = useAuth();
 
   const params = useParams();
 
-  let wishlist;
-  const [isInWishlist, setIsInWishlist] = useState(false);
+  let wishlist: AdoptionWishlistItem[];
+  const [isInWishlist, setIsInWishlist] = useState<boolean>(false);
 
   const handleClick = () => {
-    const wishlistItems =
-      JSON.parse(localStorage.getItem("adoption-wishlist")) || [];
-    if (wishlistItems.some((item) => item.id === adoption.adoptionId)) {
+    const wishlistItems: AdoptionWishlistItem[] =
+      JSON.parse(localStorage.getItem("adoption-wishlist") || "[]");
+    if (wishlistItems.some((item) => item.id === adoption?.adoptionId)) {
       // Remove from wishlist
       const updatedWishlist = wishlistItems.filter(
-        (item) => item.id !== adoption.adoptionId
+        (item) => item.id !== adoption?.adoptionId
       );
       localStorage.setItem(
         "adoption-wishlist",
@@ -43,14 +44,14 @@ export default function Page() {
     } else {
       // Add to wishlist
       wishlistItems.push({
-        age: adoption.age,
-        breed: adoption.breed,
-        gender: adoption.gender,
-        id: adoption.adoptionId,
-        location: adoption.location,
-        name: adoption.name,
-        pet: adoption.pet,
-        pic: adoption.images[0].path,
+        age: adoption?.age || "",
+        breed: adoption?.breed || "",
+        gender: adoption?.gender || "",
+        id: adoption?.adoptionId || "",
+        location: adoption?.location || "",
+        name: adoption?.name || "",
+        pet: adoption?.species || "",
+        pic: adoption?.images?.[0]?.path || "",
       });
       localStorage.setItem("adoption-wishlist", JSON.stringify(wishlistItems));
     }
@@ -68,8 +69,8 @@ export default function Page() {
         setMoreAdoptions(data.moreAdoption);
         console.log(data);
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(error as ApiAxiosError);
     } finally {
       setLoading(false);
     }
@@ -77,7 +78,7 @@ export default function Page() {
 
   useEffect(() => {
     fetchAdoption();
-    wishlist = JSON.parse(localStorage.getItem("adoption-wishlist")) || [];
+    wishlist = JSON.parse(localStorage.getItem("adoption-wishlist") || "[]");
     setIsInWishlist(wishlist.some((item) => item.id === params.id));
   }, []);
 
@@ -87,13 +88,13 @@ export default function Page() {
         <div className="mx-auto container md:px-0 px-5 py-5">
           <div className="flex md:flex-row flex-col gap-5">
             <div className="basis-2/3">
-              <ImageSlider images={adoption.images} />
+              <ImageSlider images={adoption?.images || []} />
             </div>
             <div className="basis-1/3">
               <div className="gap-5 bg-white p-8 rounded-md border flex flex-col justify-between">
                 <div>
                   <h2 className="text-xl font-semibold">Hi everyone! I'm</h2>
-                  <h3 className="text-4xl font-bold mt-2">{adoption.name}</h3>
+                  <h3 className="text-4xl font-bold mt-2">{adoption?.name}</h3>
                 </div>
                 <div className="flex flex-row items-center justify-between">
                   <h2 className="text-3xl font-semibold">About</h2>
@@ -107,35 +108,35 @@ export default function Page() {
                   <div className="py-3 text-xl flex flex-col gap-3">
                     <div className="flex flex-row items-center justify-between">
                       <div>Age</div>
-                      <div className="font-semibold">{adoption.age}</div>
+                      <div className="font-semibold">{adoption?.age}</div>
                     </div>
                     <div className="flex flex-row items-center justify-between">
                       <div>Gender</div>
-                      <div className="font-semibold">{adoption.gender}</div>
+                      <div className="font-semibold">{adoption?.gender}</div>
                     </div>
                     <div className="flex flex-row items-center justify-between">
                       <div>Species</div>
-                      <div className="font-semibold">{adoption.species}</div>
+                      <div className="font-semibold">{adoption?.species}</div>
                     </div>
                     <div className="flex flex-row items-center justify-between">
                       <div>Size</div>
-                      <div className="font-semibold">{adoption.size}</div>
+                      <div className="font-semibold">{adoption?.size}</div>
                     </div>
                     <div className="flex flex-row items-center justify-between">
                       <div>Breed</div>
-                      <div className="font-semibold">{adoption.breed}</div>
+                      <div className="font-semibold">{adoption?.breed}</div>
                     </div>
                     <div className="flex flex-row items-center justify-between">
                       <div>Vaccinated</div>
-                      <div className="font-semibold">{adoption.vaccinated}</div>
+                      <div className="font-semibold">{adoption?.vaccinated}</div>
                     </div>
                     <div className="flex flex-row items-center justify-between">
                       <div>Sprayed/Neuter</div>
-                      <div className="font-semibold">{adoption.neutered}</div>
+                      <div className="font-semibold">{adoption?.neutered}</div>
                     </div>
                     <div className="flex flex-row items-center justify-between">
                       <div>Location</div>
-                      <div className="font-semibold">{adoption.location}</div>
+                      <div className="font-semibold">{adoption?.location}</div>
                     </div>
 
                     <div className="flex flex-row items-center justify-between">
@@ -145,7 +146,7 @@ export default function Page() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-5">
-                  {auth.user?.id === adoption.userId._id ? (
+                  {auth.user?.id === adoption?.userId?._id ? (
                     <Button
                       text="Manage Adoption"
                       type="default"
@@ -175,11 +176,11 @@ export default function Page() {
                           localStorage.setItem(
                             "adoption",
                             JSON.stringify({
-                              name: adoption.name,
-                              pic: adoption.images[0].path,
-                              species: adoption.species,
-                              gender: adoption.gender,
-                              adoptionId: adoption._id,
+                              name: adoption?.name,
+                              pic: adoption?.images?.[0]?.path,
+                              species: adoption?.species,
+                              gender: adoption?.gender,
+                              adoptionId: adoption?._id,
                             })
                           );
 
@@ -201,15 +202,15 @@ export default function Page() {
               <div className="basis-2/3 md:ps-16 pt-10 md:pt-0">
                 <div className="flex flex-row items-center gap-4">
                   <img
-                    src={adoption.userId.avatar}
-                    alt={adoption.userId.name}
+                    src={adoption?.userId?.avatar}
+                    alt={adoption?.userId?.name}
                     className="rounded-full w-[80px] h-[8]"
                   />
                   <div>
                     <div className="text-2xl font-bold">
-                      {adoption.userId.name}
+                      {adoption?.userId?.name}
                     </div>
-                    <div>{adoption.phoneNumber || adoption.userId.email}</div>
+                    <div>{adoption?.phoneNumber || adoption?.userId?.email}</div>
                   </div>
                 </div>
               </div>
@@ -219,7 +220,7 @@ export default function Page() {
           <div className="py-5">
             <div className="p-8 bg-white rounded">
               <h2 className="text-xl font-bold mb-2">Description</h2>
-              <p className="text-lg">{adoption.description}</p>
+              <p className="text-lg">{adoption?.description}</p>
             </div>
           </div>
 
@@ -229,8 +230,9 @@ export default function Page() {
             </div>
 
             <div className="flex md:flex-row flex-col justify-between gap-5 py-5">
-              {moreAdoptions.map((adoption, index) => (
+              {moreAdoptions.map((adoption: Adoption) => (
                 <Adoption
+                  key={adoption.adoptionId || adoption._id}
                   pic={adoption.images[0].path}
                   name={adoption.name}
                   pet={adoption.species}

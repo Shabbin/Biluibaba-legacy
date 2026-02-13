@@ -6,13 +6,14 @@ import toast from "react-hot-toast";
 import axios from "@/src/lib/axiosInstance";
 import { OrderSkeleton, NoBookings } from "@/src/components/ui";
 import { formatCurrency } from "@/src/lib/currency";
+import type { VetBooking } from "@/src/types";
 
 export default function VetBookings() {
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
 
   const [loading, setLoading] = useState(true);
-  const [bookings, setBookings] = useState([]);
+  const [bookings, setBookings] = useState<VetBooking[]>([]);
 
   const fetchBookings = async () => {
     setLoading(true);

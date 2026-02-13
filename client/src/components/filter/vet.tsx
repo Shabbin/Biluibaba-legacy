@@ -92,6 +92,7 @@ export default class Filter extends React.Component<VetFilterProps, VetFilterSta
 
 interface FilterModalProps {
   isOpen: boolean;
+  onClose: (value: boolean) => void;
   calendar: string;
   setCalendar: (date: string) => void;
   species: string;

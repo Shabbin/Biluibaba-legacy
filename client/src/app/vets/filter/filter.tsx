@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
+import type { PetFilter } from "@/src/types";
 
 import { Cat, Dog, Bird, Rabbit } from "@/src/components/svg";
 
@@ -30,23 +31,23 @@ export default function Page() {
   const search = useSearchParams();
   const from = search.get("from") || "/vets";
 
-  const [species, setSpecies] = useState("cat");
-  const [concerns, setConcerns] = useState([]);
+  const [species, setSpecies] = useState<string>("cat");
+  const [concerns, setConcerns] = useState<string[]>([]);
 
   useEffect(() => {
-    const petFilter = JSON.parse(localStorage.getItem("pet-filter"));
+    const petFilter: PetFilter | null = JSON.parse(localStorage.getItem("pet-filter") || "null");
     if (!petFilter) {
       localStorage.setItem(
         "pet-filter",
         JSON.stringify({ species: "cat", concerns: [] })
       );
     } else {
-      setSpecies(petFilter.species);
-      setConcerns(petFilter.concerns);
+      setSpecies(petFilter.species || "cat");
+      setConcerns(petFilter.concerns || []);
     }
   }, []);
 
-  const handleSpeciesChange = (newSpecies) => {
+  const handleSpeciesChange = (newSpecies: string) => {
     setSpecies(newSpecies);
   };
 

@@ -14,21 +14,26 @@ import Product from "@/src/components/product";
 import axios from "@/src/lib/axiosInstance";
 
 import { GiSettingsKnobs } from "react-icons/gi";
+import type { Product as ProductType, TimeLeft } from "@/src/types";
+
+interface BestDealProduct {
+  id: ProductType;
+}
 
 export default function Page() {
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
-  const [bestDeals, setBestDeals] = useState([]);
-  const [timeLeft, setTimeLeft] = useState({
+  const [bestDeals, setBestDeals] = useState<BestDealProduct[]>([]);
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>({
     days: 0,
     hours: 0,
     minutes: 0,
     seconds: 0,
   });
-  const [targetTimestamp, setTargetTimestamp] = useState(null);
+  const [targetTimestamp, setTargetTimestamp] = useState<number | null>(null);
   const [filter, setFilter] = useState("popularity");
-  const [count, setCount] = useState([]);
+  const [count, setCount] = useState(0);
   const [productCount, setProductCount] = useState(0);
   const [timestampInitialized, setTimestampInitialized] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
@@ -37,7 +42,7 @@ export default function Page() {
 
   const [isExpired, setIsExpired] = useState(false);
 
-  const fetchDeals = async (pageCount) => {
+  const fetchDeals = async (pageCount: number) => {
     try {
       const { data } = await axios.get(
         `/api/product/best-deals?&count=${pageCount}`
@@ -67,7 +72,7 @@ export default function Page() {
     }
   };
 
-  const handlePageChange = (page) => {
+  const handlePageChange = (page: number) => {
     setCurrentPage(page);
     const newCount = page - 1;
 
@@ -121,13 +126,11 @@ export default function Page() {
     if (targetTimestamp !== null && !timestampInitialized) {
       setTimestampInitialized(true);
     }
-  }, [targetTimestamp, timestampInitialized]);
+    }, [targetTimestamp, timestampInitialized]);
 
-  const formatNumber = (num) => {
+  const formatNumber = (num: number): string => {
     return num.toString().padStart(2, "0");
-  };
-
-  return (
+  };  return (
     <div>
       <div className="p-5">
         <img src="/best_deals.png" alt="Best Deals" />

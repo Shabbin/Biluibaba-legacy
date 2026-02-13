@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
+import type { ApiAxiosError } from "@/src/types";
 import { toast } from "react-hot-toast";
 import MultiSelect from "react-select";
 
@@ -39,8 +40,8 @@ let modules = {
 };
 
 export default function Page() {
-  const [loading, setLoading] = useState(false);
-  const colorSelectRef = useRef(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const colorSelectRef = useRef<any>(null);
 
   // Single resize handler for mobile viewport adjustments
   useEffect(() => {
@@ -98,7 +99,7 @@ export default function Page() {
     };
   }, []);
 
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState<File[]>([]);
   const [petInfo, setPetInfo] = useState({
     name: "",
     species: "Cat",
@@ -114,11 +115,11 @@ export default function Page() {
     description: "",
   });
 
-  const handleDragOver = (event) => {
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
   };
 
-  const handleDrop = (event) => {
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     const droppedFiles = Array.from(event.dataTransfer.files);
     setFiles((prev) => {
@@ -128,7 +129,7 @@ export default function Page() {
     });
   };
 
-  const handleFileSelect = (event) => {
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const selectedFiles = Array.from(event.target.files);
       setFiles((prev) => {
@@ -139,18 +140,18 @@ export default function Page() {
     }
   };
 
-  const handleRemoveFile = (index) => {
+  const handleRemoveFile = (index: number) => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleChange = (event) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setPetInfo({
       ...petInfo,
       [event.target.name]: event.target.value,
     });
   };
 
-  const onSubmit = async (type) => {
+  const onSubmit = async (type: string) => {
     setLoading(true);
 
     try {
@@ -207,8 +208,8 @@ export default function Page() {
           window.location.href = "/adoptions/status?status=processing";
         }
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(error as ApiAxiosError);
       toast.error("Failed to create adoption post");
     } finally {
       setLoading(false);
@@ -251,7 +252,7 @@ export default function Page() {
           )}
           {files.length > 0 && (
             <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {files.map((file, index) => (
+              {files.map((file: File, index: number) => (
                 <div key={index} className="relative group">
                   <div className="aspect-square rounded-lg overflow-hidden bg-gray-100">
                     <img

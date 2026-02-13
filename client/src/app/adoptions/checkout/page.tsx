@@ -12,6 +12,7 @@ import Textarea from "@/src/components/ui/textarea";
 import Button from "@/src/components/ui/button";
 
 import axios from "@/src/lib/axiosInstance";
+import type { ApiAxiosError } from "@/src/types";
 
 import { WithRouterProps } from "@/src/app/controllers/router";
 
@@ -50,8 +51,8 @@ export default withRouter(
     }
 
     componentDidMount() {
-      let adoption = JSON.parse(localStorage.getItem("adoption"));
-      if (!adoption) window.location.href = "/adoptions";
+      let adoption = JSON.parse(localStorage.getItem("adoption") || "{}");
+      if (!adoption || !adoption.adoptionId) window.location.href = "/adoptions";
       else {
         this.setState({
           adoption: adoption,
@@ -102,7 +103,6 @@ export default withRouter(
           payment: this.state.shippingCost,
           whyAdopt: this.state.whyAdopt,
           takeCareOfPet: this.state.takeCareOfPet,
-          address: this.state.address,
           petProof: this.state.petProof,
         });
 
@@ -112,8 +112,8 @@ export default withRouter(
         else {
           toast.error("Something went wrong. Please try again.");
         }
-      } catch (error) {
-        console.error(error);
+      } catch (error: unknown) {
+        console.error(error as ApiAxiosError);
         toast.error("Something went wrong. Please try again.");
       } finally {
         this.setState({ loading: false });
@@ -145,7 +145,7 @@ export default withRouter(
                           this.setState({ name: event.target.value })
                         }
                         value={this.state.name}
-                        onKeyPress={(event) => {
+                        onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
                           if (!/[a-zA-z\s]/.test(event.key)) {
                             event.preventDefault();
                           }
@@ -161,7 +161,7 @@ export default withRouter(
                           this.setState({ phoneNumber: event.target.value })
                         }
                         value={this.state.phoneNumber}
-                        onKeyPress={(event) => {
+                        onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
                           if (!/[0-9]/.test(event.key)) {
                             event.preventDefault();
                           }
@@ -228,7 +228,7 @@ export default withRouter(
                       </div>
 
                       <div>
-                        Is your home {this.state.adoption.species.toLowerCase()}{" "}
+                        Is your home {this.state.adoption.species?.toLowerCase()}{" "}
                         proof?
                       </div>
                       <Textarea
@@ -253,7 +253,7 @@ export default withRouter(
 
                       <div>
                         How you take care of this{" "}
-                        {this.state.adoption.species.toLowerCase()}?
+                        {this.state.adoption.species?.toLowerCase()}?
                       </div>
                       <Textarea
                         type="text"
@@ -281,7 +281,7 @@ export default withRouter(
                         text="Proceed to payment"
                         className="w-full my-3"
                         disabled={this.state.loading}
-                        onClick={(event) => this.onSubmit(event)}
+                        onClick={(event: React.FormEvent<HTMLFormElement>) => this.onSubmit(event)}
                       />
                     </div>
                   </div>
@@ -312,7 +312,7 @@ export default withRouter(
                       <div className="flex flex-row my-5 gap-5 px-6">
                         <img
                           src={this.state.adoption.pic}
-                          alt={this.state.adoption.name}
+                          alt={this.state.adoption.name || "Pet"}
                           className="w-[60px] h-[60px] rounded-full"
                         />
                         <div className="flex flex-row items-center justify-between flex-1 my-1">

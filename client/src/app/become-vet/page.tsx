@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 import axiosInstance from "@/src/lib/axiosInstance";
+import type { ApiAxiosError } from "@/src/types/api";
 
 import Input from "@/src/components/ui/input";
 import Button from "@/src/components/ui/button";
@@ -150,7 +151,11 @@ export default function Page() {
     const { name, value } = event.target;
     const specializedZone = [...vetData.specializedZone];
 
-    specializedZone[index][name] = value;
+    if (name === 'pet' && typeof value === 'string') {
+      specializedZone[index].pet = value;
+    } else if (name === 'concerns' && Array.isArray(value)) {
+      specializedZone[index].concerns = value as { value: string; label: string }[];
+    }
 
     setVetData({ ...vetData, specializedZone });
   };
@@ -203,9 +208,9 @@ export default function Page() {
         toast.success("Vet application created successfully...");
         setSuccess(true);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       setLoading(false);
-      console.log(error);
+      console.error(error);
       return toast.error("Something went wrong. Please try again");
     }
     setLoading(true);
@@ -375,10 +380,11 @@ function StepOne({ data, handleDataChange, setStep }: VetStepProps) {
       );
 
       if (responseData.success) setStep(2);
-    } catch (error) {
+    } catch (error: unknown) {
       setLoading(false);
-      console.log(error);
-      return toast.error(error.response.data.error);
+      const err = error as ApiAxiosError;
+      console.error(err);
+      return toast.error(err.response?.data?.error || "Failed to verify email");
     }
   };
 

@@ -55,7 +55,7 @@ export default withRouter(
     }
 
     componentDidMount() {
-      let cart = JSON.parse(localStorage.getItem("cart"));
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
       if (cart.length === 0) window.location.href = "/my-cart";
       else {
@@ -112,7 +112,7 @@ export default withRouter(
       return shippingCost;
     }
 
-    getRegion(region) {
+    getRegion(region: number): string {
       if (region === 0) return "Inside Dhaka (Regular)";
       else if (region === 1) return "Inside Dhaka (Express)";
       else if (region === 2)

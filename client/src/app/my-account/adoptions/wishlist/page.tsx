@@ -6,12 +6,17 @@ import { toast } from "react-hot-toast";
 import Adoption from "@/src/components/adoption";
 
 import axios from "@/src/lib/axiosInstance";
+import type { Adoption } from "@/src/types";
+
+interface AdoptionIdObj {
+  id: string;
+}
 
 export default function Page() {
   const [loading, setLoading] = useState(true);
-  const [adoptions, setAdoptions] = useState([]);
+  const [adoptions, setAdoptions] = useState<Adoption[]>([]);
 
-  const fetchAdoptions = async (adoptionIds) => {
+  const fetchAdoptions = async (adoptionIds: AdoptionIdObj[]) => {
     try {
       const ids = adoptionIds.map((adoption) => adoption.id).join(",");
 
@@ -32,8 +37,8 @@ export default function Page() {
   };
 
   useEffect(() => {
-    const wishlist =
-      JSON.parse(localStorage.getItem("adoption-wishlist")) || "[]";
+    const wishlist: AdoptionIdObj[] =
+      JSON.parse(localStorage.getItem("adoption-wishlist") || "[]");
 
     if (wishlist.length > 0) {
       fetchAdoptions(wishlist);

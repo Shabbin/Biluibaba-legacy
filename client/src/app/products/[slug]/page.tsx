@@ -1,15 +1,23 @@
 import DisplayProduct from "./product";
 
 import ProductData from "@/src/app/demo.products";
+import type { DemoProduct } from "@/src/types";
+
+const typedProductData = ProductData as DemoProduct[];
 
 export function generateStaticParams() {
-  return ProductData.map((product) => ({
+  return typedProductData.map((product) => ({
     slug: `${product.slug}`,
   }));
 }
 
-const Product = ({ params }: { params: { slug: string } }) => {
-  return <DisplayProduct params={params} />;
+interface ProductPageProps {
+  params: Promise<{ slug: string }>;
+}
+
+const Product = async ({ params }: ProductPageProps) => {
+  const resolvedParams = await params;
+  return <DisplayProduct />;
 };
 
 export default Product;

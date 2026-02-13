@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
+import type { VetAppointmentLocal, PetFilter, ApiAxiosError } from "@/src/types";
 
 import Input from "@/src/components/ui/input";
 import Textarea from "@/src/components/ui/textarea";
@@ -13,17 +14,18 @@ import axios from "@/src/lib/axiosInstance";
 import { formatCurrency } from "@/src/lib/currency";
 
 export default function Page() {
-  const [loading, setLoading] = useState(true);
-  const [petName, setPetName] = useState("");
-  const [petConcern, setPetConcern] = useState("");
-  const [homeAddress, setHomeAddress] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [vet, setVet] = useState(null);
-  const [species, setSpecies] = useState("cat");
-  const [concerns, setConcerns] = useState([]);
-  const [bookingLoading, setBookingLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [petName, setPetName] = useState<string>("");
+  const [petConcern, setPetConcern] = useState<string>("");
+  const [homeAddress, setHomeAddress] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [vet, setVet] = useState<VetAppointmentLocal | null>(null);
+  const [species, setSpecies] = useState<string>("cat");
+  const [concerns, setConcerns] = useState<string[]>([]);
+  const [bookingLoading, setBookingLoading] = useState<boolean>(false);
 
   const handleSubmit = async () => {
+    if (!vet) return toast.error("Vet information not loaded");
     if (vet.type === "homeService" && homeAddress === "")
       return toast.error("Home address is required for home service");
 
@@ -59,8 +61,8 @@ export default function Page() {
       console.log(data);
 
       if (data.success) return (window.location.href = data.url);
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(error as ApiAxiosError);
       toast.error("Something went wrong. Please try again.");
     } finally {
       setBookingLoading(false);
@@ -68,13 +70,13 @@ export default function Page() {
   };
 
   useEffect(() => {
-    const vetStorage = JSON.parse(localStorage.getItem("vet-appointment"));
-    const petFilter = JSON.parse(localStorage.getItem("pet-filter"));
+    const vetStorage: VetAppointmentLocal | null = JSON.parse(localStorage.getItem("vet-appointment") || "null");
+    const petFilter: PetFilter = JSON.parse(localStorage.getItem("pet-filter") || '{"species":"cat","concerns":[]}');
     if (!vetStorage) window.location.href = "/vets";
     else setVet(vetStorage);
 
-    setSpecies(petFilter.species);
-    setConcerns(petFilter.concerns);
+    setSpecies(petFilter.species || "cat");
+    setConcerns(petFilter.concerns || []);
     setLoading(false);
   }, []);
 

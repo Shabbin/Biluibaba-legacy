@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Button from "@/src/components/ui/button";
 import { FaArrowRight, FaStar } from "react-icons/fa6"; // Added icons
 import { WavyDivider } from "../components/ui";
+import type { SiteSettings } from "@/src/types";
 
 // Components
 import Services from "@/src/app/_components/home/Services";
@@ -17,9 +19,6 @@ import Testimonials from "@/src/app/_components/home/Testimonials";
 import ProductAd from "@/src/components/productad";
 
 // Data & Libs
-import ProductsData from "@/src/app/demo.products";
-import VetsData from "@/src/app/demo.vets";
-import AdoptionData from "@/src/app/demo.adoptions";
 import axios from "@/src/lib/axiosInstance";
 
 const productCategories = [
@@ -55,8 +54,9 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({ title, seeAllLink }) => (
 );
 
 export default function Home() {
-  const [loading, setLoading] = useState(true);
-  const [site, setSite] = useState({
+  const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [site, setSite] = useState<SiteSettings>({
     product_landing_slider: [],
     popular_product_category: [],
     featured_product: null,
@@ -233,7 +233,7 @@ export default function Home() {
                 </h2>
               </div>
 
-              <ExpertVets VetsData={VetsData} />
+              <ExpertVets />
 
               <div className="flex justify-center mt-12">
                 <Link href="/vets">
@@ -283,7 +283,7 @@ export default function Home() {
            <p className="text-petzy-slate-light">Open your heart and home to a pet in need.</p>
         </div>
 
-        <Adoptions AdoptionData={AdoptionData} />
+        <Adoptions />
 
         <div className="flex justify-center mt-12">
           <Link href="/adoptions">

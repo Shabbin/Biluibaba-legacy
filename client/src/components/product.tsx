@@ -17,6 +17,22 @@ import {
 import QuickViewModal from "@/src/components/product/QuickViewModal";
 import { formatCurrency } from "@/src/lib/currency";
 
+interface WishlistItem {
+  name: string;
+  slug: string;
+  src: string;
+  price: number;
+  discount: number;
+}
+
+interface LocalCartItem {
+  id: string;
+  name: string;
+  src: string;
+  price: number;
+  quantity: number;
+}
+
 interface ProductProps {
   id: string;
   src: string;
@@ -48,16 +64,16 @@ const Product: React.FC<ProductProps> = ({
 
   // Initialize Wishlist State
   useEffect(() => {
-    const wishlistItems = JSON.parse(localStorage.getItem("wishlist")) || [];
-    setIsInWishlist(wishlistItems.some((item) => item.slug === slug));
+    const wishlistItems: WishlistItem[] = JSON.parse(localStorage.getItem("wishlist") || "[]");
+    setIsInWishlist(wishlistItems.some((item: WishlistItem) => item.slug === slug));
   }, [slug]);
 
   const toggleWishlist = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const wishlistItems = JSON.parse(localStorage.getItem("wishlist")) || [];
+    const wishlistItems: WishlistItem[] = JSON.parse(localStorage.getItem("wishlist") || "[]");
 
     if (isInWishlist) {
-      const updated = wishlistItems.filter((item) => item.slug !== slug);
+      const updated = wishlistItems.filter((item: WishlistItem) => item.slug !== slug);
       localStorage.setItem("wishlist", JSON.stringify(updated));
       setIsInWishlist(false);
       toast.error("Removed from wishlist");
@@ -71,11 +87,11 @@ const Product: React.FC<ProductProps> = ({
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const cart: LocalCartItem[] = JSON.parse(localStorage.getItem("cart") || "[]");
     const discountedPrice = discount > 0 ? price - (price * discount) / 100 : price;
     
     // Check if item exists to update quantity
-    const existing = cart.find(item => item.id === id);
+    const existing = cart.find((item: LocalCartItem) => item.id === id);
     if(existing) {
         existing.quantity += 1;
     } else {
@@ -114,7 +130,7 @@ const Product: React.FC<ProductProps> = ({
               </span>
             )}
             {/* Simulated 'New' badge logic */}
-            {id % 2 === 0 && (
+            {Number(id) % 2 === 0 && (
                <span className="bg-petzy-mint text-petzy-slate text-[10px] font-bold px-2 py-1 rounded-md shadow-sm bg-teal-100">
                 NEW
               </span>

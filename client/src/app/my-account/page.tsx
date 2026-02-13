@@ -11,10 +11,21 @@ import Select from "@/src/components/ui/select";
 
 import axios from "@/src/lib/axiosInstance";
 import LocationData from "./location.data"; // Ensure this import path is correct
+import type { User, ApiAxiosError } from "@/src/types";
+
+interface FormData {
+  name: string;
+  phoneNumber: string;
+  state: string;
+  area: string;
+  district: string;
+  postcode: string;
+  address: string;
+}
 
 export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [updateLoading, setUpdateLoading] = useState(false);
 
   // Edit Modes
@@ -22,7 +33,7 @@ export default function ProfilePage() {
   const [editAddress, setEditAddress] = useState(false);
 
   // Form States
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     phoneNumber: "",
     state: "",
@@ -49,7 +60,8 @@ export default function ProfilePage() {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to load profile");
+      const axiosError = error as ApiAxiosError;
+      toast.error(axiosError.response?.data?.error || "Failed to load profile");
     } finally {
       setLoading(false);
     }
@@ -59,7 +71,7 @@ export default function ProfilePage() {
     fetchUser();
   }, []);
 
-  const handleUpdate = async (section) => {
+  const handleUpdate = async (section: string) => {
     if (section === "profile") {
        if (!formData.name) return toast.error("Name is required");
        if (!formData.phoneNumber) return toast.error("Phone number is required");
@@ -96,7 +108,8 @@ export default function ProfilePage() {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Update failed");
+      const axiosError = error as ApiAxiosError;
+      toast.error(axiosError.response?.data?.error || "Update failed");
     } finally {
       setUpdateLoading(false);
     }

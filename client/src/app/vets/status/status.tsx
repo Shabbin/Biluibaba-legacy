@@ -16,7 +16,7 @@ export default function Page() {
         "pet-filter",
         JSON.stringify({ species: "cat", concerns: [] })
       );
-      localStorage.removeItem("vet-appointment", "");
+      localStorage.removeItem("vet-appointment");
     }
   });
 

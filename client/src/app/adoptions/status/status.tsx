@@ -6,8 +6,8 @@ import Button from "@/src/components/ui/button";
 
 export default function Page() {
   const searchParams = useSearchParams();
-  const status = searchParams.get("status");
-  const id = searchParams.get("id");
+  const status = searchParams.get("status") || "";
+  const id = searchParams.get("id") || "";
 
   return (
     <div className="py-20 bg-neutral-100">

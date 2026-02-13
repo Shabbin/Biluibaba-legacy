@@ -6,6 +6,7 @@ import { Pagination } from "@heroui/pagination";
 import { useSearchParams, usePathname } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
 
 import axios from "@/src/lib/axiosInstance";
 import { CardSkeleton, NoProductsFound } from "@/src/components/ui";
@@ -18,37 +19,39 @@ import Select from "@/src/components/ui/select";
 
 import Product from "@/src/components/product";
 
-import ProductsData from "@/src/app/demo.products";
+import type { Product as ProductType, PetProductCategory, PetProductEntry, PetProductData } from "@/src/types";
 
 import PetData from "@/src/app/products/pet-product.data";
 
-const Products = () => {
+const typedPetData = PetData as PetProductData;
+
+const Products: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
   const pet = searchParams.get("pet");
 
-  const [loading, setLoading] = useState(true);
-  const [petData, setPetData] = useState(
-    PetData.pets.find((item) => item.name === pet)
+  const [loading, setLoading] = useState<boolean>(true);
+  const [petData, setPetData] = useState<PetProductEntry | undefined>(
+    typedPetData.pets.find((item) => item.name === pet)
   );
-  const [selectedCategory, setSelectedCategory] = useState(
-    PetData.pets.find((item) => item.name === pet).categories[0]
+  const [selectedCategory, setSelectedCategory] = useState<PetProductCategory>(
+    typedPetData.pets.find((item) => item.name === pet)?.categories[0] || { name: "", value: [], src: "" }
   );
-  const [filter, setFilter] = useState("popularity");
-  const [products, setProducts] = useState([]);
-  const [count, setCount] = useState(0); // Current page count (0-based)
-  const [productCount, setProductCount] = useState(0);
-  const [totalPages, setTotalPages] = useState(1); // Initialize totalPages
-  const itemsPerPage = 40; // Fixed number of items per page
-  const [currentPage, setCurrentPage] = useState(1);
+  const [filter, setFilter] = useState<string>("popularity");
+  const [products, setProducts] = useState<ProductType[]>([]);
+  const [count, setCount] = useState<number>(0);
+  const [productCount, setProductCount] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const itemsPerPage = 40;
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const fetchProducts = async (pageCount) => {
+  const fetchProducts = async (pageCount?: number) => {
     setLoading(true);
     try {
       const { data } = await axios.get(
-        `/api/product/get?parent=${petData.name}&category=${selectedCategory.value[1]}&count=${pageCount}`
+        `/api/product/get?parent=${petData?.name}&category=${selectedCategory.value[1]}&count=${pageCount ?? count}`
       );
 
       if (data.success) {
@@ -60,7 +63,7 @@ const Products = () => {
         );
 
         setTotalPages(calculatedTotalPages > 0 ? calculatedTotalPages : 1);
-        setCount(pageCount);
+        if (pageCount !== undefined) setCount(pageCount);
       }
     } catch (error) {
       console.error(error);
@@ -69,12 +72,12 @@ const Products = () => {
     }
   };
 
-  const handlePageChange = (page) => {
+  const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    const newCount = (page - 1) * itemsPerPage; // Calculate new count based on page number
+    const newCount = (page - 1) * itemsPerPage;
     setCount(newCount);
     fetchProducts(newCount);
-    window.scrollTo({ top: 50, behavior: "smooth" }); // Scroll to top on page change
+    window.scrollTo({ top: 50, behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -84,7 +87,7 @@ const Products = () => {
 
   useEffect(() => {
     const params = new URLSearchParams();
-    params.set("pet", pet);
+    if (pet) params.set("pet", pet);
     params.set("category", selectedCategory.value[1]);
     if (selectedCategory.value[2]) params.set("sub", selectedCategory.value[2]);
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
@@ -94,7 +97,7 @@ const Products = () => {
   return (
     <div>
       <div className="py-5 px-10">
-        <img src={petData.src} />
+        <img src={petData?.src} />
       </div>
 
       <div className="py-10 px-5">
@@ -121,7 +124,7 @@ const Products = () => {
 
         <div className="py-10">
           <CategorySlider
-            categories={petData.categories}
+            categories={petData?.categories || []}
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
           />
@@ -141,7 +144,7 @@ const Products = () => {
               <>
                 <div className="md:basis-1/4 basis-full" key={product._id}>
                   <Product
-                    id={product.id}
+                    id={product._id}
                     name={product.name}
                     src={product.images[0].path}
                     price={product.price}
@@ -149,7 +152,6 @@ const Products = () => {
                     category={product.category}
                     description={product.description}
                     slug={product.slug}
-                    size={product.size}
                   />
                 </div>
                 {(index + 1) % 8 === 0 && index !== products.length - 1 && (
@@ -192,12 +194,18 @@ const Products = () => {
 
 export default Products;
 
-const CategorySlider = ({
+interface CategorySliderProps {
+  categories: PetProductCategory[];
+  selectedCategory: PetProductCategory;
+  setSelectedCategory: (category: PetProductCategory) => void;
+}
+
+const CategorySlider: React.FC<CategorySliderProps> = ({
   categories,
   selectedCategory,
   setSelectedCategory,
 }) => {
-  const swiperRef = useRef(null);
+  const swiperRef = useRef<SwiperType | null>(null);
 
   return (
     <div className="relative">

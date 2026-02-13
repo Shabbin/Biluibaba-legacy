@@ -31,6 +31,19 @@ import axios from "@/src/lib/axiosInstance";
 import { formatCurrency } from "@/src/lib/currency";
 import { formatDate } from "@/src/utils/formatDate";
 import { useAuth } from "@/src/components/providers/AuthProvider";
+import type { Product as ProductType } from "@/src/types";
+
+interface CartItem {
+  id: string;
+  name: string;
+  src: string;
+  price: number;
+  size?: string;
+  discount: number;
+  quantity: number;
+  vendorId: string;
+  slug: string;
+}
 
 export default function ProductDetail() {
   const { user } = useAuth();
@@ -39,24 +52,24 @@ export default function ProductDetail() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   // State
-  const [loading, setLoading] = useState(true);
-  const [product, setProduct] = useState({});
-  const [featuredProducts, setFeaturedProducts] = useState([]);
-  const [quantity, setQuantity] = useState(1);
-  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [product, setProduct] = useState<ProductType | null>(null);
+  const [featuredProducts, setFeaturedProducts] = useState<ProductType[]>([]);
+  const [quantity, setQuantity] = useState<number>(1);
+  const [isInWishlist, setIsInWishlist] = useState<boolean>(false);
 
   // Review State
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
-  const [reviewStatus, setReviewStatus] = useState(false);
-  const [reviewPage, setReviewPage] = useState(1);
+  const [rating, setRating] = useState<number>(0);
+  const [comment, setComment] = useState<string>("");
+  const [reviewStatus, setReviewStatus] = useState<boolean>(false);
+  const [reviewPage, setReviewPage] = useState<number>(1);
   const reviewsPerPage = 3;
 
   // Derived Values
-  const price = Math.floor(product.price - (product.discount > 0 ? (product.price * product.discount) / 100 : 0));
+  const price = product ? Math.floor(product.price - (product.discount > 0 ? (product.price * product.discount) / 100 : 0)) : 0;
   
   // Review Pagination Logic
-  const reviews = product.reviews ? [...product.reviews].reverse() : [];
+  const reviews = product?.reviews ? [...product.reviews].reverse() : [];
   const totalPages = Math.ceil(reviews.length / reviewsPerPage);
   const currentReviews = reviews.slice((reviewPage - 1) * reviewsPerPage, reviewPage * reviewsPerPage);
 
@@ -81,10 +94,11 @@ export default function ProductDetail() {
     fetchProduct();
   }, [params.slug]);
 
-  const handleAddToCart = (action) => {
+  const handleAddToCart = (action: "add" | "buy") => {
+    if (!product) return;
     // Basic Cart Logic (Ideally move this to a CartContext)
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const item = {
+    const cart: CartItem[] = JSON.parse(localStorage.getItem("cart") || "[]");
+    const item: CartItem = {
       id: product._id,
       name: product.name,
       src: product.images[0].path,
@@ -92,11 +106,11 @@ export default function ProductDetail() {
       size: product.size,
       discount: product.discount,
       quantity: quantity,
-      vendorId: product.vendorId._id,
+      vendorId: product.vendorId?._id || "",
       slug: product.slug,
     };
 
-    const existingIndex = cart.findIndex(c => c.id === item.id);
+    const existingIndex = cart.findIndex((c: CartItem) => c.id === item.id);
     if (existingIndex > -1) {
       cart[existingIndex].quantity += quantity;
     } else {
@@ -106,14 +120,14 @@ export default function ProductDetail() {
     localStorage.setItem("cart", JSON.stringify(cart));
     window.dispatchEvent(new Event("storage")); // Update Navbar Cart Count
     
-    toast.success(`${product.name} added to cart!`);
+    toast.success(`${product?.name} added to cart!`);
     
     if (action === "buy") {
       router.push("/checkout");
     }
   };
 
-  const submitReview = async (onClose) => {
+  const submitReview = async (onClose: () => void) => {
     if (rating < 1 || comment.length < 5) return toast.error("Please provide a rating and a short comment.");
     
     setReviewStatus(true);
@@ -137,7 +151,7 @@ export default function ProductDetail() {
     }
   };
 
-  if (loading) return <div className="min-h-screen bg-white" />; // Or a skeleton loader
+  if (loading || !product) return <div className="min-h-screen bg-white" />; // Or a skeleton loader
 
   return (
     <div className="bg-gray-50 min-h-screen pb-20">
@@ -336,10 +350,10 @@ export default function ProductDetail() {
                  </div>
                  {/* Rating Breakdown Bar Component */}
                  <ProductRatings 
-                    ratings={product.ratings} 
-                    totalReviews={product.totalReviews} 
-                    ratingBreakdown={product.ratingBreakdown} // Ensure component handles props correctly
-                    simple={true} // Optional prop to tell component to render minimal view
+                    ratings={product.ratings || 0}
+                    totalRatings={product.totalRatings || 0}
+                    totalReviews={product.totalReviews || 0} 
+                    ratingBreakdown={product.ratingBreakdown || { excellent: 0, veryGood: 0, good: 0, average: 0, poor: 0 }}
                  />
               </div>
 

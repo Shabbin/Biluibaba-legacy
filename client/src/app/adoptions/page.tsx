@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import type { Adoption, AdoptionFilters, ApiAxiosError } from "@/src/types";
 
 import Header from "@/src/components/header";
 import Filter from "@/src/components/filter/adoptions";
@@ -21,13 +22,13 @@ import ColorData from "@/src/app/adoptions/post/color.data";
 import LocationData from "@/src/app/adoptions/post/location.data";
 
 export default function Page() {
-  const [loading, setLoading] = useState(true);
-  const [adoptions, setAdoptions] = useState([]);
-  const [count, setCount] = useState(0); // Current page count (0-based)
-  const [adoptionCount, setAdoptionCount] = useState(0);
-  const [totalPages, setTotalPages] = useState(1); // Initialize totalPages
+  const [loading, setLoading] = useState<boolean>(true);
+  const [adoptions, setAdoptions] = useState<Adoption[]>([]);
+  const [count, setCount] = useState<number>(0); // Current page count (0-based)
+  const [adoptionCount, setAdoptionCount] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(1); // Initialize totalPages
   const itemsPerPage = 40; // Fixed number of items per page
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<AdoptionFilters>({
     age: "",
     species: "",
     breed: "",
@@ -38,7 +39,7 @@ export default function Page() {
     location: "",
     neutered: "",
   });
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const fetchAdoptions = async (pageCount = 0, filterParams = {}) => {
     setLoading(true);
     try {
@@ -66,15 +67,15 @@ export default function Page() {
         setTotalPages(calculatedTotalPages > 0 ? calculatedTotalPages : 1);
         setCount(pageCount); // Update the count state
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(error as ApiAxiosError);
     } finally {
       setLoading(false);
     }
   };
 
   // Function to handle filter changes
-  const handleFilterChange = (field, event) => {
+  const handleFilterChange = (field: keyof AdoptionFilters, event: React.ChangeEvent<HTMLSelectElement>) => {
     setFilters((prev) => ({ ...prev, [field]: event.target.value }));
   };
 
@@ -85,7 +86,7 @@ export default function Page() {
   };
 
   // Handle page change
-  const handlePageChange = (page) => {
+  const handlePageChange = (page: number) => {
     setCurrentPage(page);
     fetchAdoptions(page - 1, filters); // Convert 1-based page to 0-based count
     // Scroll to top when page changes
@@ -321,7 +322,7 @@ export default function Page() {
           }} />
         ) : (
           <div className="flex md:flex-row flex-col flex-wrap justify-center gap-5">
-            {adoptions.map((adoption, index) => (
+            {adoptions.map((adoption: Adoption, index: number) => (
               <>
                 <div
                   className="basis-1/4 md:-m-5 md:p-5"

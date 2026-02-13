@@ -32,18 +32,18 @@ const Adoption: React.FC<AdoptionCardProps> = ({
 
   // Check if item is in wishlist on initial render and when localStorage changes
   useEffect(() => {
-    const wishlistItems =
-      JSON.parse(localStorage.getItem("adoption-wishlist")) || [];
-    setIsInWishlist(wishlistItems.some((item) => item.id === id));
+    const wishlistItems: AdoptionCardProps[] =
+      JSON.parse(localStorage.getItem("adoption-wishlist") || "[]");
+    setIsInWishlist(wishlistItems.some((item: AdoptionCardProps) => item.id === id));
   }, [id]);
 
   const handleClick = () => {
-    const wishlistItems =
-      JSON.parse(localStorage.getItem("adoption-wishlist")) || [];
+    const wishlistItems: AdoptionCardProps[] =
+      JSON.parse(localStorage.getItem("adoption-wishlist") || "[]");
 
-    if (wishlistItems.some((item) => item.id === id)) {
+    if (wishlistItems.some((item: AdoptionCardProps) => item.id === id)) {
       // Remove from wishlist
-      const updatedWishlist = wishlistItems.filter((item) => item.id !== id);
+      const updatedWishlist = wishlistItems.filter((item: AdoptionCardProps) => item.id !== id);
       localStorage.setItem(
         "adoption-wishlist",
         JSON.stringify(updatedWishlist)

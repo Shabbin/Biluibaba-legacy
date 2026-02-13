@@ -84,13 +84,12 @@ const Adoptions: React.FC<AdoptionsSectionProps> = ({ AdoptionData }) => {
             <Adoption
               pic={adoption.images[0].path}
               name={adoption.name}
-              pet={adoption.species}
+              pet={adoption.species || adoption.pet || ""}
               location={adoption.location}
               gender={adoption.gender}
-              addedOn={adoption.updatedAt}
               breed={adoption.breed}
               age={adoption.age}
-              id={adoption.adoptionId}
+              id={adoption.adoptionId || adoption._id}
             />
           </SwiperSlide>
         ))}

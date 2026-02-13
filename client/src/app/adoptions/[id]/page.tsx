@@ -8,8 +8,9 @@ export function generateStaticParams() {
   }));
 }
 
-const Page = ({ params }: { params: { id: string } }) => {
-  return <AdoptionProfile params={params} />;
+const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
+  const resolvedParams = await params;
+  return <AdoptionProfile params={resolvedParams} />;
 };
 
 export default Page;

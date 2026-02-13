@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "@/src/lib/axiosInstance";
+import type { ApiAxiosError } from "@/src/types/api";
 
 export default function Logout() {
   const router = useRouter();
@@ -15,8 +16,9 @@ export default function Logout() {
         if (data.success) {
           router.push("/login");
         }
-      } catch (error) {
-        console.error(error);
+      } catch (error: unknown) {
+        const err = error as ApiAxiosError;
+        console.error(err);
         router.push("/my-account");
       }
     };

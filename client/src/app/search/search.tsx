@@ -7,14 +7,15 @@ import toast from "react-hot-toast";
 import axiosInstance from "@/src/lib/axiosInstance";
 import Product from "@/src/components/product";
 import { CardSkeleton, NoSearchResults } from "@/src/components/ui";
+import type { Product as ProductType } from "@/src/types";
 
 export default function Search() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(false);
-  const debounceTimer = useRef(null);
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Extract and decode query from URL parameters
   useEffect(() => {

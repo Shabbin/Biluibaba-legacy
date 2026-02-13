@@ -5,6 +5,7 @@ import { useParams, useSearchParams, useRouter } from "next/navigation";
 import Tippy from "@tippyjs/react";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
+import type { Vet, VetReview, ApiAxiosError, PetFilter } from "@/src/types";
 import { Pagination } from "@heroui/pagination";
 
 import axios from "@/src/lib/axiosInstance";
@@ -33,24 +34,25 @@ import { Cat, Dog, Star } from "@/src/components/svg";
 export default function Page() {
   const { user } = useAuth();
 
-  const [loading, setLoading] = useState(true);
-  const [vet, setVet] = useState({});
-  const [selectedSlot, setSelectedSlot] = useState("");
-  const [date, setDate] = useState("");
+  const [loading, setLoading] = useState<boolean>(true);
+  const [vet, setVet] = useState<Vet | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<string>("");
+  const [date, setDate] = useState<string>("");
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const [rating, setRating] = useState(1);
-  const [comment, setComment] = useState("");
-  const [reviewStatus, setReviewStatus] = useState(false);
+  const [rating, setRating] = useState<number>(1);
+  const [comment, setComment] = useState<string>("");
+  const [reviewStatus, setReviewStatus] = useState<boolean>(false);
 
-  const [reviewCurrentPage, setReviewCurrentPage] = useState(1);
+  const [reviewCurrentPage, setReviewCurrentPage] = useState<number>(1);
   const reviewsPerPage = 2;
 
   const indexOfLastReview = reviewCurrentPage * reviewsPerPage;
   const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
-  const currentReviews = vet.reviews
-    ?.reverse()
-    .slice(indexOfFirstReview, indexOfLastReview);
+  const currentReviews: VetReview[] = vet?.reviews
+    ?.slice()
+    .reverse()
+    .slice(indexOfFirstReview, indexOfLastReview) || [];
 
   const router = useRouter();
   const params = useParams();
@@ -64,36 +66,37 @@ export default function Page() {
       if (data.success) {
         setVet(data.vet);
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(error as ApiAxiosError);
     } finally {
       setLoading(false);
     }
   };
 
   const confirmBooking = () => {
+    if (!vet) return toast.error("Vet information not loaded");
     if (selectedSlot === "" || !selectedSlot)
       return toast.error("Please select a time slot");
     localStorage.setItem(
       "vet-appointment",
       JSON.stringify({
-        id: vet?._id,
-        name: vet?.name,
+        id: vet._id,
+        name: vet.name,
         date,
         time: selectedSlot,
-        totalAmount: vet?.appointments[type]?.fee,
+        totalAmount: vet.appointments?.[type]?.fee || 0,
         type,
-        address: vet?.address?.fullAddress,
-        hospital: vet?.hospital,
-        profilePicture: vet?.profilePicture,
-        degree: vet?.degree,
+        address: vet.address?.fullAddress,
+        hospital: vet.hospital,
+        profilePicture: vet.profilePicture,
+        degree: vet.degree,
       })
     );
 
     return (window.location.href = "/vets/checkout");
   };
 
-  const submitReview = async (onClose) => {
+  const submitReview = async (onClose: () => void) => {
     if (!rating || rating < 1 || rating > 5) {
       return toast.error("Please provide a valid rating between 1 and 5");
     }
@@ -114,8 +117,8 @@ export default function Page() {
       } else {
         toast.error("Failed to submit review");
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error(error as ApiAxiosError);
       toast.error("An error occurred while submitting your review");
     } finally {
       setReviewStatus(false);
@@ -137,7 +140,7 @@ export default function Page() {
 
     if (type == null) router.push(`/vets/${params.id}?type=physical`);
 
-    const petFilter = JSON.parse(localStorage.getItem("pet-filter"));
+    const petFilter: PetFilter | null = JSON.parse(localStorage.getItem("pet-filter") || "{}");
     if (!petFilter || petFilter.concerns?.length === 0)
       return router.push(
         "/vets/filter?from=" +
@@ -147,16 +150,18 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    setSelectedSlot(
-      vet.appointments?.slots[date.split(",")[0].toLowerCase()]
-        .availableSlots[0]
-    );
-  }, [date]);
+    if (vet?.appointments?.slots) {
+      const daySlots = vet.appointments.slots[date.split(",")[0].toLowerCase()];
+      if (daySlots?.availableSlots?.[0]) {
+        setSelectedSlot(daySlots.availableSlots[0]);
+      }
+    }
+  }, [date, vet]);
 
   return (
     <div className="py-20">
       <div className="container mx-auto">
-        {loading ? null : (
+        {loading || !vet ? null : (
           <div className="flex md:flex-row flex-col gap-10 md:mx-0 mx-5">
             <div className="basis-2/3">
               <div className="flex md:flex-row flex-col gap-5 items-center">
@@ -199,7 +204,7 @@ export default function Page() {
               <div className="py-10 border-b-1">
                 <div className="text-2xl font-bold">Species treated</div>
                 <div className="flex flex-row gap-5 my-5">
-                  {vet.specializedZone.map((s, i) => (
+                  {vet.specializedZone?.map((s, i) => (
                     <div
                       className="flex flex-row items-center gap-4 w-[200px] h-[100px] px-5 rounded-xl border shadow-lg"
                       key={i}
@@ -217,7 +222,7 @@ export default function Page() {
               <div className="py-10 border-b-1">
                 <div className="text-2xl font-bold">Areas of interest</div>
                 <div className="flex flex-row flex-wrap items-center my-5">
-                  {vet.specializedZone.map((s, i) =>
+                  {vet.specializedZone?.map((s, i) =>
                     s.concerns.map((concern, concernIndex) => (
                       <div
                         className="basis-1/4 -me-2 px-2 flex flex-row items-center gap-4 text-lg"
@@ -324,10 +329,10 @@ export default function Page() {
                 <div className=" py-14">
                   <div className="flex flex-row items-center gap-2 text-2xl font-bold">
                     <div className="flex flex-row items-center gap-2">
-                      <Star className="text-[1rem]" /> {vet.ratings.toFixed(1)}
+                      <Star className="text-[1rem]" /> {vet.ratings?.toFixed(1) || "0.0"}
                     </div>
                     <div>.</div>
-                    <div>{vet.totalReviews} Reviews</div>
+                    <div>{vet.totalReviews || 0} Reviews</div>
                   </div>
 
                   {currentReviews.length === 0 && (
@@ -364,9 +369,9 @@ export default function Page() {
                   ))}
 
                   <div className="flex justify-center mt-8">
-                    {!loading && vet.reviews.length > 2 && (
+                    {!loading && (vet.reviews?.length || 0) > 2 && (
                       <Pagination
-                        total={Math.ceil(vet.reviews.length / reviewsPerPage)}
+                        total={Math.ceil((vet.reviews?.length || 0) / reviewsPerPage)}
                         initialPage={1}
                         page={reviewCurrentPage}
                         onChange={setReviewCurrentPage}
@@ -388,15 +393,13 @@ export default function Page() {
               <div className="px-6">
                 <Calendar
                   date={date}
-                  setDate={(date) => setDate(date)}
-                  availableSlots={vet.appointments.slots}
+                  setDate={(date: string) => setDate(date)}
+                  availableSlots={vet.appointments?.slots || {}}
                 />
               </div>
 
               <div className="border-t-1 border-b-1 flex flex-col px-5 gap-3 py-5 overflow-auto min-h-20 max-h-96 h-[100v-31rem]">
-                {vet.appointments.slots[
-                  date.split(",")[0].toLowerCase()
-                ].availableSlots.map((slot, index) => (
+                {(vet.appointments?.slots?.[date.split(",")[0].toLowerCase()]?.availableSlots || []).map((slot, index) => (
                   <div
                     className={
                       "flex flex-row justify-between items-center p-5 border-2 rounded-lg text-sm cursor-pointer hover:text-neutral-500 " +

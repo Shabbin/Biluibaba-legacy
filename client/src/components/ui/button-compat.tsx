@@ -1,11 +1,22 @@
+import React from "react";
 import { Button as ShadcnButton } from "./button";
+
+interface ButtonCompatProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  text?: string;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  icon?: React.ReactNode;
+  className?: string;
+  type?: "default" | "outline" | "custom" | "submit" | "reset" | "button";
+  disabled?: boolean;
+  iconAlign?: "left" | "right";
+}
 
 /**
  * Legacy Button wrapper for backward compatibility
  * Old API: <Button text="Click me" type="default|outline" onClick={...} />
  * New shadcn Button uses: <Button variant="default|outline">Click me</Button>
  */
-const Button = ({
+const Button: React.FC<ButtonCompatProps> = ({
   text,
   onClick,
   icon,

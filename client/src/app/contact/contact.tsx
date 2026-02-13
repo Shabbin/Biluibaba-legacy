@@ -8,9 +8,17 @@ import toast from "react-hot-toast";
 // Components
 import Button from "@/src/components/ui/button";
 
+interface ContactFormData {
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+}
+
 const Contact = () => {
   const router = useRouter();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ContactFormData>({
     name: "",
     email: "",
     phone: "",
@@ -19,14 +27,14 @@ const Contact = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setLoading(true);
 
@@ -42,7 +50,8 @@ const Contact = () => {
         subject: "",
         message: ""
       });
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error(error);
       toast.error("Failed to send message. Please try again.");
     } finally {
       setLoading(false);

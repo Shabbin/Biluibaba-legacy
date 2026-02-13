@@ -27,6 +27,7 @@ import {
 } from "@/src/components/ui/form";
 import { toast } from "@/src/hooks/use-toast";
 import axios from "@/src/lib/axiosInstance";
+import type { ApiAxiosError } from "@/src/types";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -43,7 +44,7 @@ export default function ForgotPasswordPage() {
     },
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: z.infer<typeof forgotPasswordSchema>) => {
     setIsSubmitting(true);
     try {
       const response = await axios.post("/api/auth/forgot-password", {
@@ -58,10 +59,11 @@ export default function ForgotPasswordPage() {
         });
       }
     } catch (error) {
+      const axiosError = error as ApiAxiosError;
       toast({
         title: "Error",
         description:
-          error.response?.data?.error || "Something went wrong. Please try again.",
+          axiosError.response?.data?.error || "Something went wrong. Please try again.",
         variant: "destructive",
       });
     } finally {

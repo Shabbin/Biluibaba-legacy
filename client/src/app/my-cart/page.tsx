@@ -11,12 +11,14 @@ import Link from "next/link";
 
 import { Delete, HeartOutline, Heart } from "@/src/components/svg";
 import { formatCurrency } from "@/src/lib/currency";
+import type { CartItem, WishlistItem } from "@/src/types";
 
 export default function Cart() {
-  const [cartItems, setCartItems] = useState([]);
-  const [selectedItems, setSelectedItems] = useState([]);
+  const router = useRouter();
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [wishListItems, setWishListItems] = useState([]);
+  const [wishListItems, setWishListItems] = useState<WishlistItem[]>([]);
 
   useEffect(() => {
     // Retrieve cart items from localStorage
@@ -29,7 +31,7 @@ export default function Cart() {
     setLoading(false);
   }, []);
 
-  const handleQuantityChange = (id, quantity) => {
+  const handleQuantityChange = (id: string, quantity: number) => {
     const updatedCart = cartItems.map((item) =>
       item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
     );
@@ -37,7 +39,7 @@ export default function Cart() {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  const handleDelete = (slug) => {
+  const handleDelete = (slug: string) => {
     const updatedCart = cartItems.filter((item) => item.slug !== slug);
     setCartItems(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
@@ -52,13 +54,13 @@ export default function Cart() {
     setSelectedItems([]);
   };
 
-  const handleSelectItem = (id) => {
+  const handleSelectItem = (id: string) => {
     setSelectedItems((prev) =>
       prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
     );
   };
 
-  const handleWishlistClick = (item) => {
+  const handleWishlistClick = (item: CartItem) => {
     if (wishListItems.some((wishlistItem) => wishlistItem.slug === item.slug)) {
       // Remove from wishlist
       const updatedWishlist = wishListItems.filter(
@@ -293,7 +295,7 @@ export default function Cart() {
               <FeatureProducts
                 type="featured"
                 category="all"
-                router={useRouter()}
+                router={router}
               />
             </div>
           </div>

@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import axiosInstance from "@/src/lib/axiosInstance";
 import { useAuth } from "@/src/components/providers/AuthProvider";
+import type { ApiAxiosError } from "@/src/types";
 
 import Button from "@/src/components/ui/button";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
@@ -36,7 +37,7 @@ const Login = () => {
 
   if (user) router.push("/");
 
-  const login = async (authType) => {
+  const login = async (authType: string) => {
     if (authType === "traditional") {
       if (email === "") return toast.error("Please provide a valid email");
       if (password === "") return toast.error("Please provide a password");
@@ -62,7 +63,8 @@ const Login = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data?.error || "Login failed. Please try again.");
+      const axiosError = error as ApiAxiosError;
+      toast.error(axiosError.response?.data?.error || "Login failed. Please try again.");
     } finally {
       setLoading(false);
       setGoogleLoading(false);

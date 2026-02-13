@@ -6,13 +6,14 @@ import toast from "react-hot-toast";
 import axios from "@/src/lib/axiosInstance";
 import { OrderSkeleton, NoOrders } from "@/src/components/ui";
 import { formatCurrency } from "@/src/lib/currency";
+import type { Order } from "@/src/types";
 
 export default function Order() {
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
 
   const [loading, setLoading] = useState(true);
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState<Order[]>([]);
 
   const fetchOrders = async () => {
     setLoading(true);

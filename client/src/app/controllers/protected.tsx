@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-const withProtectedRoute = (ComposedComponent) => {
-  return (props) => {
+const withProtectedRoute = <P extends Record<string, unknown>>(ComposedComponent: React.ComponentType<P>) => {
+  return (props: P) => {
     const router = useRouter();
-    let auth = false;
+    const [auth, setAuth] = useState(false);
 
     useEffect(() => {
       const token = localStorage.getItem("token");
 
-      console.log(token);
-
       if (!token) router.push("/signin");
-      else auth = true;
-    }, []);
+      else setAuth(true);
+    }, [router]);
 
     if (!auth) return null;
     return <ComposedComponent {...props} />;

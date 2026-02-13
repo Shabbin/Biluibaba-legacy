@@ -7,25 +7,47 @@ import { CardSkeleton, EmptyWishlist } from "@/src/components/ui";
 import { formatCurrency } from "@/src/lib/currency";
 
 import { Delete, AddCart } from "@/src/components/svg";
+import type { WishlistItem } from "@/src/types";
+
+interface CheckboxProps {
+  checked: boolean;
+  indeterminate?: boolean;
+  onChange: (checked: boolean) => void;
+  className?: string;
+}
+
+const Checkbox = ({ checked, indeterminate = false, onChange, className = "" }: CheckboxProps) => {
+  return (
+    <input
+      type="checkbox"
+      checked={checked}
+      ref={(el) => {
+        if (el) el.indeterminate = indeterminate;
+      }}
+      onChange={(e) => onChange(e.target.checked)}
+      className={`w-5 h-5 accent-black cursor-pointer ${className}`}
+    />
+  );
+};
 
 export default function Page() {
-  const [wishlist, setWishlist] = useState([]);
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const handleSelectAll = (checked) => {
+  const handleSelectAll = (checked: boolean) => {
     const newSelected = checked ? wishlist.map((item) => item.slug) : [];
     setSelectedItems(newSelected);
   };
 
-  const handleSelectItem = (slug, checked) => {
+  const handleSelectItem = (slug: string, checked: boolean) => {
     const newSelected = checked
       ? [...selectedItems, slug]
       : selectedItems.filter((itemSlug) => itemSlug !== slug);
     setSelectedItems(newSelected);
   };
 
-  const handleDelete = (slug) => {
+  const handleDelete = (slug: string) => {
     // Remove from wishlist
     const newWishlist = wishlist.filter((item) => item.slug !== slug);
     setWishlist(newWishlist);

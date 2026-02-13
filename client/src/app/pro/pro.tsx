@@ -118,7 +118,7 @@ const Pro = () => {
   const router = useRouter();
   const [selectedPlan, setSelectedPlan] = useState(1); // Default to Annual plan
 
-  const handleSubscribe = (planIndex) => {
+  const handleSubscribe = (planIndex: number): void => {
     // TODO: Implement payment/subscription logic
     console.log("Subscribing to:", pricingPlans[planIndex].name);
     // For now, just show alert

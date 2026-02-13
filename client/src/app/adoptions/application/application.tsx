@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import type { AdoptionOrder, ApiAxiosError } from "@/src/types";
 import toast from "react-hot-toast";
 
 import axios from "@/src/lib/axiosInstance";
@@ -14,8 +15,8 @@ export default function Page() {
   const search = useSearchParams();
   const orderId = search.get("id");
 
-  const [loading, setLoading] = useState(true);
-  const [orderDetails, setOrderDetails] = useState(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [orderDetails, setOrderDetails] = useState<AdoptionOrder | null>(null);
 
   const fetchOrderDetails = async () => {
     try {
@@ -26,15 +27,15 @@ export default function Page() {
       if (data.success) setOrderDetails(data.order);
 
       console.log(data);
-    } catch (error) {
+    } catch (error: unknown) {
       toast.error("Failed to fetch order details");
-      console.error(error);
+      console.error(error as ApiAxiosError);
     } finally {
       setLoading(false);
     }
   };
 
-  const onSubmit = async (status) => {
+  const onSubmit = async (status: string) => {
     setLoading(true);
     try {
       const { data } = await axios.post("/api/adoptions/application", {
@@ -48,9 +49,9 @@ export default function Page() {
           fetchOrderDetails();
         }, 3000);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       toast.error("Failed to update application status");
-      console.error(error);
+      console.error(error as ApiAxiosError);
     } finally {
       setLoading(false);
     }
@@ -65,7 +66,7 @@ export default function Page() {
     <div className="h-screen flex flex-col items-center justify-center gap-10">
       {loading ? (
         <LuLoader className="animate-spin" size="2em"></LuLoader>
-      ) : orderDetails.status === "Pending" ? (
+      ) : orderDetails?.status === "Pending" ? (
         <>
           <h2 className="text-5xl md:w-1/2 w-full text-center">
             Do you want to accept this application from?
@@ -87,7 +88,7 @@ export default function Page() {
         </>
       ) : (
         <div>
-          {orderDetails.status === "Accepted" ? (
+          {orderDetails?.status === "Accepted" ? (
             <div className="text-2xl text-green-500">
               This application has already been accepted!
             </div>

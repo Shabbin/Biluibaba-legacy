@@ -58,7 +58,7 @@ export default function MoreProducts({ products, type }: MoreProductsProps) {
         {products.map((product) => (
           <SwiperSlide key={product._id} className="md:px-0 px-10">
             <Product
-              id={product.id}
+              id={product._id}
               name={product.name}
               src={product.images[0].path}
               price={product.price}
@@ -66,7 +66,6 @@ export default function MoreProducts({ products, type }: MoreProductsProps) {
               category={product.category}
               description={product.description}
               slug={product.slug}
-              size={product.size}
             />
           </SwiperSlide>
         ))}

@@ -1,10 +1,15 @@
+import React from "react";
 import { Input as ShadcnInput } from "../ui/input";
+
+interface InputCompatProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  error?: string;
+}
 
 /**
  * Legacy Input wrapper for backward compatibility
  * Maintains the same API as the old custom input component
  */
-const Input = ({
+const Input: React.FC<InputCompatProps> = ({
   type,
   value,
   placeholder,

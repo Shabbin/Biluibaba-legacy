@@ -12,6 +12,7 @@ import { FaFacebook } from "react-icons/fa6";
 import { useAuth } from "@/src/components/providers/AuthProvider";
 import Button from "@/src/components/ui/button";
 import axiosInstance from "@/src/lib/axiosInstance";
+import type { ApiAxiosError } from "@/src/types";
 
 const SignupContent = () => {
   const { fetchUserData } = useAuth();
@@ -27,7 +28,7 @@ const SignupContent = () => {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [facebookLoading, setFacebookLoading] = useState(false);
 
-  const handleRegister = async (authType) => {
+  const handleRegister = async (authType: string) => {
     if (authType === "traditional") {
       if (name.length <= 3) return toast.error("Name must be at least 4 characters long");
       if (phoneNumber.length < 11) return toast.error("Please provide a valid phone number");
@@ -60,7 +61,8 @@ const SignupContent = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data?.error || "Registration failed. Please try again.");
+      const axiosError = error as ApiAxiosError;
+      toast.error(axiosError.response?.data?.error || "Registration failed. Please try again.");
     } finally {
       setLoading(false);
       setGoogleLoading(false);

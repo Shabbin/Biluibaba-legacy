@@ -9,6 +9,7 @@ import {
   ModalFooter,
 } from "@heroui/modal";
 import { toast } from "react-hot-toast";
+import type { ApiAxiosError } from "@/src/types";
 
 import withRouter from "@/src/app/controllers/router";
 
@@ -80,13 +81,20 @@ export default withRouter(
     }
 
     componentDidMount() {
-      let token = JSON.parse(localStorage.getItem("token"));
+      const tokenStr = localStorage.getItem("token");
+      const token = tokenStr ? JSON.parse(tokenStr) : null;
       if (!token) return this.router.push("/signin?from=/vet/appointment");
 
-      let booking = JSON.parse(sessionStorage.getItem("vet"));
+      const bookingStr = sessionStorage.getItem("vet");
+      const booking = bookingStr ? JSON.parse(bookingStr) : null;
       if (!booking) return this.router.push("/vet");
 
-      let vet = VetsData.find((v) => v.id === Number(booking.vet));
+      const vet = VetsData.find((v) => v.id === Number(booking.vet));
+
+      if (!vet) {
+        toast.error("Vet not found");
+        return this.router.push("/vet");
+      }
 
       this.setState({
         vet: {
@@ -302,24 +310,24 @@ export default withRouter(
                   <div className="px-6 py-8 border rounded-lg">
                     <div className="flex flex-row items-center gap-4 border-b-1 pb-8">
                       <img
-                        src={this.state.vet.profilePic}
+                        src={(this.state.vet as VetInfo).profilePic}
                         className="w-[100px] h-[100px] rounded-full"
-                        alt={this.state.vet.name}
+                        alt={(this.state.vet as VetInfo).name}
                       />
                       <div className="basis-full">
                         <div className="text-2xl font-bold text-zinc-800">
-                          {this.state.vet.name}
+                          {(this.state.vet as VetInfo).name}
                         </div>
                         <div className="text-lg mb-3">
-                          {this.state.vet.designation}
+                          {(this.state.vet as VetInfo).designation}
                         </div>
                         <div className="flex flex-row justify-between text-lg">
                           <div>
                             <div className="flex flex-row gap-2 items-center">
                               <FaStar size="1em" />
-                              <div>{this.state.vet.star}</div>
+                              <div>{(this.state.vet as VetInfo).star}</div>
                               <div>&#183;</div>
-                              <div>{this.state.vet.review} reviews</div>
+                              <div>{(this.state.vet as VetInfo).review} reviews</div>
                             </div>
                           </div>
                         </div>
@@ -330,13 +338,13 @@ export default withRouter(
                       <div className="flex flex-row justify-between my-2">
                         <div>Appointment</div>
                         <div className="text-xl">
-                          &#2547;{formatCurrency(this.state.vet.fee)}
+                          &#2547;{formatCurrency((this.state.vet as VetInfo).fee)}
                         </div>
                       </div>
                       <div className="flex flex-row justify-between my-2">
                         <div className="underline">Tax and fees</div>
                         <div className="text-xl">
-                          &#2547;{formatCurrency(this.state.vet.totalFee - this.state.vet.fee)}
+                          &#2547;{formatCurrency((this.state.vet as VetInfo).totalFee - (this.state.vet as VetInfo).fee)}
                         </div>
                       </div>
                     </div>
@@ -344,7 +352,7 @@ export default withRouter(
                       <div className="flex flex-row justify-between">
                         <div className="underline text-lg">Total</div>
                         <div className="text-xl font-bold">
-                          &#2547;{formatCurrency(this.state.vet.totalFee)}
+                          &#2547;{formatCurrency((this.state.vet as VetInfo).totalFee)}
                         </div>
                       </div>
                     </div>

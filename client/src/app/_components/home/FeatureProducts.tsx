@@ -83,7 +83,7 @@ const FeatureProducts: React.FC<FeatureProductsProps> = ({ category, type }) => 
         {products.map((product) => (
           <SwiperSlide key={product._id} className="md:px-0 px-10">
             <Product
-              id={product.id}
+              id={product._id}
               name={product.name}
               src={product.images[0].path}
               price={product.price}
@@ -91,7 +91,6 @@ const FeatureProducts: React.FC<FeatureProductsProps> = ({ category, type }) => 
               category={product.category}
               description={product.description}
               slug={product.slug}
-              size={product.size}
             />
           </SwiperSlide>
         ))}

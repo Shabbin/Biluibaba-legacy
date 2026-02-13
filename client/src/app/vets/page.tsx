@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { RiVipCrownFill } from "react-icons/ri";
+import type { ApiAxiosError } from "@/src/types";
 
 // Components
 import Button from "@/src/components/ui/button";
@@ -27,8 +28,11 @@ const vetCategories = [
 
 const Vet = () => {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [site, setSite] = useState({
+  const [loading, setLoading] = useState<boolean>(true);
+  const [site, setSite] = useState<{
+    vet_landing_slider: string[];
+    vet_banner_one: { filename: string; path: string };
+  }>({
     vet_landing_slider: [],
     vet_banner_one: { filename: "", path: "" },
   });
@@ -38,8 +42,8 @@ const Vet = () => {
       try {
         const { data } = await axios.get("/api/admin/site-settings");
         if (data.success) setSite(data.site);
-      } catch (error) {
-        console.error(error);
+      } catch (error: unknown) {
+        console.error(error as ApiAxiosError);
       } finally {
         setLoading(false);
       }

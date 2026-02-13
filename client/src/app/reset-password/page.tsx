@@ -28,6 +28,7 @@ import {
 } from "@/src/components/ui/form";
 import { toast } from "@/src/hooks/use-toast";
 import axios from "@/src/lib/axiosInstance";
+import type { ApiAxiosError } from "@/src/types";
 
 const resetPasswordSchema = z.object({
   newPassword: z
@@ -79,7 +80,7 @@ function ResetPasswordContent() {
     },
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: z.infer<typeof resetPasswordSchema>) => {
     if (!token) return;
 
     setIsSubmitting(true);
@@ -102,10 +103,11 @@ function ResetPasswordContent() {
         }, 3000);
       }
     } catch (error) {
+      const axiosError = error as ApiAxiosError;
       toast({
         title: "Error",
         description:
-          error.response?.data?.error || "Failed to reset password. The link may be expired.",
+          axiosError.response?.data?.error || "Failed to reset password. The link may be expired.",
         variant: "destructive",
       });
     } finally {
