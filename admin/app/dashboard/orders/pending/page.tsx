@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/pagination";
 
 import axios from "@/lib/axios";
+import { formatCurrency } from "@/lib/currency";
 
 export default function Page() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -103,7 +104,7 @@ export default function Page() {
                     </span>
                   )}
                 </TableCell>
-                <TableCell>{order.totalAmount} BDT</TableCell>
+                <TableCell>{formatCurrency(order.totalAmount)} BDT</TableCell>
                 <TableCell>{order.paymentMethod}</TableCell>
                 <TableCell>
                   {new Date(order.createdAt).toLocaleString()}

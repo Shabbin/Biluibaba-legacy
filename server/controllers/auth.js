@@ -1,11 +1,13 @@
 const { google } = require("googleapis");
 const axios = require("axios");
+const crypto = require("crypto");
 
 const User = require("../models/user.model");
 const Orders = require("../models/order.model");
 const Appointments = require("../models/appointment.model");
 
 const ErrorResponse = require("../utils/ErrorResponse");
+const SendMail = require("../utils/SendMail");
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
@@ -296,4 +298,88 @@ const handleGoogleOAuth = async (response, state) => {
 const handleFacebookOAuth = async (response) => {
   const facebookAuthURL = `https://www.facebook.com/v11.0/dialog/oauth?client_id=${process.env.FACEBOOK_APP_ID}&redirect_uri=${process.env.FACEBOOK_REDIRECT_URI}&scope=email,public_profile`;
   return response.status(200).json({ success: true, url: facebookAuthURL });
+};
+
+module.exports.forgotPassword = async (request, response, next) => {
+  const { email } = request.body;
+
+  if (!email) return next(new ErrorResponse("Please provide an email", 422));
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    // Don't reveal if user exists or not for security
+    return response.status(200).json({ 
+      success: true, 
+      data: "If an account exists with this email, you will receive a password reset link" 
+    });
+  }
+
+  // Generate reset token
+  const resetToken = crypto.randomBytes(32).toString("hex");
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  user.resetPasswordToken = hashedToken;
+  user.resetPasswordExpire = Date.now() + 30 * 60 * 1000; // 30 minutes
+  await user.save();
+
+  // Create reset URL
+  const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+
+  // Send email
+  try {
+    await SendMail({
+      to: user.email,
+      subject: "Password Reset Request - Biluibaba",
+      template: "password-reset",
+      data: {
+        name: user.name,
+        resetUrl,
+      },
+    });
+
+    return response.status(200).json({ 
+      success: true, 
+      data: "If an account exists with this email, you will receive a password reset link" 
+    });
+  } catch (error) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
+
+    return next(new ErrorResponse("Email could not be sent", 500));
+  }
+};
+
+module.exports.resetPassword = async (request, response, next) => {
+  const { token, newPassword } = request.body;
+
+  if (!token || !newPassword) 
+    return next(new ErrorResponse("Missing information", 422));
+
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex");
+
+  const user = await User.findOne({
+    resetPasswordToken: hashedToken,
+    resetPasswordExpire: { $gt: Date.now() },
+  });
+
+  if (!user) 
+    return next(new ErrorResponse("Invalid or expired token", 400));
+
+  user.password = newPassword;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+  await user.save();
+
+  return response.status(200).json({ 
+    success: true, 
+    data: "Password reset successful" 
+  });
 };

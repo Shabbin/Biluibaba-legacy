@@ -7,6 +7,7 @@ import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 
 import axios from "@/lib/axios";
+import { formatCurrency } from "@/lib/currency";
 import { formatDate } from "@/lib/time";
 
 import { Loader2, User } from "lucide-react";
@@ -92,7 +93,7 @@ export default function Page() {
                   </span>
                 </p>
                 <p className="mb-2">
-                  <strong>Original Price:</strong> {product.price.toFixed(2)}{" "}
+                  <strong>Original Price:</strong> {formatCurrency(product.price)}{" "}
                   BDT
                 </p>
                 <p className="mb-2">

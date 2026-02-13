@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { AlertDialogBox } from "@/components/alert-dialog";
 
 import axios from "@/lib/axios";
+import { formatCurrency } from "@/lib/currency";
 
 interface Prescription {
   medication: string;
@@ -221,7 +222,7 @@ export default function AppointmentDetailsPage() {
             <div>
               <p className="text-gray-600">Total Amount</p>
               <p className="font-medium">
-                {appointment.totalAmount.toLocaleString()} BDT
+                {formatCurrency(appointment.totalAmount)} BDT
               </p>
             </div>
           </div>

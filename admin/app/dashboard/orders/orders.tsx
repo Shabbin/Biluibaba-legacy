@@ -20,6 +20,7 @@ import { Pencil, User, ShoppingBag, Mail, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 import axios from "@/lib/axios";
+import { formatCurrency } from "@/lib/currency";
 
 export default function Order() {
   const search = useSearchParams();
@@ -146,11 +147,11 @@ export default function Order() {
                   >
                     <div className="flex flex-row items-center justify-between">
                       <h3 className="text-lg">{product.name}</h3>
-                      <p>{product.price} BDT</p>
+                      <p>{formatCurrency(product.price)} BDT</p>
                     </div>
                     <p className="my-2">Quantity: {product.quantity}</p>
                     <p className="my-2">
-                      Total: {product.price * product.quantity} BDT
+                      Total: {formatCurrency(product.price * product.quantity)} BDT
                     </p>
                     <div className="my-2">
                       Vendor: {product.vendor.name} | {product.vendor.email}
@@ -163,7 +164,7 @@ export default function Order() {
               })}
 
               <div className="flex items-end text-2xl font-bold py-4">
-                <div>Total: {order.totalAmount} BDT</div>
+                <div>Total: {formatCurrency(order.totalAmount)} BDT</div>
               </div>
             </div>
             <div className="basis-1/3 flex flex-col gap-5">
