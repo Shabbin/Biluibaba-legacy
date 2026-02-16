@@ -84,14 +84,7 @@ const Login = () => {
             alt="Petzy Login"
           />
           {/* Overlay Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
           
-          <div className="absolute bottom-0 left-0 p-12 text-white z-10">
-            <h2 className="text-4xl font-bold mb-4">Welcome Back!</h2>
-            <p className="text-lg text-gray-200 leading-relaxed">
-              Get access to your Orders, Wishlist, Expert Vet Consultations, and personalized recommendations for your furry friend.
-            </p>
-          </div>
         </div>
 
         {/* --- RIGHT SIDE: FORM --- */}

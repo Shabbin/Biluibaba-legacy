@@ -115,9 +115,8 @@ export default function ForgotPasswordPage() {
                     type="submit"
                     className="w-full"
                     disabled={isSubmitting}
-                  >
-                    {isSubmitting ? "Sending..." : "Send Reset Link"}
-                  </Button>
+                    text={isSubmitting ? "Sending..." : "Send Reset Link"}
+                  />
 
                   <div className="text-center text-sm">
                     <Link
