@@ -69,9 +69,9 @@ const Navbar = () => {
     try {
       const { lat, lng } = await getUserCoordinates();
       // Mocking the call for UI demo purposes, replace with your actual API
-      // const { data } = await axios.get(`/location?lat=${lat}&lng=${lng}`);
-      // if (data.success) localStorage.setItem("location", JSON.stringify(data));
-      setLocationName("Current Location"); 
+      const { data } = await axios.get(`/location?lat=${lat}&lng=${lng}`);
+      if (data.success) localStorage.setItem("location", JSON.stringify(data));
+      setLocationName(data.locationName || "Current Location");
     } catch (error) {
       console.error("Location Error:", error);
     }
@@ -169,7 +169,7 @@ const Navbar = () => {
                       onClick={() => setCartOpen(true)}
                       className={`rounded-full flex items-center text-sm font-semibold py-2.5 ${isScrolled ? "!px-3" : "!px-5"}`}
                    >
-                    {isScrolled ? "" : "Cart"}
+                    {isScrolled ? "" : "Cart"} 
                    </Button>
                    {/* Cart Badge Placeholder if needed */}
                    {/* <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full border-2 border-white text-[10px] text-white flex items-center justify-center font-bold">2</span> */}

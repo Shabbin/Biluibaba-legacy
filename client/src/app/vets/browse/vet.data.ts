@@ -1,4 +1,4 @@
-module.exports.vets = [
+const vets = [
   {
     name: "online",
     src: "/banners/online.png",
@@ -24,3 +24,5 @@ module.exports.vets = [
     src: "/banners/home.png",
   },
 ];
+
+export default { vets };

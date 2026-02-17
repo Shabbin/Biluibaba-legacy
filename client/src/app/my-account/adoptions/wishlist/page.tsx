@@ -6,7 +6,7 @@ import { toast } from "react-hot-toast";
 import Adoption from "@/src/components/adoption";
 
 import axios from "@/src/lib/axiosInstance";
-import type { Adoption } from "@/src/types";
+import type { Adoption as AdoptionType } from "@/src/types";
 
 interface AdoptionIdObj {
   id: string;
@@ -14,7 +14,7 @@ interface AdoptionIdObj {
 
 export default function Page() {
   const [loading, setLoading] = useState(true);
-  const [adoptions, setAdoptions] = useState<Adoption[]>([]);
+  const [adoptions, setAdoptions] = useState<AdoptionType[]>([]);
 
   const fetchAdoptions = async (adoptionIds: AdoptionIdObj[]) => {
     try {
@@ -59,13 +59,12 @@ export default function Page() {
                 <Adoption
                   pic={adoption.images[0].path}
                   name={adoption.name}
-                  pet={adoption.species}
+                  pet={adoption.species || "Unknown"}
                   location={adoption.location}
                   gender={adoption.gender}
-                  addedOn={adoption.updatedAt}
                   breed={adoption.breed}
                   age={adoption.age}
-                  id={adoption.adoptionId}
+                  id={adoption.adoptionId || ""}
                 />
               </div>
             ))}

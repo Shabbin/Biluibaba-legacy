@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "@/src/lib/axiosInstance";
-import type { ApiAxiosError } from "@/src/types/api";
+import type { ApiAxiosError } from "@/src/types/index";
 
 export default function Logout() {
   const router = useRouter();

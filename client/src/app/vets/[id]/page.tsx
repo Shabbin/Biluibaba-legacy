@@ -6,10 +6,11 @@ import Profile from "./vet";
 // Use dynamic rendering for vet profiles since they require API data
 export const dynamic = "force-dynamic";
 
-const VetProfile = ({ params }: { params: { id: string } }) => {
+const VetProfile = async ({ params }: { params: Promise<{ id: string }> }) => {
+  await params; // Ensure params are resolved for dynamic routing
   return (
     <Suspense fallback={<PageLoader />}>
-      <Profile params={params} />
+      <Profile />
     </Suspense>
   );
 };

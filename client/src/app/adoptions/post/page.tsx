@@ -47,7 +47,7 @@ export default function Page() {
   useEffect(() => {
     const handleResize = () => {
       // Reset any dropdown menu positioning as needed
-      const menuPortal = document.querySelector(".select__menu-portal");
+      const menuPortal = document.querySelector(".select__menu-portal") as HTMLElement | null;
       if (menuPortal) {
         if (window.innerWidth < 768) {
           menuPortal.style.width = "calc(100vw - 32px)";
@@ -74,7 +74,7 @@ export default function Page() {
 
       // Function to position the dropdown menu for mobile
       const positionDropdownMenu = () => {
-        const menuPortal = document.querySelector(".select__menu-portal");
+        const menuPortal = document.querySelector(".select__menu-portal") as HTMLElement | null;
         if (menuPortal && window.innerWidth < 768) {
           menuPortal.style.width = "calc(100vw - 32px)";
           menuPortal.style.left = "50%";
@@ -85,7 +85,7 @@ export default function Page() {
       // Use event delegation for efficiency
       document.body.addEventListener("click", (e) => {
         // If clicked on a select container or its child, check for menu portal
-        if (e.target.closest(".select__control")) {
+        if (e.target && (e.target as HTMLElement).closest(".select__control")) {
           // Small delay to let the menu render
           setTimeout(positionDropdownMenu, 50);
         }
@@ -282,7 +282,7 @@ export default function Page() {
           <div className="mt-6 border rounded-2xl shadow-sm p-12">
             <h2 className="text-2xl font-bold">Pet Description</h2>
             <Textarea
-              rows="20"
+              rows={20}
               className="mt-5"
               value={petInfo.description}
               onChange={handleChange}
@@ -495,7 +495,7 @@ export default function Page() {
                           ? "#4b5563"
                           : state.isFocused
                           ? "#e5e7eb"
-                          : null,
+                          : undefined,
                         color: state.isSelected ? "white" : "black",
                         padding: "10px",
                         fontSize: "14px",

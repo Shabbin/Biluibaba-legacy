@@ -12,7 +12,7 @@ import {
   FaArrowRight 
 } from "react-icons/fa6";
 
-import Button from "@/src/components/ui/button";
+import {Button} from "@/src/components/ui/button";
 import { formatCurrency } from "@/src/lib/currency";
 
 import type { CartItem } from "@/src/types";
@@ -213,11 +213,12 @@ const Cart: React.FC<CartProps> = ({ toggle, toggler }) => {
             <div className="flex flex-col gap-3">
               <Button
                 type="default" // Explicitly added to restore styles
-                text="Checkout Now"
                 icon={<FaArrowRight />}
                 className="w-full !py-3.5 shadow-md shadow-petzy-coral/20 hover:shadow-lg hover:shadow-petzy-coral/30 active:scale-[0.98] transition-all"
                 onClick={() => router.push("/checkout")}
-              />
+              >
+                Checkout Now
+              </Button>
               <button
                 onClick={() => router.push("/my-cart")}
                 className="w-full py-3 text-sm font-bold text-petzy-slate-light hover:text-petzy-coral transition-colors"

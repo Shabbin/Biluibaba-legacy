@@ -9,7 +9,7 @@ import axiosInstance from "@/src/lib/axiosInstance";
 import { useAuth } from "@/src/components/providers/AuthProvider";
 import type { ApiAxiosError } from "@/src/types";
 
-import Button from "@/src/components/ui/button";
+import {Button} from "@/src/components/ui/button";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc"; // Standard Google Icon color
 import { FaFacebook } from "react-icons/fa6";

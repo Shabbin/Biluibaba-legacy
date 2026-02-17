@@ -18,7 +18,7 @@ export async function middleware(request: NextRequest) {
     if (token) {
       try {
         const decodedToken = jwtDecode(token);
-        if (Date.now() >= decodedToken.exp * 1000) {
+        if (decodedToken.exp && Date.now() >= decodedToken.exp * 1000) {
           console.log("Token expired");
           throw new Error("Token expired");
         }

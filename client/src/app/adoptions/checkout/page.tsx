@@ -174,7 +174,7 @@ export default withRouter(
                           { value: "Inside Dhaka", text: "Inside Dhaka" },
                           { value: "Outside Dhaka", text: "Outside Dhaka" },
                         ]}
-                        onChange={(event) =>
+                        onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
                           this.setState({ region: event.target.value }, () =>
                             this.state.region === "Inside Dhaka"
                               ? this.setState({ shippingCost: 500 })
@@ -186,14 +186,13 @@ export default withRouter(
 
                       <div>Full Address*</div>
                       <Textarea
-                        type="text"
                         placeholder="Enter your street address here"
                         className="mb-5"
                         onChange={(event) =>
                           this.setState({ address: event.target.value })
                         }
                         value={this.state.address}
-                        rows="6"
+                        rows={6}
                       />
                       <div
                         className={
@@ -208,9 +207,8 @@ export default withRouter(
 
                       <div>Why do you want to adopt a pet?</div>
                       <Textarea
-                        type="text"
                         className="mb-5"
-                        rows="6"
+                        rows={6}
                         onChange={(event) =>
                           this.setState({ whyAdopt: event.target.value })
                         }
@@ -228,13 +226,12 @@ export default withRouter(
                       </div>
 
                       <div>
-                        Is your home {this.state.adoption.species?.toLowerCase()}{" "}
+                        Is your home {(this.state.adoption.species as string | undefined)?.toLowerCase() || 'pet'}{" "}
                         proof?
                       </div>
                       <Textarea
-                        type="text"
                         className="mb-5"
-                        rows="6"
+                        rows={6}
                         onChange={(event) =>
                           this.setState({ petProof: event.target.value })
                         }
@@ -253,12 +250,11 @@ export default withRouter(
 
                       <div>
                         How you take care of this{" "}
-                        {this.state.adoption.species?.toLowerCase()}?
+                        {(this.state.adoption.species as string | undefined)?.toLowerCase() || 'pet'}?
                       </div>
                       <Textarea
-                        type="text"
                         className="mb-5"
-                        rows="6"
+                        rows={6}
                         onChange={(event) =>
                           this.setState({ takeCareOfPet: event.target.value })
                         }
@@ -281,7 +277,10 @@ export default withRouter(
                         text="Proceed to payment"
                         className="w-full my-3"
                         disabled={this.state.loading}
-                        onClick={(event: React.FormEvent<HTMLFormElement>) => this.onSubmit(event)}
+                        onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                          event.preventDefault();
+                          this.onSubmit(event as unknown as React.FormEvent<HTMLFormElement>);
+                        }}
                       />
                     </div>
                   </div>
@@ -311,20 +310,20 @@ export default withRouter(
                     <div className="border-b-1 pb-5">
                       <div className="flex flex-row my-5 gap-5 px-6">
                         <img
-                          src={this.state.adoption.pic}
-                          alt={this.state.adoption.name || "Pet"}
+                          src={this.state.adoption.pic as string | undefined}
+                          alt={(this.state.adoption.name as string | undefined) || "Pet"}
                           className="w-[60px] h-[60px] rounded-full"
                         />
                         <div className="flex flex-row items-center justify-between flex-1 my-1">
                           <div>
                             <div className="text-lg font-bold">
-                              {this.state.adoption.name}
+                              {this.state.adoption.name as string | undefined}
                             </div>
-                            <div>{this.state.adoption.gender}</div>
+                            <div>{this.state.adoption.gender as string | undefined}</div>
                           </div>
                           <div>
                             <div className="px-8 py-1 bg-gray-100 font-light uppercase rounded-2xl">
-                              {this.state.adoption.species}
+                              {this.state.adoption.species as string | undefined}
                             </div>
                           </div>
                         </div>
