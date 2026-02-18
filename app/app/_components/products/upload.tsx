@@ -168,15 +168,16 @@ export default function Page({ product }: { product?: any }) {
   }
 
   return (
-    <div className="p-5">
-      <h2 className="text-4xl">
-        {product?.name !== ""
-          ? `Edit product: ${product.name}`
-          : "Upload new product"}
-      </h2>
+    <div className="p-6">
+      {!product?.name ? (
+        <div className="flex items-center gap-2 mb-6">
+          <div className="h-7 w-1 rounded-full bg-[#FF8A80]" />
+          <h2 className="text-xl font-semibold">Upload New Product</h2>
+        </div>
+      ) : null}
       <Form {...newProductForm}>
         <form
-          className="space-y-4 my-5"
+          className="space-y-6"
           onSubmit={newProductForm.handleSubmit(onSubmit)}
         >
           <FormField
@@ -201,7 +202,7 @@ export default function Page({ product }: { product?: any }) {
             <FormLabel>Product Categories</FormLabel>
             <div className="space-y-4">
               {category.fields.map((field, index) => (
-                <div key={field.id} className="flex items-end gap-4">
+                <div key={field.id} className="flex items-end gap-3 p-4 rounded-xl bg-muted/30 border border-border/40">
                   <div className="w-full">
                     <FormItem>
                       <FormLabel>Parent Category</FormLabel>
@@ -429,21 +430,21 @@ export default function Page({ product }: { product?: any }) {
           <div className="space-y-4">
             <FormLabel>Product Images</FormLabel>
             {product?.images ? (
-              <div className="my-4">
+              <div className="flex flex-wrap gap-3 my-2">
                 {product.images.map((image: any) => (
-                  <div key={image.id} className="flex items-center gap-4">
+                  <div key={image.id} className="relative group">
                     <img
                       src={image.path}
                       alt={image.alt}
-                      className="w-16 h-16 object-cover"
+                      className="w-20 h-20 object-cover rounded-xl ring-1 ring-border/60"
                     />
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {images.fields.map((field, index) => (
-                  <div key={field.id} className="flex items-center gap-4">
+                  <div key={field.id} className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 border border-border/40">
                     <FormItem className="w-full">
                       <FormControl>
                         <Input
@@ -519,18 +520,20 @@ export default function Page({ product }: { product?: any }) {
             )}
           />
 
-          <div className="flex flex-row justify-end py-3">
+          <div className="flex justify-end pt-6 border-t border-border/60">
             {product?.name !== "" ? (
               <Button
                 disabled={updateLoading}
                 onClick={() => onUpdate(newProductForm.getValues())}
+                size="lg"
               >
-                {updateLoading && <Loader2 className="animate-spin" />} Update
-                Product
+                {updateLoading && <Loader2 className="animate-spin mr-2 h-4 w-4" />}
+                Update Product
               </Button>
             ) : (
-              <Button type="submit" disabled={loading}>
-                {loading && <Loader2 className="animate-spin" />}Upload Product
+              <Button type="submit" disabled={loading} size="lg">
+                {loading && <Loader2 className="animate-spin mr-2 h-4 w-4" />}
+                Upload Product
               </Button>
             )}
           </div>

@@ -4,7 +4,18 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-import { Pencil, User, ShoppingBag, Mail } from "lucide-react";
+import {
+  Pencil,
+  User,
+  ShoppingBag,
+  Mail,
+  ArrowLeft,
+  MapPin,
+  Loader2,
+  StickyNote,
+  Package,
+  Calendar,
+} from "lucide-react";
 
 import { toast } from "@/hooks/use-toast";
 
@@ -39,134 +50,160 @@ export default function Order() {
     fetchOrder();
   }, []);
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="animate-spin h-8 w-8 text-[#FF8A80]" />
+      </div>
+    );
+  }
+
   return (
-    <div className="p-5">
-      {loading ? (
-        <div className="">Fetching Order data...</div>
-      ) : (
+    <div className="space-y-6">
+      {/* Page Header */}
+      <div className="page-header">
         <div>
-          <div className="flex flex-row items-center gap-5">
-            <h2 className="text-2xl">Order ID: {order.orderId}</h2>
-            <p>
-              {order.paymentStatus == true ? (
-                <span className="px-4 py-1 bg-green-100 text-green-900 rounded">
-                  Payment Completed
-                </span>
-              ) : (
-                <span className="px-4 py-1 bg-yellow-100 text-yellow-900  rounded">
-                  Payment Pending
-                </span>
-              )}
-            </p>
-            <p>
-              {order.status == "delivered" ? (
-                <span className="px-4 py-1 bg-green-100 text-green-900 rounded">
-                  Order Completed
-                </span>
-              ) : order.status === "pending" ? (
-                <span className="px-4 py-1 bg-yellow-100 text-yellow-900 rounded">
-                  Order Pending
-                </span>
-              ) : order.status === "cancelled" ? (
-                <span className="px-4 py-1 bg-red-100 text-red-900 rounded">
-                  Order Cancelled
-                </span>
-              ) : order.status === "dispatched" ? (
-                <span className="px-4 py-1 bg-blue-100 text-blue-900 rounded">
-                  Order Dispatched
-                </span>
-              ) : order.status === "refunded" ? (
-                <span className="px-4 py-1 bg-purple-100 text-purple-900 rounded">
-                  Order Refunded
-                </span>
-              ) : (
-                <span className="px-4 py-1 bg-gray-100 text-gray-900 rounded">
-                  Unknown Status
-                </span>
-              )}
-            </p>
+          <Link
+            href="/dashboard/orders/all"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-2 transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Orders
+          </Link>
+          <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-1 rounded-full bg-[#FF8A80]" />
+              <h1 className="text-2xl font-bold tracking-tight">Order Details</h1>
+            </div>
+            <span className="font-mono text-sm text-muted-foreground bg-muted px-2 py-0.5 rounded">
+              {order.orderId}
+            </span>
+            {order.paymentStatus == true ? (
+              <span className="status-badge--success">Paid</span>
+            ) : (
+              <span className="status-badge--warning">Payment Pending</span>
+            )}
+            {order.status == "delivered" ? (
+              <span className="status-badge--success">Delivered</span>
+            ) : order.status === "pending" ? (
+              <span className="status-badge--warning">Pending</span>
+            ) : order.status === "cancelled" ? (
+              <span className="status-badge--danger">Cancelled</span>
+            ) : order.status === "dispatched" ? (
+              <span className="status-badge--info">Dispatched</span>
+            ) : order.status === "refunded" ? (
+              <span className="status-badge--purple">Refunded</span>
+            ) : (
+              <span className="status-badge--default">{order.status}</span>
+            )}
           </div>
-          <p>{new Date(order.createdAt).toLocaleString()}</p>
+          <div className="flex items-center gap-1.5 text-sm text-muted-foreground mt-1 ml-5">
+            <Calendar className="h-3.5 w-3.5" />
+            {new Date(order.createdAt).toLocaleString()}
+          </div>
+        </div>
+      </div>
 
-          <div className="flex flex-row gap-5">
-            <div className="basis-2/3">
-              <h2 className="text-xl py-5">Order Summary</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Order Summary — Left Column */}
+        <div className="lg:col-span-2 space-y-4">
+          <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Package className="h-5 w-5 text-[#FF8A80]" />
+              <h2 className="text-lg font-semibold">Order Items</h2>
+            </div>
 
-              {order.products.map((product: any) => {
-                return (
-                  <div
-                    key={product.productId}
-                    className="border p-5 rounded-xl my-2"
-                  >
-                    <div className="flex flex-row items-center justify-between">
-                      <h3 className="text-lg">{product.name}</h3>
-                      <p>{formatCurrency(product.price)} BDT</p>
-                    </div>
-                    <p className="my-2">Quantity: {product.quantity}</p>
-                    <p className="my-2">
-                      Total: {formatCurrency(product.price * product.quantity)} BDT
+            <div className="space-y-3">
+              {order.products.map((product: any) => (
+                <div
+                  key={product.productId}
+                  className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/40"
+                >
+                  <div>
+                    <h3 className="font-medium">{product.name}</h3>
+                    <p className="text-sm text-muted-foreground mt-0.5">
+                      Qty: {product.quantity} × {formatCurrency(product.price)} BDT
                     </p>
                   </div>
-                );
-              })}
+                  <div className="text-right">
+                    <p className="font-semibold">
+                      {formatCurrency(product.price * product.quantity)} BDT
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
 
-              <div className="flex items-end text-2xl font-bold py-4">
-                <div>
-                  Total:{" "}
+            <div className="flex justify-end mt-4 pt-4 border-t border-border/60">
+              <div className="text-right">
+                <p className="text-sm text-muted-foreground">Total</p>
+                <p className="text-2xl font-bold text-[#FF6B61]">
                   {formatCurrency(
                     order.products
-                    .map((product: any) => product.price * product.quantity)
-                    .reduce((acc: number, curr: number) => acc + curr, 0)
-                  )}
+                      .map((product: any) => product.price * product.quantity)
+                      .reduce((acc: number, curr: number) => acc + curr, 0)
+                  )}{" "}
                   BDT
-                </div>
-              </div>
-            </div>
-            <div className="basis-1/3 flex flex-col gap-5">
-              <div className="border p-5 rounded-xl">
-                <div className="flex flex-row items-center justify-between">
-                  <h3 className="text-lg">Notes</h3>
-                  <Pencil />
-                </div>
-                <p className="my-2">
-                  {order.notes.length > 0 ? order.notes : "No notes"}
                 </p>
-              </div>
-
-              <div className="border p-5 rounded-xl">
-                <h3 className="text-lg">Customer</h3>
-
-                <div className="my-2 flex flex-col gap-2">
-                  <div className="flex flex-row items-center gap-2">
-                    <User />
-                    <p>{order.userId.name}</p>
-                  </div>
-                  <div className="flex flex-row items-center gap-2">
-                    <ShoppingBag />
-                    <p>{order.userId.invoiceIDs.length} previous orders</p>
-                  </div>
-                  <div className="flex flex-row items-center gap-2">
-                    <Mail />
-                    <p>{order.userId.email}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border p-5 rounded-xl">
-                <div className="flex flex-row items-center justify-between">
-                  <h3 className="text-lg">Shipping Address</h3>
-                  <Pencil />
-                </div>
-                <div className="my-2 flex flex-col gap-2">
-                  <div>{order.fullAddress}</div>
-                  <div>{order.area}</div>
-                  <div>{order.region}</div>
-                </div>
               </div>
             </div>
           </div>
         </div>
-      )}
+
+        {/* Sidebar — Right Column */}
+        <div className="space-y-4">
+          {/* Notes */}
+          <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-5">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <StickyNote className="h-4 w-4 text-muted-foreground" />
+                <h3 className="font-semibold">Notes</h3>
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {order.notes.length > 0 ? order.notes : "No notes added"}
+            </p>
+          </div>
+
+          {/* Customer */}
+          <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-5">
+            <h3 className="font-semibold mb-3">Customer</h3>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-[#FF8A80]/10 flex items-center justify-center">
+                  <User className="h-4 w-4 text-[#FF8A80]" />
+                </div>
+                <p className="text-sm font-medium">{order.userId.name}</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center">
+                  <ShoppingBag className="h-4 w-4 text-blue-500" />
+                </div>
+                <p className="text-sm text-muted-foreground">{order.userId.invoiceIDs.length} previous orders</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-emerald-50 flex items-center justify-center">
+                  <Mail className="h-4 w-4 text-emerald-500" />
+                </div>
+                <p className="text-sm text-muted-foreground break-all">{order.userId.email}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Shipping Address */}
+          <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <MapPin className="h-4 w-4 text-muted-foreground" />
+              <h3 className="font-semibold">Shipping Address</h3>
+            </div>
+            <div className="text-sm text-muted-foreground space-y-1">
+              <p>{order.fullAddress}</p>
+              <p>{order.area}</p>
+              <p className="font-medium text-foreground">{order.region}</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

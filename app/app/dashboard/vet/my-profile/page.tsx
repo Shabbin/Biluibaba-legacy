@@ -20,7 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { Loader2 } from "lucide-react";
+import { Loader2, UserCircle, Camera, Save } from "lucide-react";
 
 const isFileDefined = typeof File !== "undefined";
 
@@ -37,9 +37,9 @@ const ProfileSchema = z.object({
   profilePicture: imageSchema.refine(
     (value) => {
       if (typeof value === "string") {
-        return value.length > 0; // Ensure non-empty URL
+        return value.length > 0;
       }
-      return isFileDefined && value instanceof File; // Avoid ReferenceError
+      return isFileDefined && value instanceof File;
     },
     { message: "At least one image is required" }
   ),
@@ -121,113 +121,160 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="p-5">
-      <div className="text-4xl">My Profile</div>
+    <div className="space-y-6">
+      {/* Page Header */}
+      <div className="page-header">
+        <div>
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-1 rounded-full bg-[#FF8A80]" />
+            <h1 className="text-2xl font-bold tracking-tight">My Profile</h1>
+          </div>
+          <p className="text-muted-foreground mt-1 ml-5">
+            Manage your professional profile and how clients see you
+          </p>
+        </div>
+      </div>
 
-      <div className="py-5">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Your display name" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="bio"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Bio</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      placeholder="Write a bio describing about yourself..."
-                      rows={10}
-                    />
-                  </FormControl>
-                  <div
-                    className={`text-sm mt-1 text-right ${
-                      field.value.length > 500
-                        ? "text-red-500"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    {field.value.length}/500 characters
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {profilePicture && (
-              <>
-                <h2 className="text-xl">Current profile picture</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Profile Picture Section */}
+        <div className="lg:col-span-1">
+          <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-6 text-center">
+            <div className="relative inline-block">
+              {profilePicture ? (
                 <img
-                  className="w-[200px] h-[200px] rounded-full object-cover"
+                  className="w-40 h-40 rounded-full object-cover ring-4 ring-[#FF8A80]/20 mx-auto"
                   src={profilePicture}
-                  alt={profilePicture}
+                  alt="Profile"
                 />
-              </>
-            )}
-
-            <FormField
-              control={form.control}
-              name="profilePicture"
-              render={({ field: { value, onChange, ...field } }) => (
-                <FormItem>
-                  <FormLabel>Set new profile picture</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="file"
-                      accept="image/jpeg,image/png,image/jpg"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0] ?? null;
-                        if (file) {
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            setPreviewImage(reader.result as string);
-                          };
-                          reader.readAsDataURL(file);
-                        } else {
-                          setPreviewImage(null);
-                        }
-                        onChange(file);
-                      }}
-                      {...field}
-                    />
-                  </FormControl>
-                  {previewImage && (
-                    <div className="mt-4">
-                      <h2 className="text-xl">Preview</h2>
-                      <img
-                        className="w-[200px] h-[200px] rounded-full object-cover mt-2"
-                        src={previewImage}
-                        alt="Profile preview"
-                      />
-                    </div>
-                  )}
-                  <FormMessage />
-                </FormItem>
+              ) : (
+                <div className="w-40 h-40 rounded-full bg-gradient-to-br from-[#FF8A80] to-[#FF6B61] flex items-center justify-center mx-auto ring-4 ring-[#FF8A80]/20">
+                  <UserCircle className="w-20 h-20 text-white" />
+                </div>
               )}
-            />
-
-            <div className="flex flex-row justify-end">
-              <Button type="submit" disabled={loading}>
-                {loading && <Loader2 className="animate-spin" />}
-                Save Changes
-              </Button>
+              <div className="absolute bottom-1 right-1 bg-white rounded-full p-2 shadow-md border border-border/60">
+                <Camera className="w-4 h-4 text-muted-foreground" />
+              </div>
             </div>
-          </form>
-        </Form>
+            <h3 className="mt-4 font-semibold text-lg">{form.watch("name") || "Your Name"}</h3>
+            <p className="text-sm text-muted-foreground">Veterinarian</p>
+
+            {previewImage && (
+              <div className="mt-6 pt-6 border-t border-border/60">
+                <p className="text-sm font-medium text-muted-foreground mb-3">New Photo Preview</p>
+                <img
+                  className="w-32 h-32 rounded-full object-cover mx-auto ring-4 ring-emerald-100"
+                  src={previewImage}
+                  alt="Profile preview"
+                />
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Form Section */}
+        <div className="lg:col-span-2">
+          <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-6">
+            <h2 className="text-lg font-semibold mb-6">Profile Information</h2>
+
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Display Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="Your display name" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="bio"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Professional Bio</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          placeholder="Write a bio describing about yourself, your experience, and specializations..."
+                          rows={6}
+                        />
+                      </FormControl>
+                      <div className="flex justify-between items-center mt-1">
+                        <p className="text-xs text-muted-foreground">This will be visible to pet owners</p>
+                        <span
+                          className={`text-xs font-medium ${
+                            field.value.length > 500
+                              ? "text-red-500"
+                              : field.value.length > 400
+                              ? "text-amber-500"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          {field.value.length}/500
+                        </span>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="profilePicture"
+                  render={({ field: { value, onChange, ...field } }) => (
+                    <FormItem>
+                      <FormLabel>Update Profile Picture</FormLabel>
+                      <FormControl>
+                        <div className="border-2 border-dashed border-border rounded-xl p-4 hover:border-[#FF8A80]/40 transition-colors cursor-pointer">
+                          <Input
+                            type="file"
+                            accept="image/jpeg,image/png,image/jpg"
+                            className="border-0 shadow-none p-0 h-auto"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0] ?? null;
+                              if (file) {
+                                const reader = new FileReader();
+                                reader.onloadend = () => {
+                                  setPreviewImage(reader.result as string);
+                                };
+                                reader.readAsDataURL(file);
+                              } else {
+                                setPreviewImage(null);
+                              }
+                              onChange(file);
+                            }}
+                            {...field}
+                          />
+                          <p className="text-xs text-muted-foreground mt-2">
+                            Accepted formats: JPG, JPEG, PNG
+                          </p>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex justify-end pt-4 border-t border-border/60">
+                  <Button type="submit" disabled={loading} size="lg">
+                    {loading ? (
+                      <Loader2 className="animate-spin mr-2 h-4 w-4" />
+                    ) : (
+                      <Save className="mr-2 h-4 w-4" />
+                    )}
+                    Save Changes
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -13,17 +13,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>Biluibaba - App</title>
+        <title>Biluibaba - Vendor & Vet Dashboard</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
+        />
       </head>
-      <body
-        className={`antialiased selection:bg-stone-950 selection:text-white`}
-      >
-        <main>
+      <body className="antialiased selection:bg-petzy-coral/20 selection:text-petzy-coral-dark">
+        <main className="min-h-dvh">
           {children}
           <ProgressBar
-            height="4px"
-            color="#000000"
-            options={{ showSpinner: true }}
+            height="3px"
+            color="#FF8A80"
+            options={{ showSpinner: false }}
             shallowRouting
           />
         </main>

@@ -227,55 +227,65 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="p-5">
-      <h1 className="text-4xl mb-5">Toggle Availability & Pricing</h1>
-      <p className="text-xl">
-        You can toggle physical, online, emergency and home service availability
-        and set the pricing from this page.
-      </p>
+    <div className="space-y-6">
+      {/* Page Header */}
+      <div className="page-header">
+        <div>
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-1 rounded-full bg-[#FF8A80]" />
+            <h1 className="text-2xl font-bold tracking-tight">Availability & Pricing</h1>
+          </div>
+          <p className="text-muted-foreground mt-1 ml-5">
+            Configure your consultation types, toggle availability, and set pricing
+          </p>
+        </div>
+      </div>
 
-      <div className="py-5">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="border p-4 rounded-md">
-              <h2 className="text-xl font-medium mb-3">Physical Appointment</h2>
-              <div className="flex flex-row items-center justify-between mb-3">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          {/* Physical Appointment */}
+          <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-6 hover:shadow-md transition-shadow">
+            <div className="flex flex-row items-start justify-between gap-4">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                  <span className="text-lg">🏥</span>
+                </div>
                 <div>
-                  <p>Toggle if you want to take physical appointments</p>
-                  <p className="text-sm text-muted-foreground">
-                    This allows pet owners to request physical appointments for
-                    their pets
+                  <h2 className="text-lg font-semibold">Physical Appointment</h2>
+                  <p className="text-sm text-muted-foreground mt-0.5">
+                    Allow pet owners to request in-person appointments for their pets
                   </p>
                 </div>
-                <FormField
-                  control={form.control}
-                  name="physical"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={(checked) => {
-                            field.onChange(checked);
-                            // Reset fee when toggled off
-                            if (!checked) {
-                              form.setValue("physicalFee", null);
-                            }
-                          }}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
               </div>
+              <FormField
+                control={form.control}
+                name="physical"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked);
+                          if (!checked) {
+                            form.setValue("physicalFee", null);
+                          }
+                        }}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
 
-              {form.watch("physical") && (
+            {form.watch("physical") && (
+              <div className="mt-4 pt-4 border-t border-border/60">
                 <FormField
                   control={form.control}
                   name="physicalFee"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Physical appointment fee</FormLabel>
+                      <FormLabel>Consultation Fee (BDT)</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -290,54 +300,60 @@ export default function Page() {
                             (e.target as HTMLElement).blur();
                           }}
                           onBlur={field.onBlur}
+                          className="max-w-xs"
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              )}
-            </div>
+              </div>
+            )}
+          </div>
 
-            <div className="border p-4 rounded-md">
-              <h2 className="text-xl font-medium mb-3">Online Appointment</h2>
-              <div className="flex flex-row items-center justify-between mb-3">
+          {/* Online Appointment */}
+          <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-6 hover:shadow-md transition-shadow">
+            <div className="flex flex-row items-start justify-between gap-4">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                  <span className="text-lg">💻</span>
+                </div>
                 <div>
-                  <p>Toggle if you want to take online appointments</p>
-                  <p className="text-sm text-muted-foreground">
-                    This allows pet owners to request online appointment for
-                    their pets
+                  <h2 className="text-lg font-semibold">Online Appointment</h2>
+                  <p className="text-sm text-muted-foreground mt-0.5">
+                    Allow pet owners to request video consultations for their pets
                   </p>
                 </div>
-                <FormField
-                  control={form.control}
-                  name="online"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={(checked) => {
-                            field.onChange(checked);
-                            // Reset fee when toggled off
-                            if (!checked) {
-                              form.setValue("onlineFee", null);
-                            }
-                          }}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
               </div>
+              <FormField
+                control={form.control}
+                name="online"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked);
+                          if (!checked) {
+                            form.setValue("onlineFee", null);
+                          }
+                        }}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
 
-              {form.watch("online") && (
+            {form.watch("online") && (
+              <div className="mt-4 pt-4 border-t border-border/60">
                 <FormField
                   control={form.control}
                   name="onlineFee"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Online appointment fee</FormLabel>
+                      <FormLabel>Consultation Fee (BDT)</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -352,54 +368,60 @@ export default function Page() {
                             (e.target as HTMLElement).blur();
                           }}
                           onBlur={field.onBlur}
+                          className="max-w-xs"
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              )}
-            </div>
+              </div>
+            )}
+          </div>
 
-            <div className="border p-4 rounded-md">
-              <h2 className="text-xl font-medium mb-3">Emergency</h2>
-              <div className="flex flex-row items-center justify-between mb-3">
+          {/* Emergency */}
+          <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-6 hover:shadow-md transition-shadow">
+            <div className="flex flex-row items-start justify-between gap-4">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
+                  <span className="text-lg">🚨</span>
+                </div>
                 <div>
-                  <p>Toggle if you take emergency cases</p>
-                  <p className="text-sm text-muted-foreground">
-                    This allows pet owners to request emergency services for
-                    their pets
+                  <h2 className="text-lg font-semibold">Emergency</h2>
+                  <p className="text-sm text-muted-foreground mt-0.5">
+                    Allow pet owners to request emergency veterinary services
                   </p>
                 </div>
-                <FormField
-                  control={form.control}
-                  name="emergency"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={(checked) => {
-                            field.onChange(checked);
-                            // Reset fee when toggled off
-                            if (!checked) {
-                              form.setValue("emergencyFee", null);
-                            }
-                          }}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
               </div>
+              <FormField
+                control={form.control}
+                name="emergency"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked);
+                          if (!checked) {
+                            form.setValue("emergencyFee", null);
+                          }
+                        }}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
 
-              {form.watch("emergency") && (
+            {form.watch("emergency") && (
+              <div className="mt-4 pt-4 border-t border-border/60">
                 <FormField
                   control={form.control}
                   name="emergencyFee"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Emergency appointment fee</FormLabel>
+                      <FormLabel>Emergency Fee (BDT)</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -414,55 +436,60 @@ export default function Page() {
                             (e.target as HTMLElement).blur();
                           }}
                           onBlur={field.onBlur}
+                          className="max-w-xs"
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              )}
-            </div>
+              </div>
+            )}
+          </div>
 
-            <div className="border p-4 rounded-md">
-              <h2 className="text-xl font-medium mb-3">Home Service</h2>
-              <div className="flex flex-row items-center justify-between mb-3">
+          {/* Home Service */}
+          <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-6 hover:shadow-md transition-shadow">
+            <div className="flex flex-row items-start justify-between gap-4">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
+                  <span className="text-lg">🏠</span>
+                </div>
                 <div>
-                  <p>
-                    Toggle if you offer veterinary services at client's homes
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    This allows pet owners to request home visits for their pets
+                  <h2 className="text-lg font-semibold">Home Service</h2>
+                  <p className="text-sm text-muted-foreground mt-0.5">
+                    Offer veterinary home visits for pets at the owner&apos;s location
                   </p>
                 </div>
-                <FormField
-                  control={form.control}
-                  name="homeService"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={(checked) => {
-                            field.onChange(checked);
-                            // Reset fee when toggled off
-                            if (!checked) {
-                              form.setValue("homeServiceFee", null);
-                            }
-                          }}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
               </div>
+              <FormField
+                control={form.control}
+                name="homeService"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked);
+                          if (!checked) {
+                            form.setValue("homeServiceFee", null);
+                          }
+                        }}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
 
-              {form.watch("homeService") && (
+            {form.watch("homeService") && (
+              <div className="mt-4 pt-4 border-t border-border/60">
                 <FormField
                   control={form.control}
                   name="homeServiceFee"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Home service fee</FormLabel>
+                      <FormLabel>Home Service Fee (BDT)</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -477,51 +504,58 @@ export default function Page() {
                             (e.target as HTMLElement).blur();
                           }}
                           onBlur={field.onBlur}
+                          className="max-w-xs"
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              )}
-            </div>
+              </div>
+            )}
+          </div>
 
-            <div className="border p-4 rounded-md">
-              <h2 className="text-xl font-medium mb-3">Instant Chat</h2>
-              <div className="flex flex-row items-center justify-between mb-3">
+          {/* Instant Chat */}
+          <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-6 hover:shadow-md transition-shadow">
+            <div className="flex flex-row items-start justify-between gap-4">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center flex-shrink-0">
+                  <span className="text-lg">💬</span>
+                </div>
                 <div>
-                  <p>Toggle if you want to enable instant chat with clients</p>
-                  <p className="text-sm text-muted-foreground">
-                    This allows clients to send you quick messages without
-                    scheduling an appointment
+                  <h2 className="text-lg font-semibold">Instant Chat</h2>
+                  <p className="text-sm text-muted-foreground mt-0.5">
+                    Allow clients to send quick messages without scheduling an appointment
                   </p>
                 </div>
-                <FormField
-                  control={form.control}
-                  name="instantChat"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
               </div>
+              <FormField
+                control={form.control}
+                name="instantChat"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
             </div>
+          </div>
 
-            <div className="flex flex-row justify-end">
-              <Button type="submit" disabled={loading}>
-                {loading && <Loader2 className="animate-spin" />}
-                Save availability & pricing
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </div>
+          <div className="flex justify-end pt-2">
+            <Button type="submit" disabled={loading} size="lg">
+              {loading ? (
+                <Loader2 className="animate-spin mr-2 h-4 w-4" />
+              ) : null}
+              Save Availability & Pricing
+            </Button>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 }

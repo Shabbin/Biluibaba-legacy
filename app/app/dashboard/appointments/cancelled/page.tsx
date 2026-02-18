@@ -72,73 +72,83 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="p-5">
-      <h2 className="text-4xl">Cancelled Appointments</h2>
+    <div className="space-y-6">
+      <div className="page-header">
+        <h2>Cancelled Appointments</h2>
+        <p>Appointments that have been cancelled</p>
+        <div className="header-accent" />
+      </div>
 
-      {appointments.length > 0 && (
-        <Table>
-          <TableCaption>A list of cancelled appointments</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Appointment ID #</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Date & Time</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Created At</TableHead>
-              <TableHead></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {appointments.map((appointment) => (
-              <TableRow key={appointment.appointmentId}>
-                <TableCell>{appointment.appointmentId}</TableCell>
-                <TableCell className="capitalize">{appointment.type}</TableCell>
-                <TableCell>
-                  {new Date(appointment.date).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}{" "}
-                  at {appointment.time}
-                </TableCell>
-                <TableCell className="capitalize">
-                  {appointment.status == "confirmed" ? (
-                    <span className="px-4 py-1 bg-green-100 text-green-900 rounded">
-                      Confirmed
-                    </span>
-                  ) : appointment.status === "pending" ? (
-                    <span className="px-4 py-1 bg-yellow-100 text-yellow-900 rounded">
-                      Pending
-                    </span>
-                  ) : appointment.status === "completed" ? (
-                    <span className="px-4 py-1 bg-blue-100 text-blue-900 rounded">
-                      Completed
-                    </span>
-                  ) : appointment.status === "cancelled" ? (
-                    <span className="px-4 py-1 bg-red-100 text-red-900 rounded">
-                      Cancelled
-                    </span>
-                  ) : (
-                    <span className="px-4 py-1 bg-gray-100 text-gray-900 rounded">
-                      {appointment.status}
-                    </span>
-                  )}
-                </TableCell>
-                <TableCell>
-                  {new Date(appointment.createdAt).toLocaleString()}
-                </TableCell>
-                <TableCell>
-                  <Link
-                    href={`/dashboard/appointments?id=${appointment.appointmentId}`}
-                    className={buttonVariants({ variant: "outline" })}
-                  >
-                    View Appointment
-                  </Link>
-                </TableCell>
+      {appointments.length > 0 ? (
+        <div className="bg-white rounded-2xl border border-border/60 shadow-sm overflow-hidden">
+          <Table>
+            <TableCaption className="py-4 text-muted-foreground">
+              Showing {appointments.length} of {totalAppointments} cancelled appointments
+            </TableCaption>
+            <TableHeader>
+              <TableRow className="bg-muted/30 hover:bg-muted/30">
+                <TableHead className="font-semibold">ID</TableHead>
+                <TableHead className="font-semibold">Type</TableHead>
+                <TableHead className="font-semibold">Date & Time</TableHead>
+                <TableHead className="font-semibold">Status</TableHead>
+                <TableHead className="font-semibold">Created</TableHead>
+                <TableHead className="text-right font-semibold">Action</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {appointments.map((appointment) => (
+                <TableRow key={appointment.appointmentId} className="group">
+                  <TableCell className="font-mono text-xs text-muted-foreground">
+                    {appointment.appointmentId}
+                  </TableCell>
+                  <TableCell>
+                    <span className="capitalize text-sm font-medium">{appointment.type}</span>
+                  </TableCell>
+                  <TableCell className="text-sm">
+                    {new Date(appointment.date).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}{" "}
+                    at {appointment.time}
+                  </TableCell>
+                  <TableCell>
+                    {appointment.status == "confirmed" ? (
+                      <span className="status-badge status-badge--success">Confirmed</span>
+                    ) : appointment.status === "pending" ? (
+                      <span className="status-badge status-badge--warning">Pending</span>
+                    ) : appointment.status === "completed" ? (
+                      <span className="status-badge status-badge--info">Completed</span>
+                    ) : appointment.status === "cancelled" ? (
+                      <span className="status-badge status-badge--danger">Cancelled</span>
+                    ) : (
+                      <span className="status-badge status-badge--neutral">{appointment.status}</span>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-sm text-muted-foreground">
+                    {new Date(appointment.createdAt).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Link
+                      href={`/dashboard/appointments?id=${appointment.appointmentId}`}
+                      className={buttonVariants({ variant: "outline", size: "sm" })}
+                    >
+                      View
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ) : (
+        <div className="empty-state">
+          <div className="empty-state-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+          </div>
+          <h3>No cancelled appointments</h3>
+          <p>Great news! No appointments have been cancelled.</p>
+        </div>
       )}
 
       <Pagination>

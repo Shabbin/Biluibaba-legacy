@@ -208,42 +208,55 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="p-5 text-center">
-      <h2 className="text-4xl mb-5">Appointment Slots</h2>
-      <p className="text-xl">
-        You can adjust your appointment slots from this page.
-      </p>
-
-      <div className="py-5">
-        <div className="flex flex-row gap-y-5 flex-wrap py-5 items-center justify-center">
-          {loading ? (
-            <div>Setting appointment data... Please wait!</div>
-          ) : (
-            Object.keys(slots).map((day) => (
-              <div className="md:basis-1/4 basis-full -me-3 px-3" key={day}>
-                <AvailabilitySlots
-                  day={day}
-                  startTime={slots[day as keyof Slots].startTime}
-                  endTime={slots[day as keyof Slots].endTime}
-                  duration={slots[day as keyof Slots].duration}
-                  interval={slots[day as keyof Slots].interval}
-                  onTimeChange={(time) =>
-                    handleTimeChange(day as keyof Slots, time)
-                  }
-                  onDurationChange={(duration) =>
-                    handleDurationChange(day as keyof Slots, duration)
-                  }
-                  onIntervalChange={(interval) =>
-                    handleIntervalChange(day as keyof Slots, interval)
-                  }
-                />
-              </div>
-            ))
-          )}
+    <div className="space-y-6">
+      {/* Page Header */}
+      <div className="page-header">
+        <div>
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-1 rounded-full bg-[#FF8A80]" />
+            <h1 className="text-2xl font-bold tracking-tight">Appointment Slots</h1>
+          </div>
+          <p className="text-muted-foreground mt-1 ml-5">
+            Configure your weekly schedule — set available hours, duration, and break intervals
+          </p>
         </div>
-        <div className="flex flex-row justify-center">
+      </div>
+
+      <div>
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <Loader2 className="animate-spin h-8 w-8 text-[#FF8A80] mx-auto mb-3" />
+              <p className="text-muted-foreground">Loading your schedule...</p>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {Object.keys(slots).map((day) => (
+              <AvailabilitySlots
+                key={day}
+                day={day}
+                startTime={slots[day as keyof Slots].startTime}
+                endTime={slots[day as keyof Slots].endTime}
+                duration={slots[day as keyof Slots].duration}
+                interval={slots[day as keyof Slots].interval}
+                onTimeChange={(time) =>
+                  handleTimeChange(day as keyof Slots, time)
+                }
+                onDurationChange={(duration) =>
+                  handleDurationChange(day as keyof Slots, duration)
+                }
+                onIntervalChange={(interval) =>
+                  handleIntervalChange(day as keyof Slots, interval)
+                }
+              />
+            ))}
+          </div>
+        )}
+
+        <div className="flex justify-center pt-6">
           <Button disabled={loading} onClick={() => handleSubmit()} size="lg">
-            {loading && <Loader2 className="animate-spin" />} Save Slots
+            {loading && <Loader2 className="animate-spin mr-2 h-4 w-4" />} Save Schedule
           </Button>
         </div>
       </div>
@@ -274,25 +287,29 @@ function AvailabilitySlots({
 }: AvailabilitySlotsProps) {
   let format = "HH:mm";
   return (
-    <div className="rounded-lg border">
-      <div className="bg-black text-white p-5 rounded-tr-lg rounded-tl-lg uppercase font-bold text-center">
+    <div className="bg-white rounded-2xl border border-border/60 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+      <div className="bg-gradient-to-r from-[#FF8A80] to-[#FF6B61] text-white px-4 py-3 font-semibold text-center uppercase tracking-wide text-sm">
         {day}
       </div>
 
-      <div className="p-3 space-y-4">
-        <TimePicker.RangePicker
-          defaultValue={[
-            startTime === "" ? null : dayjs(startTime, format),
-            endTime === "" ? null : dayjs(endTime, format),
-          ]}
-          format={format}
-          onChange={(time, timeString) =>
-            onTimeChange(timeString as [string, string])
-          }
-        />
+      <div className="p-4 space-y-4">
+        <div>
+          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1.5 block">Time Range</label>
+          <TimePicker.RangePicker
+            defaultValue={[
+              startTime === "" ? null : dayjs(startTime, format),
+              endTime === "" ? null : dayjs(endTime, format),
+            ]}
+            format={format}
+            onChange={(time, timeString) =>
+              onTimeChange(timeString as [string, string])
+            }
+            className="w-full"
+          />
+        </div>
 
-        <div className="flex flex-row items-center gap-5">
-          <div>Duration</div>
+        <div>
+          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1.5 block">Duration</label>
           <Select value={duration} onValueChange={onDurationChange}>
             <SelectTrigger>
               <SelectValue placeholder="Select duration"></SelectValue>
@@ -301,16 +318,16 @@ function AvailabilitySlots({
               <SelectItem value="30">30 mins</SelectItem>
               <SelectItem value="45">45 mins</SelectItem>
               <SelectItem value="60">1 hour</SelectItem>
-              <SelectItem value="75">1 hour 15 mins</SelectItem>
-              <SelectItem value="90">1 hour 30 mins</SelectItem>
-              <SelectItem value="105">1 hour 45 mins</SelectItem>
-              <SelectItem value="120">2 hour</SelectItem>
+              <SelectItem value="75">1 hr 15 mins</SelectItem>
+              <SelectItem value="90">1 hr 30 mins</SelectItem>
+              <SelectItem value="105">1 hr 45 mins</SelectItem>
+              <SelectItem value="120">2 hours</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        <div className="flex flex-row items-center gap-5">
-          <div>Interval</div>
+        <div>
+          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1.5 block">Break Interval</label>
           <Select value={interval} onValueChange={onIntervalChange}>
             <SelectTrigger>
               <SelectValue placeholder="Select interval"></SelectValue>

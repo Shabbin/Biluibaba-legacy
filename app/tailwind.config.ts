@@ -9,6 +9,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Nunito', 'Quicksand', 'Poppins', 'system-ui', 'sans-serif'],
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -60,11 +63,46 @@ const config: Config = {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        petzy: {
+          'blue-light': '#F0F8FF',
+          'mint-light': '#E6F7F8',
+          'coral': '#FF8A80',
+          'coral-light': '#FFB3AB',
+          'coral-dark': '#FF6B61',
+          'slate': '#333333',
+          'slate-light': '#666666',
+        },
       },
       borderRadius: {
+        '2xl': '1rem',
+        '3xl': '1.5rem',
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        'soft': '0 10px 30px -10px rgba(0, 0, 0, 0.08)',
+        'soft-lg': '0 15px 40px -15px rgba(0, 0, 0, 0.1)',
+        'glow': '0 0 20px rgba(255, 138, 128, 0.25)',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        scaleIn: {
+          '0%': { transform: 'scale(0.96)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+      },
+      animation: {
+        fadeIn: 'fadeIn 0.4s ease-out',
+        scaleIn: 'scaleIn 0.3s ease-out',
+        shimmer: 'shimmer 2s infinite',
       },
     },
   },

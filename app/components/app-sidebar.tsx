@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 import axios from "@/lib/axios";
 
@@ -10,14 +10,32 @@ import { toast } from "@/hooks/use-toast";
 
 import {
   DollarSign,
-  Home,
+  LayoutDashboard,
   ShoppingBag,
   ChevronDown,
   ShoppingCart,
-  User2,
   ChevronUp,
   IdCard,
   AlarmClock,
+  LogOut,
+  Settings,
+  CreditCard,
+  PawPrint,
+  Package,
+  PackagePlus,
+  PackageCheck,
+  ClipboardList,
+  ClipboardX,
+  Clock,
+  CalendarCheck,
+  CalendarX,
+  CalendarClock,
+  Stethoscope,
+  ToggleLeft,
+  UserCircle,
+  Wallet,
+  RefreshCcw,
+  HandCoins,
 } from "lucide-react";
 
 import {
@@ -45,11 +63,13 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 export function AppSidebar() {
   const router = useRouter();
+  const pathname = usePathname();
   const [user, setUser] = useState<{ name?: string; type?: string }>({});
 
   const fetchUser = async () => {
@@ -82,55 +102,99 @@ export function AppSidebar() {
     fetchUser();
   }, []);
 
+  const isActive = (href: string) => pathname === href;
+  const isGroupActive = (prefix: string) => pathname.startsWith(prefix);
+
   return (
-    <Sidebar>
-      <SidebarContent>
+    <Sidebar className="border-r border-sidebar-border">
+      <SidebarContent className="py-2">
+        {/* Brand header */}
+        <div className="px-4 py-4 mb-2">
+          <Link href="/dashboard" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#FF8A80] to-[#FF6B61] rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-glow transition-shadow duration-300">
+              <PawPrint className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <span className="text-base font-bold text-foreground tracking-tight block leading-tight">
+                Biluibaba
+              </span>
+              <span className="text-[11px] font-medium text-muted-foreground capitalize">
+                {user.type || "Dashboard"}
+              </span>
+            </div>
+          </Link>
+        </div>
+
+        {/* Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel>Biluibaba Admin</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-[11px] uppercase tracking-wider text-muted-foreground/70 font-semibold px-4 mb-1">
+            Navigation
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
+              {/* Dashboard Home */}
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/">
-                    <Home />
-                    <span>Home</span>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname === "/dashboard"}
+                  className="rounded-lg mx-2"
+                >
+                  <Link href="/dashboard">
+                    <LayoutDashboard className="w-4 h-4" />
+                    <span>Dashboard</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
+              {/* Vendor: Products */}
               {user.type === "vendor" && (
                 <>
-                  <Collapsible defaultOpen className="group/collapsible">
+                  <Collapsible
+                    defaultOpen={isGroupActive("/dashboard/products")}
+                    className="group/collapsible"
+                  >
                     <SidebarMenuItem>
                       <CollapsibleTrigger asChild>
-                        <SidebarMenuButton asChild>
-                          <Link href="#">
-                            <ShoppingCart />
-                            <span>Products</span>
-                            <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-                          </Link>
+                        <SidebarMenuButton className="rounded-lg mx-2">
+                          <Package className="w-4 h-4" />
+                          <span>Products</span>
+                          <ChevronDown className="ml-auto w-4 h-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
                         </SidebarMenuButton>
                       </CollapsibleTrigger>
                       <CollapsibleContent>
-                        <SidebarMenuSub>
+                        <SidebarMenuSub className="ml-5 border-l border-border/50 pl-3">
                           <SidebarMenuSubItem>
-                            <SidebarMenuSubButton asChild>
+                            <SidebarMenuSubButton
+                              asChild
+                              isActive={isActive("/dashboard/products")}
+                            >
                               <Link href="/dashboard/products">
-                                <span>List Your Products</span>
+                                <ClipboardList className="w-3.5 h-3.5" />
+                                <span>All Products</span>
                               </Link>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
                           <SidebarMenuSubItem>
-                            <SidebarMenuSubButton asChild>
+                            <SidebarMenuSubButton
+                              asChild
+                              isActive={isActive(
+                                "/dashboard/products/published"
+                              )}
+                            >
                               <Link href="/dashboard/products/published">
-                                <span>Published Products</span>
+                                <PackageCheck className="w-3.5 h-3.5" />
+                                <span>Published</span>
                               </Link>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
                           <SidebarMenuSubItem>
-                            <SidebarMenuSubButton asChild>
+                            <SidebarMenuSubButton
+                              asChild
+                              isActive={isActive("/dashboard/products/upload")}
+                            >
                               <Link href="/dashboard/products/upload">
-                                <span>Upload New Product</span>
+                                <PackagePlus className="w-3.5 h-3.5" />
+                                <span>Upload New</span>
                               </Link>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
@@ -139,38 +203,53 @@ export function AppSidebar() {
                     </SidebarMenuItem>
                   </Collapsible>
 
-                  <Collapsible defaultOpen className="group/collapsible">
+                  {/* Vendor: Orders */}
+                  <Collapsible
+                    defaultOpen={isGroupActive("/dashboard/orders")}
+                    className="group/collapsible"
+                  >
                     <SidebarMenuItem>
                       <CollapsibleTrigger asChild>
-                        <SidebarMenuButton asChild>
-                          <Link href="#">
-                            <ShoppingBag />
-                            <span>Orders</span>
-                            <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-                          </Link>
+                        <SidebarMenuButton className="rounded-lg mx-2">
+                          <ShoppingBag className="w-4 h-4" />
+                          <span>Orders</span>
+                          <ChevronDown className="ml-auto w-4 h-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
                         </SidebarMenuButton>
                       </CollapsibleTrigger>
                       <CollapsibleContent>
-                        <SidebarMenuSub>
+                        <SidebarMenuSub className="ml-5 border-l border-border/50 pl-3">
                           <SidebarMenuSubItem>
-                            <SidebarMenuSubButton asChild>
+                            <SidebarMenuSubButton
+                              asChild
+                              isActive={isActive("/dashboard/orders/pending")}
+                            >
                               <Link href="/dashboard/orders/pending">
-                                <span>Pending Orders</span>
+                                <Clock className="w-3.5 h-3.5" />
+                                <span>Pending</span>
                               </Link>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
-
                           <SidebarMenuSubItem>
-                            <SidebarMenuSubButton asChild>
+                            <SidebarMenuSubButton
+                              asChild
+                              isActive={isActive("/dashboard/orders/all")}
+                            >
                               <Link href="/dashboard/orders/all">
+                                <ShoppingCart className="w-3.5 h-3.5" />
                                 <span>All Orders</span>
                               </Link>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
                           <SidebarMenuSubItem>
-                            <SidebarMenuSubButton asChild>
+                            <SidebarMenuSubButton
+                              asChild
+                              isActive={isActive(
+                                "/dashboard/orders/cancelled"
+                              )}
+                            >
                               <Link href="/dashboard/orders/cancelled">
-                                <span>Cancelled Orders</span>
+                                <ClipboardX className="w-3.5 h-3.5" />
+                                <span>Cancelled</span>
                               </Link>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
@@ -181,38 +260,56 @@ export function AppSidebar() {
                 </>
               )}
 
+              {/* Vet sections */}
               {user.type === "vet" && (
                 <>
-                  <Collapsible defaultOpen className="group/collapsible">
+                  <Collapsible
+                    defaultOpen={isGroupActive("/dashboard/vet")}
+                    className="group/collapsible"
+                  >
                     <SidebarMenuItem>
                       <CollapsibleTrigger asChild>
-                        <SidebarMenuButton asChild>
-                          <Link href="#">
-                            <IdCard />
-                            <span>Vet Profile</span>
-                            <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-                          </Link>
+                        <SidebarMenuButton className="rounded-lg mx-2">
+                          <Stethoscope className="w-4 h-4" />
+                          <span>Vet Profile</span>
+                          <ChevronDown className="ml-auto w-4 h-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
                         </SidebarMenuButton>
                       </CollapsibleTrigger>
                       <CollapsibleContent>
-                        <SidebarMenuSub>
+                        <SidebarMenuSub className="ml-5 border-l border-border/50 pl-3">
                           <SidebarMenuSubItem>
-                            <SidebarMenuSubButton asChild>
+                            <SidebarMenuSubButton
+                              asChild
+                              isActive={isActive(
+                                "/dashboard/vet/appointment-slots"
+                              )}
+                            >
                               <Link href="/dashboard/vet/appointment-slots">
+                                <CalendarClock className="w-3.5 h-3.5" />
                                 <span>Appointment Slots</span>
                               </Link>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
                           <SidebarMenuSubItem>
-                            <SidebarMenuSubButton asChild>
+                            <SidebarMenuSubButton
+                              asChild
+                              isActive={isActive(
+                                "/dashboard/vet/toggle-availability"
+                              )}
+                            >
                               <Link href="/dashboard/vet/toggle-availability">
-                                <span>Toggle Availability & Pricing</span>
+                                <ToggleLeft className="w-3.5 h-3.5" />
+                                <span>Availability & Pricing</span>
                               </Link>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
                           <SidebarMenuSubItem>
-                            <SidebarMenuSubButton asChild>
+                            <SidebarMenuSubButton
+                              asChild
+                              isActive={isActive("/dashboard/vet/my-profile")}
+                            >
                               <Link href="/dashboard/vet/my-profile">
+                                <UserCircle className="w-3.5 h-3.5" />
                                 <span>My Profile</span>
                               </Link>
                             </SidebarMenuSubButton>
@@ -221,37 +318,56 @@ export function AppSidebar() {
                       </CollapsibleContent>
                     </SidebarMenuItem>
                   </Collapsible>
-                  <Collapsible defaultOpen className="group/collapsible">
+
+                  <Collapsible
+                    defaultOpen={isGroupActive("/dashboard/appointments")}
+                    className="group/collapsible"
+                  >
                     <SidebarMenuItem>
                       <CollapsibleTrigger asChild>
-                        <SidebarMenuButton asChild>
-                          <Link href="#">
-                            <AlarmClock />
-                            <span>Appointments</span>
-                            <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-                          </Link>
+                        <SidebarMenuButton className="rounded-lg mx-2">
+                          <AlarmClock className="w-4 h-4" />
+                          <span>Appointments</span>
+                          <ChevronDown className="ml-auto w-4 h-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
                         </SidebarMenuButton>
                       </CollapsibleTrigger>
                       <CollapsibleContent>
-                        <SidebarMenuSub>
+                        <SidebarMenuSub className="ml-5 border-l border-border/50 pl-3">
                           <SidebarMenuSubItem>
-                            <SidebarMenuSubButton asChild>
+                            <SidebarMenuSubButton
+                              asChild
+                              isActive={isActive(
+                                "/dashboard/appointments/upcoming"
+                              )}
+                            >
                               <Link href="/dashboard/appointments/upcoming">
-                                <span>Upcoming Appointments</span>
+                                <CalendarCheck className="w-3.5 h-3.5" />
+                                <span>Upcoming</span>
                               </Link>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
-
                           <SidebarMenuSubItem>
-                            <SidebarMenuSubButton asChild>
+                            <SidebarMenuSubButton
+                              asChild
+                              isActive={isActive(
+                                "/dashboard/appointments/cancelled"
+                              )}
+                            >
                               <Link href="/dashboard/appointments/cancelled">
-                                <span>Cancelled Appointments</span>
+                                <CalendarX className="w-3.5 h-3.5" />
+                                <span>Cancelled</span>
                               </Link>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
                           <SidebarMenuSubItem>
-                            <SidebarMenuSubButton asChild>
+                            <SidebarMenuSubButton
+                              asChild
+                              isActive={isActive(
+                                "/dashboard/appointments/all"
+                              )}
+                            >
                               <Link href="/dashboard/appointments/all">
+                                <ClipboardList className="w-3.5 h-3.5" />
                                 <span>All Appointments</span>
                               </Link>
                             </SidebarMenuSubButton>
@@ -262,39 +378,61 @@ export function AppSidebar() {
                   </Collapsible>
                 </>
               )}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
-              <Collapsible defaultOpen className="group/collapsible">
+        {/* Payments section */}
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-[11px] uppercase tracking-wider text-muted-foreground/70 font-semibold px-4 mb-1">
+            Finance
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <Collapsible
+                defaultOpen={isGroupActive("/dashboard/payments")}
+                className="group/collapsible"
+              >
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
-                    <SidebarMenuButton asChild>
-                      <Link href="#">
-                        <DollarSign />
-                        <span>Payment</span>
-                        <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-                      </Link>
+                    <SidebarMenuButton className="rounded-lg mx-2">
+                      <Wallet className="w-4 h-4" />
+                      <span>Payments</span>
+                      <ChevronDown className="ml-auto w-4 h-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
-                    <SidebarMenuSub>
+                    <SidebarMenuSub className="ml-5 border-l border-border/50 pl-3">
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild>
+                        <SidebarMenuSubButton
+                          asChild
+                          isActive={isActive("/dashboard/payments/pending")}
+                        >
                           <Link href="/dashboard/payments/pending">
-                            <span>Pending Payments</span>
+                            <Clock className="w-3.5 h-3.5" />
+                            <span>Pending</span>
                           </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
-
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild>
+                        <SidebarMenuSubButton
+                          asChild
+                          isActive={isActive("/dashboard/payments/refund")}
+                        >
                           <Link href="/dashboard/payments/refund">
-                            <span>Refund Payments</span>
+                            <RefreshCcw className="w-3.5 h-3.5" />
+                            <span>Refunds</span>
                           </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild>
+                        <SidebarMenuSubButton
+                          asChild
+                          isActive={isActive("/dashboard/payments/request")}
+                        >
                           <Link href="/dashboard/payments/request">
-                            <span>Request Payments</span>
+                            <HandCoins className="w-3.5 h-3.5" />
+                            <span>Request Payout</span>
                           </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
@@ -306,30 +444,46 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
+
+      {/* Footer — User menu */}
+      <SidebarFooter className="border-t border-sidebar-border">
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuButton>
-                  <User2 /> {user.name}
-                  <ChevronUp className="ml-auto" />
+                <SidebarMenuButton className="h-12 rounded-lg mx-2">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FF8A80] to-[#FF6B61] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                    {user.name?.charAt(0)?.toUpperCase() || "U"}
+                  </div>
+                  <div className="flex flex-col items-start min-w-0">
+                    <span className="text-sm font-semibold truncate max-w-[140px]">
+                      {user.name || "User"}
+                    </span>
+                    <span className="text-[11px] text-muted-foreground capitalize">
+                      {user.type || "Account"}
+                    </span>
+                  </div>
+                  <ChevronUp className="ml-auto w-4 h-4 text-muted-foreground" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 side="top"
-                className="w-[--radix-popper-anchor-width]"
+                className="w-[--radix-popper-anchor-width] rounded-xl shadow-lg border border-border/50"
               >
-                <DropdownMenuItem>
-                  <span>Account</span>
+                <DropdownMenuItem className="rounded-lg cursor-pointer">
+                  <Settings className="w-4 h-4 mr-2" />
+                  <span>Account Settings</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem className="rounded-lg cursor-pointer">
+                  <CreditCard className="w-4 h-4 mr-2" />
                   <span>Billing</span>
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={handleLogout}
-                  className="cursor-pointer"
+                  className="rounded-lg cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50"
                 >
+                  <LogOut className="w-4 h-4 mr-2" />
                   <span>Sign out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>

@@ -8,8 +8,8 @@ export default function Page() {
   return (
     <Suspense
       fallback={
-        <div className="flex items-center justify-center h-screen">
-          <Loader2 className="animate-spin" />
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="animate-spin h-8 w-8 text-[#FF8A80]" />
         </div>
       }
     >

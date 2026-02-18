@@ -2,6 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,24 @@ interface Prescription {
   instruction: string;
 }
 
-import { Loader2 } from "lucide-react";
+import {
+  Loader2,
+  ArrowLeft,
+  PawPrint,
+  Calendar,
+  Clock,
+  Video,
+  Home,
+  Stethoscope,
+  CreditCard,
+  User,
+  FileText,
+  Plus,
+  X,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+} from "lucide-react";
 
 export default function AppointmentDetailsPage() {
   const search = useSearchParams();
@@ -115,381 +133,432 @@ export default function AppointmentDetailsPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-center h-screen">
-          <Loader2 className="animate-spin" />
-        </div>
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="animate-spin h-8 w-8 text-[#FF8A80]" />
       </div>
     );
   }
 
   if (!appointment) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-center h-screen">
-          <p>No appointment found</p>
-        </div>
+      <div className="empty-state">
+        <AlertCircle className="h-12 w-12 text-muted-foreground/50" />
+        <h3 className="text-lg font-semibold mt-4">Appointment Not Found</h3>
+        <p className="text-muted-foreground mt-1">
+          The appointment you&apos;re looking for doesn&apos;t exist or has been removed.
+        </p>
+        <Link href="/dashboard/appointments/all">
+          <Button className="mt-4" variant="outline">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Appointments
+          </Button>
+        </Link>
       </div>
     );
   }
 
+  const statusBadge = () => {
+    switch (appointment.status) {
+      case "confirmed":
+        return <span className="status-badge--success">Confirmed</span>;
+      case "pending":
+        return <span className="status-badge--warning">Pending</span>;
+      case "completed":
+        return <span className="status-badge--info">Completed</span>;
+      case "cancelled":
+        return <span className="status-badge--danger">Cancelled</span>;
+      default:
+        return <span className="status-badge--default">{appointment.status}</span>;
+    }
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        {/* Header */}
-        <div className="border-b pb-4 mb-6">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-800">
-              Appointment Details
-            </h1>
-            {appointment.status == "confirmed" ? (
-              <span className="px-4 py-1 bg-green-100 text-green-900 rounded">
-                Confirmed
-              </span>
-            ) : appointment.status === "pending" ? (
-              <span className="px-4 py-1 bg-yellow-100 text-yellow-900 rounded">
-                Pending
-              </span>
-            ) : appointment.status === "completed" ? (
-              <span className="px-4 py-1 bg-blue-100 text-blue-900 rounded">
-                Completed
-              </span>
-            ) : appointment.status === "cancelled" ? (
-              <span className="px-4 py-1 bg-red-100 text-red-900 rounded">
-                Cancelled
-              </span>
-            ) : (
-              <span className="px-4 py-1 bg-gray-100 text-gray-900 rounded">
-                {appointment.status}
-              </span>
-            )}
-          </div>
-          <p className="text-gray-600 mt-2">ID: {appointment.appointmentId}</p>
-        </div>
-
-        {/* Pet Information */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Pet Information</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <p className="text-gray-600">Pet Name</p>
-              <p className="font-medium">{appointment.petName}</p>
+    <div className="space-y-6">
+      {/* Page Header */}
+      <div className="page-header">
+        <div>
+          <Link
+            href="/dashboard/appointments/all"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-2 transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Appointments
+          </Link>
+          <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-1 rounded-full bg-[#FF8A80]" />
+              <h1 className="text-2xl font-bold tracking-tight">Appointment Details</h1>
             </div>
-            <div>
-              <p className="text-gray-600">Species</p>
-              <p className="font-medium uppercase">{appointment.species}</p>
-            </div>
+            <span className="font-mono text-sm text-muted-foreground bg-muted px-2 py-0.5 rounded">
+              {appointment.appointmentId}
+            </span>
+            {statusBadge()}
           </div>
         </div>
+        {appointment.status === "confirmed" && (
+          <div className="flex items-center gap-3">
+            <Button
+              variant="destructive"
+              onClick={() => setCancelAlert(true)}
+            >
+              <XCircle className="mr-2 h-4 w-4" />
+              Cancel
+            </Button>
+            <Button
+              onClick={() => handleSubmit("completed")}
+              disabled={loading}
+            >
+              <CheckCircle className="mr-2 h-4 w-4" />
+              Complete
+            </Button>
+          </div>
+        )}
+      </div>
 
-        {/* Appointment Details */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Appointment Details</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <p className="text-gray-600">Date</p>
-              <p className="font-medium">{appointment.date}</p>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Pet Information */}
+          <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <PawPrint className="h-5 w-5 text-[#FF8A80]" />
+              <h2 className="text-lg font-semibold">Pet Information</h2>
             </div>
-            <div>
-              <p className="text-gray-600">Time</p>
-              <p className="font-medium">{appointment.time}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-3 rounded-xl bg-muted/30">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Pet Name</p>
+                <p className="font-medium mt-1">{appointment.petName}</p>
+              </div>
+              <div className="p-3 rounded-xl bg-muted/30">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Species</p>
+                <p className="font-medium mt-1 uppercase">{appointment.species}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-gray-600">Type</p>
-              <p className="font-medium capitalize">{appointment.type}</p>
+          </div>
+
+          {/* Appointment Details */}
+          <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Stethoscope className="h-5 w-5 text-[#FF8A80]" />
+              <h2 className="text-lg font-semibold">Appointment Details</h2>
             </div>
-            {appointment.type === "homeService" && (
-              <div>
-                <p className="text-gray-600">Home Address</p>
-                <p className="font-medium capitalize">
-                  {appointment.homeAddress}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-3 rounded-xl bg-muted/30">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Date</p>
+                <div className="flex items-center gap-1.5 mt-1">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <p className="font-medium">{appointment.date}</p>
+                </div>
+              </div>
+              <div className="p-3 rounded-xl bg-muted/30">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Time</p>
+                <div className="flex items-center gap-1.5 mt-1">
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                  <p className="font-medium">{appointment.time}</p>
+                </div>
+              </div>
+              <div className="p-3 rounded-xl bg-muted/30">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Type</p>
+                <p className="font-medium mt-1 capitalize">{appointment.type}</p>
+              </div>
+              {appointment.type === "homeService" && (
+                <div className="p-3 rounded-xl bg-muted/30">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Home Address</p>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <Home className="h-4 w-4 text-muted-foreground" />
+                    <p className="font-medium capitalize">{appointment.homeAddress}</p>
+                  </div>
+                </div>
+              )}
+              {appointment.type === "online" && (
+                <div className="p-3 rounded-xl bg-blue-50 border border-blue-100">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Room Link</p>
+                  <a
+                    href={`${process.env.NEXT_PUBLIC_ROOM_URL}?room=${appointment.roomLink}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 mt-1 text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                  >
+                    <Video className="h-4 w-4" />
+                    Join Video Room
+                  </a>
+                </div>
+              )}
+              <div className="p-3 rounded-xl bg-muted/30">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total Amount</p>
+                <p className="font-semibold mt-1 text-[#FF6B61]">
+                  {formatCurrency(appointment.totalAmount)} BDT
                 </p>
               </div>
-            )}
-            {appointment.type === "online" && (
+            </div>
+          </div>
+
+          {/* Health Concerns */}
+          <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <AlertCircle className="h-5 w-5 text-[#FF8A80]" />
+              <h2 className="text-lg font-semibold">Health Concerns</h2>
+            </div>
+            <div className="space-y-4">
               <div>
-                <p className="text-gray-600">Room Link</p>
-                <a
-                  href={`${process.env.NEXT_PUBLIC_ROOM_URL}?room=${appointment.roomLink}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium text-blue-600 hover:underline"
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">Issues</p>
+                <div className="flex flex-wrap gap-2">
+                  {appointment.petConcern.map(
+                    (concern: string, index: number) => (
+                      <span
+                        key={index}
+                        className="bg-[#FF8A80]/10 text-[#FF6B61] px-3 py-1.5 rounded-full text-sm font-medium"
+                      >
+                        {concern}
+                      </span>
+                    )
+                  )}
+                </div>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">Detailed Concern</p>
+                <p className="text-sm leading-relaxed p-3 rounded-xl bg-muted/30">{appointment.detailedConcern}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Prescriptions */}
+          <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-[#FF8A80]" />
+                <h2 className="text-lg font-semibold">Prescriptions</h2>
+              </div>
+              {appointment.status === "confirmed" && (
+                <Button
+                  onClick={() => setIsAddingPrescription(!isAddingPrescription)}
+                  variant="outline"
+                  size="sm"
                 >
-                  Join Room
-                </a>
+                  {isAddingPrescription ? (
+                    <>
+                      <X className="mr-1.5 h-3.5 w-3.5" />
+                      Cancel
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="mr-1.5 h-3.5 w-3.5" />
+                      Add Prescription
+                    </>
+                  )}
+                </Button>
+              )}
+            </div>
+
+            {/* Add Prescription Form */}
+            {isAddingPrescription && appointment.status === "confirmed" && (
+              <div className="bg-muted/30 p-4 rounded-xl mb-4 border border-border/40">
+                <div className="grid grid-cols-1 gap-3">
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1.5 block">
+                      Medication
+                    </label>
+                    <Input
+                      value={prescriptionForm.medication}
+                      onChange={(e) =>
+                        setPrescriptionForm({
+                          ...prescriptionForm,
+                          medication: e.target.value,
+                        })
+                      }
+                      placeholder="Enter medication name"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1.5 block">
+                      Dose
+                    </label>
+                    <Input
+                      value={prescriptionForm.dose}
+                      onChange={(e) =>
+                        setPrescriptionForm({
+                          ...prescriptionForm,
+                          dose: e.target.value,
+                        })
+                      }
+                      placeholder="Enter dosage"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1.5 block">
+                      Instructions
+                    </label>
+                    <Textarea
+                      value={prescriptionForm.instruction}
+                      onChange={(e) =>
+                        setPrescriptionForm({
+                          ...prescriptionForm,
+                          instruction: e.target.value,
+                        })
+                      }
+                      placeholder="Enter instructions for the patient"
+                    />
+                  </div>
+                  <Button
+                    onClick={handleAddToList}
+                    className="w-full"
+                    disabled={
+                      !prescriptionForm.medication ||
+                      !prescriptionForm.dose ||
+                      !prescriptionForm.instruction
+                    }
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add to List
+                  </Button>
+                </div>
               </div>
             )}
+
+            {/* New Prescriptions List */}
+            {newPrescriptions.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-3">
+                  New Prescriptions ({newPrescriptions.length})
+                </h3>
+                <div className="space-y-2">
+                  {newPrescriptions.map((prescription, index) => (
+                    <div
+                      key={index}
+                      className="p-4 rounded-xl bg-amber-50/50 border border-amber-100 relative"
+                    >
+                      <button
+                        onClick={() => handleRemoveFromList(index)}
+                        className="absolute top-3 right-3 text-red-400 hover:text-red-600 transition-colors"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pr-8">
+                        <div>
+                          <p className="text-xs text-muted-foreground">Medication</p>
+                          <p className="font-medium text-sm">{prescription.medication}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground">Dose</p>
+                          <p className="font-medium text-sm">{prescription.dose}</p>
+                        </div>
+                        <div className="md:col-span-2">
+                          <p className="text-xs text-muted-foreground">Instructions</p>
+                          <p className="font-medium text-sm">{prescription.instruction}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Existing Prescriptions */}
             <div>
-              <p className="text-gray-600">Total Amount</p>
-              <p className="font-medium">
-                {formatCurrency(appointment.totalAmount)} BDT
-              </p>
+              <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-3">
+                Saved Prescriptions
+              </h3>
+              {appointment.prescription.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <FileText className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                  <p className="text-sm">No prescriptions saved yet</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {appointment.prescription.map(
+                    (prescription: Prescription, index: number) => (
+                      <div
+                        key={index}
+                        className="p-4 rounded-xl bg-muted/30 border border-border/40"
+                      >
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div>
+                            <p className="text-xs text-muted-foreground">Medication</p>
+                            <p className="font-medium text-sm">{prescription.medication}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-muted-foreground">Dose</p>
+                            <p className="font-medium text-sm">{prescription.dose}</p>
+                          </div>
+                          <div className="md:col-span-2">
+                            <p className="text-xs text-muted-foreground">Instructions</p>
+                            <p className="font-medium text-sm">{prescription.instruction}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Concerns */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Health Concerns</h2>
-          <div className="space-y-4">
-            <div>
-              <p className="text-gray-600">Issues</p>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {appointment.petConcern.map(
-                  (concern: string, index: number) => (
-                    <span
-                      key={index}
-                      className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
-                    >
-                      {concern}
-                    </span>
-                  )
+        {/* Right Column */}
+        <div className="space-y-6">
+          {/* Payment */}
+          <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <CreditCard className="h-5 w-5 text-[#FF8A80]" />
+              <h3 className="font-semibold">Payment</h3>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Status</span>
+                {appointment.paymentStatus ? (
+                  <span className="status-badge--success">Paid</span>
+                ) : (
+                  <span className="status-badge--warning">Pending</span>
                 )}
               </div>
-            </div>
-            <div>
-              <p className="text-gray-600">Detailed Concern</p>
-              <p className="mt-2">{appointment.detailedConcern}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Payment Information */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Payment Information</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <p className="text-gray-600">Payment Status</p>
-              <span
-                className={`inline-block mt-1 px-3 py-1 rounded-full text-sm font-medium ${
-                  appointment.paymentStatus
-                    ? "bg-green-100 text-green-800"
-                    : "bg-red-100 text-red-800"
-                }`}
-              >
-                {appointment.paymentStatus ? "Paid" : "Pending"}
-              </span>
-            </div>
-            <div>
-              <p className="text-gray-600">Payment Reference</p>
-              <p className="font-medium">{appointment.paymentSessionKey}</p>
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Reference</p>
+                <p className="text-xs font-mono bg-muted/30 rounded-lg px-2 py-1.5 break-all">
+                  {appointment.paymentSessionKey}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* User Information */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Pet Owner Information</h2>
-          <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-            <div className="flex-shrink-0">
+          {/* Pet Owner */}
+          <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <User className="h-5 w-5 text-[#FF8A80]" />
+              <h3 className="font-semibold">Pet Owner</h3>
+            </div>
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
               <img
                 src={appointment.user.avatar}
                 alt={appointment.user.name}
-                className="h-16 w-16 rounded-full object-cover border-2 border-gray-200"
+                className="h-12 w-12 rounded-full object-cover ring-2 ring-white shadow"
               />
-            </div>
-            <div>
-              <h3 className="font-medium text-lg">{appointment.user.name}</h3>
-              <p className="text-gray-600">{appointment.user.email}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Prescription Section */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Prescriptions</h2>
-            {appointment.status === "confirmed" && (
-              <Button
-                onClick={() => setIsAddingPrescription(!isAddingPrescription)}
-                variant="outline"
-              >
-                {isAddingPrescription ? "Cancel" : "Add Prescription"}
-              </Button>
-            )}
-          </div>
-
-          {/* Add Prescription Form */}
-          {isAddingPrescription && appointment.status === "confirmed" && (
-            <div className="bg-gray-50 p-4 rounded-lg mb-4">
-              <div className="grid grid-cols-1 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Medication
-                  </label>
-                  <Input
-                    value={prescriptionForm.medication}
-                    onChange={(e) =>
-                      setPrescriptionForm({
-                        ...prescriptionForm,
-                        medication: e.target.value,
-                      })
-                    }
-                    placeholder="Enter medication name"
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Dose
-                  </label>
-                  <Input
-                    value={prescriptionForm.dose}
-                    onChange={(e) =>
-                      setPrescriptionForm({
-                        ...prescriptionForm,
-                        dose: e.target.value,
-                      })
-                    }
-                    placeholder="Enter dosage"
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Instructions
-                  </label>
-                  <Textarea
-                    value={prescriptionForm.instruction}
-                    onChange={(e) =>
-                      setPrescriptionForm({
-                        ...prescriptionForm,
-                        instruction: e.target.value,
-                      })
-                    }
-                    placeholder="Enter instructions"
-                    className="mt-1"
-                  />
-                </div>
-                <Button
-                  onClick={handleAddToList}
-                  className="w-full"
-                  disabled={
-                    !prescriptionForm.medication ||
-                    !prescriptionForm.dose ||
-                    !prescriptionForm.instruction
-                  }
-                >
-                  Add to List
-                </Button>
+              <div>
+                <h4 className="font-medium">{appointment.user.name}</h4>
+                <p className="text-sm text-muted-foreground">{appointment.user.email}</p>
               </div>
             </div>
-          )}
-
-          {/* New Prescriptions List */}
-          {newPrescriptions.length > 0 && (
-            <div className="mb-6">
-              <h3 className="text-lg font-medium mb-3">New Prescriptions</h3>
-              <div className="space-y-3">
-                {newPrescriptions.map((prescription, index) => (
-                  <div
-                    key={index}
-                    className="border rounded-lg p-4 bg-white shadow-sm relative"
-                  >
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-gray-600">Medication</p>
-                        <p className="font-medium">{prescription.medication}</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-600">Dose</p>
-                        <p className="font-medium">{prescription.dose}</p>
-                      </div>
-                      <div className="md:col-span-2">
-                        <p className="text-gray-600">Instructions</p>
-                        <p className="font-medium">
-                          {prescription.instruction}
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => handleRemoveFromList(index)}
-                      className="absolute top-2 right-2 text-red-500 hover:text-red-700"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Existing Prescriptions List */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium mb-3">Saved Prescriptions</h3>
-            {appointment.prescription.length === 0 ? (
-              <p className="text-gray-500 text-center py-4">
-                No prescriptions saved yet
-              </p>
-            ) : (
-              appointment.prescription.map(
-                (prescription: Prescription, index: number) => (
-                  <div
-                    key={index}
-                    className="border rounded-lg p-4 bg-white shadow-sm"
-                  >
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-gray-600">Medication</p>
-                        <p className="font-medium">{prescription.medication}</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-600">Dose</p>
-                        <p className="font-medium">{prescription.dose}</p>
-                      </div>
-                      <div className="md:col-span-2">
-                        <p className="text-gray-600">Instructions</p>
-                        <p className="font-medium">
-                          {prescription.instruction}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )
-              )
-            )}
           </div>
-        </div>
 
-        {/* Additional Information */}
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Additional Information</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <p className="text-gray-600">Created At</p>
-              <p className="font-medium">
-                {new Date(appointment.createdAt).toLocaleString()}
-              </p>
-            </div>
-            <div>
-              <p className="text-gray-600">Last Updated</p>
-              <p className="font-medium">
-                {new Date(appointment.updatedAt).toLocaleString()}
-              </p>
+          {/* Timestamps */}
+          <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-5">
+            <h3 className="font-semibold mb-3">Timeline</h3>
+            <div className="space-y-3 text-sm">
+              <div>
+                <p className="text-xs text-muted-foreground">Created</p>
+                <p className="font-medium">
+                  {new Date(appointment.createdAt).toLocaleString()}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Last Updated</p>
+                <p className="font-medium">
+                  {new Date(appointment.updatedAt).toLocaleString()}
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      {appointment.status === "confirmed" && (
-        <div className="flex md:flex-row flex-col justify-end py-5 gap-5">
-          <Button
-            variant="destructive"
-            size="lg"
-            onClick={() => setCancelAlert(true)}
-          >
-            {loading && <Loader2 className="mr-2" />}
-            Cancel Appointment
-          </Button>
-          <Button
-            size="lg"
-            onClick={() => handleSubmit("completed")}
-            disabled={loading}
-          >
-            {loading && <Loader2 className="mr-2" />}
-            Complete Appointment
-          </Button>
-        </div>
-      )}
 
       <AlertDialogBox
         open={openCancelAlert}

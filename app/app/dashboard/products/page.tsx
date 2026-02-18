@@ -72,65 +72,92 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="p-5">
-      <h2 className="text-4xl">All Products</h2>
+    <div className="space-y-6">
+      {/* Page header */}
+      <div className="flex items-center justify-between">
+        <div className="page-header">
+          <h2>All Products</h2>
+          <p>Manage and track all your listed products</p>
+          <div className="header-accent" />
+        </div>
+        <Link
+          href="/dashboard/products/upload"
+          className={buttonVariants({ variant: "default", size: "sm" })}
+        >
+          <span>+ Upload New</span>
+        </Link>
+      </div>
 
       {products.length > 0 ? (
-        <Table>
-          <TableCaption>A list of all your products</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Product ID #</TableHead>
-              <TableHead>Product Name</TableHead>
-              <TableHead>Product Status</TableHead>
-              <TableHead>Product Rating</TableHead>
-              <TableHead>Created At</TableHead>
-              <TableHead></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {products.map((product: any) => (
-              <TableRow key={product.productId}>
-                <TableCell>{product.productId}</TableCell>
-                <TableCell>{product.name}</TableCell>
-                <TableCell>
-                  {product.status == true ? (
-                    <span className="px-4 py-1 bg-green-100 text-green-900 font-bold rounded">
-                      Published
-                    </span>
-                  ) : (
-                    <span className="px-4 py-1 bg-yellow-100 text-yellow-900 font-bold rounded">
-                      Pending
-                    </span>
-                  )}
-                </TableCell>
-                <TableCell>{product.ratings}</TableCell>
-                <TableCell>
-                  {new Date(product.createdAt).toLocaleString("en-US", {
-                    weekday: "short",
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                    hour12: true,
-                  })}
-                </TableCell>
-                <TableCell>
-                  <Link
-                    href={`/dashboard/products/view?id=${product.productId}`}
-                    className={buttonVariants({ variant: "default" })}
-                  >
-                    View Product
-                  </Link>
-                </TableCell>
+        <div className="bg-white rounded-2xl border border-border/60 shadow-sm overflow-hidden">
+          <Table>
+            <TableCaption className="py-4 text-muted-foreground">
+              Showing {products.length} of {totalProducts} products
+            </TableCaption>
+            <TableHeader>
+              <TableRow className="bg-muted/30 hover:bg-muted/30">
+                <TableHead className="font-semibold">ID</TableHead>
+                <TableHead className="font-semibold">Product Name</TableHead>
+                <TableHead className="font-semibold">Status</TableHead>
+                <TableHead className="font-semibold">Rating</TableHead>
+                <TableHead className="font-semibold">Created</TableHead>
+                <TableHead className="text-right font-semibold">Action</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {products.map((product: any) => (
+                <TableRow key={product.productId} className="group">
+                  <TableCell className="font-mono text-xs text-muted-foreground">
+                    {product.productId}
+                  </TableCell>
+                  <TableCell className="font-medium">{product.name}</TableCell>
+                  <TableCell>
+                    {product.status == true ? (
+                      <span className="status-badge status-badge--success">
+                        Published
+                      </span>
+                    ) : (
+                      <span className="status-badge status-badge--warning">
+                        Pending
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-sm">{product.ratings || "—"}</span>
+                  </TableCell>
+                  <TableCell className="text-sm text-muted-foreground">
+                    {new Date(product.createdAt).toLocaleString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Link
+                      href={`/dashboard/products/view?id=${product.productId}`}
+                      className={buttonVariants({ variant: "outline", size: "sm" })}
+                    >
+                      View
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       ) : (
-        <div className="font-bold text-gray-700 text-center py-5">
-          No published products found.
+        <div className="empty-state">
+          <div className="empty-state-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" /></svg>
+          </div>
+          <h3>No products yet</h3>
+          <p>Start by uploading your first product to get it listed on the store.</p>
+          <Link
+            href="/dashboard/products/upload"
+            className={`${buttonVariants({ variant: "default", size: "sm" })} mt-4`}
+          >
+            Upload Product
+          </Link>
         </div>
       )}
 
