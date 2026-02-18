@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import type { Adoption, AdoptionWishlistItem, ApiAxiosError } from "@/src/types";
+import type { Adoption as AdoptionType, AdoptionWishlistItem, ApiAxiosError } from "@/src/types";
 import dynamic from "next/dynamic";
 import { toast } from "react-hot-toast";
 
@@ -19,8 +19,8 @@ import axios from "@/src/lib/axiosInstance";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(true);
-  const [adoption, setAdoption] = useState<Partial<Adoption>>({});
-  const [moreAdoptions, setMoreAdoptions] = useState<Adoption[]>([]);
+  const [adoption, setAdoption] = useState<Partial<AdoptionType>>({});
+  const [moreAdoptions, setMoreAdoptions] = useState<AdoptionType[]>([]);
 
   const auth = useAuth();
 
@@ -146,7 +146,7 @@ export default function Page() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-5">
-                  {auth.user?.id === adoption?.userId?._id ? (
+                  {auth.user?.id === (typeof adoption?.user === 'object' ? adoption?.user?._id : adoption?.user) ? (
                     <Button
                       text="Manage Adoption"
                       type="default"
@@ -202,15 +202,15 @@ export default function Page() {
               <div className="basis-2/3 md:ps-16 pt-10 md:pt-0">
                 <div className="flex flex-row items-center gap-4">
                   <img
-                    src={adoption?.userId?.avatar}
-                    alt={adoption?.userId?.name}
+                    src={typeof adoption?.user === 'object' ? adoption?.user?.avatar : undefined}
+                    alt={typeof adoption?.user === 'object' ? adoption?.user?.name : ''}
                     className="rounded-full w-[80px] h-[8]"
                   />
                   <div>
                     <div className="text-2xl font-bold">
-                      {adoption?.userId?.name}
+                      {typeof adoption?.user === 'object' ? adoption?.user?.name : ''}
                     </div>
-                    <div>{adoption?.phoneNumber || adoption?.userId?.email}</div>
+                    <div>{adoption?.phoneNumber}</div>
                   </div>
                 </div>
               </div>
@@ -230,18 +230,17 @@ export default function Page() {
             </div>
 
             <div className="flex md:flex-row flex-col justify-between gap-5 py-5">
-              {moreAdoptions.map((adoption: Adoption) => (
+              {moreAdoptions.map((adoptionItem: AdoptionType) => (
                 <Adoption
-                  key={adoption.adoptionId || adoption._id}
-                  pic={adoption.images[0].path}
-                  name={adoption.name}
-                  pet={adoption.species}
-                  location={adoption.location}
-                  gender={adoption.gender}
-                  addedOn={adoption.updatedAt}
-                  breed={adoption.breed}
-                  age={adoption.age}
-                  id={adoption.adoptionId}
+                  key={adoptionItem.adoptionId || adoptionItem._id}
+                  pic={adoptionItem.images[0].path}
+                  name={adoptionItem.name}
+                  pet={adoptionItem.species || ''}
+                  location={adoptionItem.location}
+                  gender={adoptionItem.gender}
+                  breed={adoptionItem.breed}
+                  age={adoptionItem.age}
+                  id={adoptionItem.adoptionId || adoptionItem._id}
                 />
               ))}
             </div>

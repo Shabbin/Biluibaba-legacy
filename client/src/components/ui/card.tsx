@@ -1,87 +1,109 @@
-"use client";
+"use client"
 
-import React from "react";
+import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
 
-type CardVariant = "default" | "elevated" | "outline" | "gradient" | "glass";
+import { cn } from "@/src/lib/utils"
 
-interface CardProps {
-  children: React.ReactNode;
-  variant?: CardVariant;
-  hover?: boolean;
-  className?: string;
-}
+const cardVariants = cva(
+  "rounded-xl border bg-card text-card-foreground shadow",
+  {
+    variants: {
+      variant: {
+        default: "bg-white border-2 border-slate-100 shadow-sm",
+        elevated: "bg-white shadow-lg",
+        outline: "bg-white border-2 border-primary/20",
+        gradient: "bg-gradient-to-br from-blue-50 to-green-50 border-0",
+        glass: "bg-white/80 backdrop-blur-md border border-white/20 shadow",
+        destructive: "border-destructive/50 text-destructive bg-destructive/10", // Shadcn convention addition
+      },
+      padding: {
+        none: "",
+        sm: "p-4",
+        md: "p-6",
+        lg: "p-8"
+      },
+      hover: {
+        true: "hover:shadow-lg hover:-translate-y-1 transition-all duration-300",
+        false: ""
+      }
+    },
+    defaultVariants: {
+      variant: "default",
+      padding: "md", // Legacy default was p-6
+      hover: true // Legacy default was true
+    },
+  }
+)
 
-const Card: React.FC<CardProps> = ({ 
-  children, 
-  variant = "default", 
-  hover = true,
-  className = "" 
-}) => {
-  const variants = {
-    default: "bg-white border-2 border-gray-100 shadow-soft",
-    elevated: "bg-white shadow-soft-lg",
-    outline: "bg-white border-2 border-petzy-periwinkle",
-    gradient: "bg-gradient-to-br from-petzy-blue-light to-petzy-mint-light border-0",
-    glass: "bg-white/80 backdrop-blur-md border border-white/20 shadow-soft",
-  };
+interface CardProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof cardVariants> {}
 
-  const hoverEffect = hover 
-    ? "hover:shadow-soft-lg hover:-translate-y-1 transition-all duration-300" 
-    : "";
-
-  return (
+const Card = React.forwardRef<HTMLDivElement, CardProps>(
+  ({ className, variant, padding, hover, ...props }, ref) => (
     <div
-      className={`rounded-3xl p-6 ${variants[variant]} ${hoverEffect} ${className}`}
-    >
-      {children}
-    </div>
-  );
-};
+      ref={ref}
+      className={cn(cardVariants({ variant, padding, hover }), className)}
+      {...props}
+    />
+  )
+)
+Card.displayName = "Card"
 
-interface CardSubComponentProps {
-  children: React.ReactNode;
-  className?: string;
-}
+const CardHeader = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex flex-col space-y-1.5 mb-4", className)} // Removed p-6, restored mb-4
+    {...props}
+  />
+))
+CardHeader.displayName = "CardHeader"
 
-export const CardHeader: React.FC<CardSubComponentProps> = ({ children, className = "" }) => {
-  return (
-    <div className={`mb-4 ${className}`}>
-      {children}
-    </div>
-  );
-};
+const CardTitle = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLHeadingElement>
+>(({ className, ...props }, ref) => (
+  <h3
+    ref={ref}
+    className={cn("font-semibold leading-none tracking-tight text-xl md:text-2xl", className)} // Adapted to legacy size
+    {...props}
+  />
+))
+CardTitle.displayName = "CardTitle"
 
-export const CardTitle: React.FC<CardSubComponentProps> = ({ children, className = "" }) => {
-  return (
-    <h3 className={`text-xl md:text-2xl font-bold text-petzy-slate ${className}`}>
-      {children}
-    </h3>
-  );
-};
+const CardDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    className={cn("text-sm text-muted-foreground mt-2", className)} // Legacy had mt-2
+    {...props}
+  />
+))
+CardDescription.displayName = "CardDescription"
 
-export const CardDescription: React.FC<CardSubComponentProps> = ({ children, className = "" }) => {
-  return (
-    <p className={`text-sm md:text-base text-petzy-slate-light mt-2 ${className}`}>
-      {children}
-    </p>
-  );
-};
+const CardContent = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("", className)} {...props} /> // Legacy CardContent had no padding, rely on Card padding
+))
+CardContent.displayName = "CardContent"
 
-export const CardContent: React.FC<CardSubComponentProps> = ({ children, className = "" }) => {
-  return (
-    <div className={className}>
-      {children}
-    </div>
-  );
-};
+const CardFooter = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex items-center p-6 pt-0 mt-4 border-t border-gray-100", className)} // Added legacy mt-4 and border top
+    {...props}
+  />
+))
+CardFooter.displayName = "CardFooter"
 
-export const CardFooter: React.FC<CardSubComponentProps> = ({ children, className = "" }) => {
-  return (
-    <div className={`mt-4 pt-4 border-t border-gray-100 ${className}`}>
-      {children}
-    </div>
-  );
-};
-
-export { Card };
-export default Card;
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+export default Card

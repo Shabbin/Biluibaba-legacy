@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 import axiosInstance from "@/src/lib/axiosInstance";
-import type { ApiAxiosError } from "@/src/types/api";
+import type { ApiAxiosError } from "@/src/types/index";
 
 import Input from "@/src/components/ui/input";
 import Button from "@/src/components/ui/button";
@@ -180,6 +180,7 @@ export default function Page() {
 
   const handleVetFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, files } = event.target;
+    if (!files || files.length === 0) return;
     setVetData((prevState) => ({
       ...prevState,
       [name]: files[0],
@@ -211,7 +212,8 @@ export default function Page() {
     } catch (error: unknown) {
       setLoading(false);
       console.error(error);
-      return toast.error("Something went wrong. Please try again");
+      toast.error("Something went wrong. Please try again");
+      return;
     }
     setLoading(true);
   };
@@ -320,7 +322,6 @@ export default function Page() {
               {step === 6 && (
                 <StepSix
                   data={vetData}
-                  handleSubmit={handleSubmit}
                   handleDataChange={handleVetDataChange}
                   setStep={setStep}
                 />
@@ -749,7 +750,7 @@ function StepFive({
             <Select
               data={Pets}
               value={zone.pet}
-              onChange={(event) => handleSpecializedZoneChange(index, event)}
+              onChange={(event: React.ChangeEvent<HTMLSelectElement>) => handleSpecializedZoneChange(index, event)}
               name="pet"
             />
           </div>

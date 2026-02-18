@@ -1,4 +1,4 @@
-module.exports = [
+const VetsData = [
   {
     id: 0,
     name: "Dr. Maria Lamprou",
@@ -384,3 +384,5 @@ module.exports = [
     ],
   },
 ];
+
+export default VetsData;

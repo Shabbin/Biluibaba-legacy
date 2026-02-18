@@ -12,7 +12,7 @@ import axios from "@/src/lib/axiosInstance";
 
 export default function Page() {
   const [loading, setLoading] = useState(true);
-  const [adoptions, setAdoptions] = useState([]);
+  const [adoptions, setAdoptions] = useState<any[]>([]);
 
   const fetchAdoptions = async () => {
     try {
@@ -46,7 +46,6 @@ export default function Page() {
                   pet={adoption.species}
                   location={adoption.location}
                   gender={adoption.gender}
-                  addedOn={adoption.updatedAt}
                   breed={adoption.breed}
                   age={adoption.age}
                   id={adoption.adoptionId}

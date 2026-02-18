@@ -19,7 +19,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure
 import { Pagination } from "@heroui/pagination";
 
 // Components
-import Button from "@/src/components/ui/button";
+import {Button} from "@/src/components/ui/button";
 import { Quantity } from "@/src/components/ui";
 import { ReviewSkeleton, NoReviews } from "@/src/components/ui";
 import ImageSlider from "@/src/components/image-slider"; // Ensure this component is also updated for modern looks
@@ -129,6 +129,7 @@ export default function ProductDetail() {
 
   const submitReview = async (onClose: () => void) => {
     if (rating < 1 || comment.length < 5) return toast.error("Please provide a rating and a short comment.");
+    if (!product) return toast.error("Product not found");
     
     setReviewStatus(true);
     try {
@@ -225,7 +226,7 @@ export default function ProductDetail() {
                   <span className="w-20 font-bold text-petzy-slate">Quantity:</span>
                   <Quantity 
                      value={quantity} 
-                     onChange={(v) => setQuantity(Math.min(v, product.quantity))} 
+                     onChange={(v) => setQuantity(Math.min(v, product.quantity || 0))} 
                   />
                   <span className="text-xs text-gray-400">{product.quantity} available</span>
                </div>
@@ -247,13 +248,14 @@ export default function ProductDetail() {
             {/* Actions */}
             <div className="flex gap-4 mt-auto">
                <Button 
-                  text="Add to Cart" 
                   type="outline" 
                   icon={<FaCartPlus />} 
                   iconAlign="left"
                   className="flex-1 py-4 text-lg"
                   onClick={() => handleAddToCart("add")}
-               />
+                  >
+                  Add to Cart
+                  </Button>
                <Button 
                   text="Buy Now" 
                   type="default" 
@@ -275,7 +277,7 @@ export default function ProductDetail() {
                  <h2 className="text-2xl font-bold text-petzy-slate mb-6">Product Description</h2>
                  <article 
                     className="prose prose-slate max-w-none prose-img:rounded-xl prose-headings:text-petzy-slate prose-a:text-petzy-coral"
-                    dangerouslySetInnerHTML={{ __html: product.description }}
+                    dangerouslySetInnerHTML={{ __html: product.description || "" }}
                  />
               </div>
 
@@ -342,7 +344,7 @@ export default function ProductDetail() {
                     <div>
                        <div className="flex text-yellow-400 text-sm mb-1">
                           {[...Array(5)].map((_, i) => (
-                             <FaStar key={i} className={i < Math.round(product.ratings) ? "" : "text-gray-300"} />
+                             <FaStar key={i} className={i < Math.round(product.ratings || 0) ? "" : "text-gray-300"} />
                           ))}
                        </div>
                        <p className="text-xs text-yellow-700 font-medium">Based on {product.totalReviews} reviews</p>
@@ -384,7 +386,7 @@ export default function ProductDetail() {
            <div className="text-center mb-10">
               <h2 className="text-3xl font-bold text-petzy-slate">You Might Also Like</h2>
            </div>
-           <MoreProducts products={featuredProducts} />
+           <MoreProducts products={featuredProducts} type="featured" />
         </div>
 
       </div>

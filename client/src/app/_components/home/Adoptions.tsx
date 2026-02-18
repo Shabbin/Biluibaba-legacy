@@ -18,7 +18,7 @@ interface AdoptionsSectionProps {
 }
 
 const Adoptions: React.FC<AdoptionsSectionProps> = ({ AdoptionData }) => {
-  const swiperRef = useRef<SwiperType | undefined>();
+  const swiperRef = useRef<SwiperType | undefined>(undefined);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [adoptions, setAdoptions] = useState<AdoptionType[]>([]);

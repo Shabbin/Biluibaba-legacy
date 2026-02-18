@@ -1,4 +1,4 @@
-module.exports = [
+const ProductData = [
   {
     id: 0,
     name: "Whiskas Adult Cat Food Grilled Saba",
@@ -144,3 +144,5 @@ module.exports = [
     src: "/products/product11.png",
   },
 ];
+
+export default ProductData;

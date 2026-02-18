@@ -117,7 +117,7 @@ const Products: React.FC = () => {
               ]}
               className="!w-auto"
               value={filter}
-              onChange={(event) => setFilter(event.target.value)}
+              onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setFilter(event.target.value)}
             ></Select>
           </div>
         </div>

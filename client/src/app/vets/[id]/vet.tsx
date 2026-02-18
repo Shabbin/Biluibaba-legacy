@@ -292,7 +292,7 @@ export default function Page() {
                                   placeholder="Write your review here..."
                                   value={comment}
                                   onChange={(e) => setComment(e.target.value)}
-                                  rows="5"
+                                  rows={5}
                                 />
                               </ModalBody>
                               <ModalFooter>
@@ -414,7 +414,12 @@ export default function Page() {
                       <span className="font-bold">{date}</span> at {slot}
                     </div>
                     <div className="text-lg">
-                      &#2547;{formatCurrency(vet?.appointments[type]?.fee)}
+                      &#2547;{formatCurrency(
+                        typeof vet?.appointments?.[type] === 'object' && 
+                        'fee' in (vet?.appointments?.[type] || {})
+                          ? (vet.appointments[type] as { fee: number }).fee
+                          : 0
+                      )}
                     </div>
                   </div>
                 ))}
@@ -429,7 +434,12 @@ export default function Page() {
                   </div>
                   <div className="text-right">
                     <div className="text-neutral-900 font-bold text-3xl">
-                      &#2547; {formatCurrency(vet?.appointments[type]?.fee + 150)}
+                      &#2547; {formatCurrency(
+                        (typeof vet?.appointments?.[type] === 'object' && 
+                        'fee' in (vet?.appointments?.[type] || {})
+                          ? (vet.appointments[type] as { fee: number }).fee
+                          : 0) + 150
+                      )}
                     </div>
                     <div className="text-neutral-700">
                       {date} at {selectedSlot}

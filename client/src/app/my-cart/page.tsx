@@ -22,11 +22,11 @@ export default function Cart() {
 
   useEffect(() => {
     // Retrieve cart items from localStorage
-    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    const storedCart = JSON.parse(localStorage.getItem("cart") || "[]");
     setCartItems(storedCart);
 
     // Retrieve wishlist items from localStorage
-    const storedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    const storedWishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
     setWishListItems(storedWishlist);
     setLoading(false);
   }, []);
@@ -71,12 +71,12 @@ export default function Cart() {
       toast.success("Removed from wishlist");
     } else {
       // Add to wishlist
-      const wishlistItem = {
+      const wishlistItem: WishlistItem = {
         name: item.name,
         src: item.src,
         price: item.price,
-        discount: item.discount,
-        slug: item.slug,
+        discount: item.discount || 0,
+        slug: item.slug || "",
         size: item.size,
       };
       const updatedWishlist = [...wishListItems, wishlistItem];
@@ -98,7 +98,7 @@ export default function Cart() {
     return cartItems.reduce(
       (acc, item) => {
         const totalPrice = item.price * item.quantity;
-        const discount = (item.originalPrice - item.price) * item.quantity;
+        const discount = ((item.originalPrice || item.price) - item.price) * item.quantity;
         return {
           total: acc.total + totalPrice,
           discount: acc.discount + discount,
@@ -160,7 +160,7 @@ export default function Cart() {
                       <div className="flex flex-row items-center gap-2 text-gray-500 hover:text-red-500 transition-all ease-in-out duration-300 cursor-pointer">
                         <Delete className="text-[1.8em]" />
                         <button
-                          onClick={() => handleDelete(item.slug)}
+                          onClick={() => handleDelete(item.slug || "")}
                           className=""
                         >
                           Delete
@@ -190,15 +190,15 @@ export default function Cart() {
                           </p>
                           <p className="text-2xl text-black font-bold">
                             ৳{formatCurrency(item.price * item.quantity)}
-                            {item.discount > 0 && (
+                            {(item.discount || 0) > 0 && (
                               <>
                                 <span className="line-through text-gray-400 text-sm ms-2">
-                                  ৳{formatCurrency(item.originalPrice * item.quantity)}
+                                  ৳{formatCurrency((item.originalPrice || item.price) * item.quantity)}
                                 </span>{" "}
                                 <span className="text-green-600 text-sm ms-2">
                                   ৳
                                   {formatCurrency(
-                                    (item.originalPrice - item.price) *
+                                    ((item.originalPrice || item.price) - item.price) *
                                     item.quantity
                                   )}{" "}
                                   Saved
@@ -295,7 +295,6 @@ export default function Cart() {
               <FeatureProducts
                 type="featured"
                 category="all"
-                router={router}
               />
             </div>
           </div>

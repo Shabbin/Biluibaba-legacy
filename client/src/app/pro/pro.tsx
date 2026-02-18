@@ -320,7 +320,7 @@ const Pro = () => {
                       src={testimonial.image}
                       alt={testimonial.name}
                       className="w-full h-full object-cover"
-                      onError={(e) => e.target.style.display = 'none'}
+                      onError={(e) => (e.target as HTMLImageElement).style.display = 'none'}
                     />
                   </div>
                   <div>

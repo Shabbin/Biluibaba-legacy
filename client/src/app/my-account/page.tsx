@@ -228,7 +228,7 @@ export default function ProfilePage() {
                  <Select 
                     data={LocationData.map(l => ({ value: l, text: l }))} 
                     value={formData.district} 
-                    onChange={(e) => setFormData({...formData, district: e.target.value})} 
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFormData({...formData, district: e.target.value})} 
                  />
               </div>
               <div>

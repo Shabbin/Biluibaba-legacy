@@ -1,4 +1,4 @@
-module.exports.pets = [
+const pets = [
   {
     name: "cat",
     src: "/banners/cat.png",
@@ -390,3 +390,5 @@ module.exports.pets = [
     ],
   },
 ];
+
+export default { pets };

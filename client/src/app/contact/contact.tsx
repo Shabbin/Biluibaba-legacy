@@ -213,7 +213,7 @@ const Contact = () => {
                   value={formData.message}
                   onChange={handleChange}
                   required
-                  rows="5"
+                  rows={5}
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-petzy-coral focus:ring-2 focus:ring-petzy-coral/20 outline-none transition-all resize-none"
                   placeholder="Tell us what's on your mind..."
                 />
