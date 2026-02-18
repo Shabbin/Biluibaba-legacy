@@ -211,9 +211,29 @@ export default function Home() {
             </form>
           </Form>
 
-          <p className="text-xs text-muted-foreground text-center mt-8">
-            Having trouble signing in? Contact your administrator.
-          </p>
+          <div className="mt-8 space-y-3">
+            <p className="text-xs text-muted-foreground text-center">
+              Having trouble signing in? Contact your administrator.
+            </p>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-border/60" />
+              </div>
+              <div className="relative flex justify-center text-xs">
+                <span className="bg-white px-3 text-muted-foreground font-medium">
+                  New to Biluibaba?
+                </span>
+              </div>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.push("/register")}
+              className="w-full h-11 rounded-xl border-border/60 hover:bg-slate-50 font-semibold transition-all"
+            >
+              Create Vendor Account
+            </Button>
+          </div>
         </div>
       </div>
     </div>
