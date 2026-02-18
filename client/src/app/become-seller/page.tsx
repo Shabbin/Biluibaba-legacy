@@ -313,10 +313,23 @@ function StepOne({ data, onChange, onSelect, setStep }: StepOneProps) {
   const [loading, setLoading] = useState<boolean>(false);
 
   const validate = async () => {
-    if (!data.name) return toast.error("Full Name is required");
-    if (!data.email || !data.email.includes("@")) return toast.error("Valid email required");
-    if (!data.phoneNumber) return toast.error("Phone number required");
-    if (!data.storeName) return toast.error("Store name required");
+    const missingFields = [];
+    
+    if (!data.type) missingFields.push("Vendor type");
+    if (!data.name) missingFields.push("Full name");
+    if (!data.email) missingFields.push("Email address");
+    if (!data.phoneNumber) missingFields.push("Phone number");
+    if (!data.storeName) missingFields.push("Store name");
+    
+    if (missingFields.length > 0) {
+      toast.error(`Missing required fields: ${missingFields.join(", ")}`);
+      return;
+    }
+    
+    if (data.email && !data.email.includes("@")) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
 
     try {
       setLoading(true);
@@ -373,8 +386,18 @@ function StepOne({ data, onChange, onSelect, setStep }: StepOneProps) {
 
 function StepTwo({ data, onChange, setStep }: StepProps) {
   const validate = () => {
-    if (!data.storeAddress || !data.state || !data.area || !data.district || !data.postcode) {
-      return toast.error("Please fill all address fields");
+    const missingFields = [];
+    
+    if (!data.storeAddress) missingFields.push("Store address");
+    if (!data.state) missingFields.push("Division/State");
+    if (!data.area) missingFields.push("Area/Thana");
+    if (!data.district) missingFields.push("District");
+    if (!data.postcode) missingFields.push("Postcode");
+    if (!data.pickupAddress) missingFields.push("Pickup address");
+    
+    if (missingFields.length > 0) {
+      toast.error(`Missing required fields: ${missingFields.join(", ")}`);
+      return;
     }
     setStep(3);
   };
@@ -421,7 +444,16 @@ interface StepThreeProps extends StepProps {
 
 function StepThree({ data, onFileChange, onChange, setStep }: StepThreeProps) {
   const validate = () => {
-    if (!data.nidFront || !data.nidBack || !data.nidNumber) return toast.error("NID documents and number required");
+    const missingFields = [];
+    
+    if (!data.nidFront) missingFields.push("NID front image");
+    if (!data.nidBack) missingFields.push("NID back image");
+    if (!data.nidNumber) missingFields.push("NID number");
+    
+    if (missingFields.length > 0) {
+      toast.error(`Missing required fields: ${missingFields.join(", ")}`);
+      return;
+    }
     setStep(4);
   };
 
@@ -476,7 +508,18 @@ function StepThree({ data, onFileChange, onChange, setStep }: StepThreeProps) {
 
 function StepFour({ data, onChange, setStep }: StepProps) {
   const validate = () => {
-    if (!data.tin || !data.tradeLicense) return toast.error("TIN and Trade License required");
+    const missingFields = [];
+    
+    if (data.type === "Company" && !data.companyRegistration) {
+      missingFields.push("Company registration number");
+    }
+    if (!data.tin) missingFields.push("TIN");
+    if (!data.tradeLicense) missingFields.push("Trade license number");
+    
+    if (missingFields.length > 0) {
+      toast.error(`Missing required fields: ${missingFields.join(", ")}`);
+      return;
+    }
     setStep(5);
   };
 
@@ -507,7 +550,16 @@ interface StepFiveProps extends StepProps {
 
 function StepFive({ data, onChange, onSelect, setStep }: StepFiveProps) {
   const validate = () => {
-    if (!data.bankAccountName || !data.bankAccountNumber) return toast.error("Bank details required");
+    const missingFields = [];
+    
+    if (!data.bankAccountType) missingFields.push("Bank account type");
+    if (!data.bankAccountName) missingFields.push("Account holder name");
+    if (!data.bankAccountNumber) missingFields.push("Account number");
+    
+    if (missingFields.length > 0) {
+      toast.error(`Missing required fields: ${missingFields.join(", ")}`);
+      return;
+    }
     setStep(6);
   };
 
@@ -548,8 +600,22 @@ function StepSix({ data, onChange, handleSubmit, setStep, loading }: StepSixProp
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
   const validate = () => {
-    if (!data.password || data.password.length < 8) return toast.error("Password too short");
-    if (data.password !== data.confirmPassword) return toast.error("Passwords do not match");
+    if (!data.password) {
+      toast.error("Password is required");
+      return;
+    }
+    if (data.password.length < 8) {
+      toast.error("Password must be at least 8 characters long");
+      return;
+    }
+    if (!data.confirmPassword) {
+      toast.error("Please confirm your password");
+      return;
+    }
+    if (data.password !== data.confirmPassword) {
+      toast.error("Passwords do not match. Please try again.");
+      return;
+    }
     handleSubmit();
   };
 

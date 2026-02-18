@@ -389,20 +389,25 @@ function StepOne({ data, onChange, onSelect, setStep }: StepOneProps) {
   const [loading, setLoading] = useState<boolean>(false);
 
   const validate = async () => {
-    if (!data.name) {
-      toast({ title: "Error", description: "Full Name is required", variant: "destructive" });
+    const missingFields = [];
+    
+    if (!data.type) missingFields.push("Vendor type");
+    if (!data.name) missingFields.push("Full name");
+    if (!data.email) missingFields.push("Email address");
+    if (!data.phoneNumber) missingFields.push("Phone number");
+    if (!data.storeName) missingFields.push("Store name");
+    
+    if (missingFields.length > 0) {
+      toast({
+        title: "Missing Required Fields",
+        description: missingFields.join(", "),
+        variant: "destructive",
+      });
       return;
     }
-    if (!data.email || !data.email.includes("@")) {
-      toast({ title: "Error", description: "Valid email required", variant: "destructive" });
-      return;
-    }
-    if (!data.phoneNumber) {
-      toast({ title: "Error", description: "Phone number required", variant: "destructive" });
-      return;
-    }
-    if (!data.storeName) {
-      toast({ title: "Error", description: "Store name required", variant: "destructive" });
+    
+    if (data.email && !data.email.includes("@")) {
+      toast({ title: "Invalid Email", description: "Please enter a valid email address", variant: "destructive" });
       return;
     }
 
@@ -499,17 +504,19 @@ function StepOne({ data, onChange, onSelect, setStep }: StepOneProps) {
 
 function StepTwo({ data, onChange, setStep }: StepProps) {
   const validate = () => {
-    if (
-      !data.storeAddress ||
-      !data.state ||
-      !data.area ||
-      !data.district ||
-      !data.postcode ||
-      !data.pickupAddress
-    ) {
+    const missingFields = [];
+    
+    if (!data.storeAddress) missingFields.push("Store address");
+    if (!data.state) missingFields.push("Division/State");
+    if (!data.area) missingFields.push("Area/Thana");
+    if (!data.district) missingFields.push("District");
+    if (!data.postcode) missingFields.push("Postcode");
+    if (!data.pickupAddress) missingFields.push("Pickup address");
+    
+    if (missingFields.length > 0) {
       toast({
-        title: "Error",
-        description: "Please fill all address fields",
+        title: "Missing Required Fields",
+        description: missingFields.join(", "),
         variant: "destructive",
       });
       return;
@@ -583,10 +590,16 @@ interface StepThreeProps extends StepProps {
 
 function StepThree({ data, onFileChange, onChange, setStep }: StepThreeProps) {
   const validate = () => {
-    if (!data.nidFront || !data.nidBack || !data.nidNumber) {
+    const missingFields = [];
+    
+    if (!data.nidFront) missingFields.push("NID front image");
+    if (!data.nidBack) missingFields.push("NID back image");
+    if (!data.nidNumber) missingFields.push("NID number");
+    
+    if (missingFields.length > 0) {
       toast({
-        title: "Error",
-        description: "NID documents and number required",
+        title: "Missing Required Fields",
+        description: missingFields.join(", "),
         variant: "destructive",
       });
       return;
@@ -666,10 +679,18 @@ function StepThree({ data, onFileChange, onChange, setStep }: StepThreeProps) {
 
 function StepFour({ data, onChange, setStep }: StepProps) {
   const validate = () => {
-    if (!data.tin || !data.tradeLicense) {
+    const missingFields = [];
+    
+    if (data.type === "Company" && !data.companyRegistration) {
+      missingFields.push("Company registration number");
+    }
+    if (!data.tin) missingFields.push("TIN");
+    if (!data.tradeLicense) missingFields.push("Trade license number");
+    
+    if (missingFields.length > 0) {
       toast({
-        title: "Error",
-        description: "TIN and Trade License required",
+        title: "Missing Required Fields",
+        description: missingFields.join(", "),
         variant: "destructive",
       });
       return;
@@ -718,10 +739,16 @@ interface StepFiveProps extends StepProps {
 
 function StepFive({ data, onChange, onSelect, setStep }: StepFiveProps) {
   const validate = () => {
-    if (!data.bankAccountName || !data.bankAccountNumber) {
+    const missingFields = [];
+    
+    if (!data.bankAccountType) missingFields.push("Bank account type");
+    if (!data.bankAccountName) missingFields.push("Account holder name");
+    if (!data.bankAccountNumber) missingFields.push("Account number");
+    
+    if (missingFields.length > 0) {
       toast({
-        title: "Error",
-        description: "Bank details required",
+        title: "Missing Required Fields",
+        description: missingFields.join(", "),
         variant: "destructive",
       });
       return;
@@ -785,12 +812,20 @@ function StepSix({ data, onChange, handleSubmit, setStep, loading }: StepSixProp
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
   const validate = () => {
-    if (!data.password || data.password.length < 8) {
-      toast({ title: "Error", description: "Password too short", variant: "destructive" });
+    if (!data.password) {
+      toast({ title: "Missing Required Field", description: "Password is required", variant: "destructive" });
+      return;
+    }
+    if (data.password.length < 8) {
+      toast({ title: "Invalid Password", description: "Password must be at least 8 characters long", variant: "destructive" });
+      return;
+    }
+    if (!data.confirmPassword) {
+      toast({ title: "Missing Required Field", description: "Please confirm your password", variant: "destructive" });
       return;
     }
     if (data.password !== data.confirmPassword) {
-      toast({ title: "Error", description: "Passwords do not match", variant: "destructive" });
+      toast({ title: "Password Mismatch", description: "Passwords do not match. Please try again.", variant: "destructive" });
       return;
     }
     handleSubmit();

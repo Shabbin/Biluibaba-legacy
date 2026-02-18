@@ -39,33 +39,40 @@ module.exports.createVendor = async (request, response, next) => {
     bankAccountNumber,
     password,
   } = request.body;
-  let { nidFront, nidBack } = request.files;
+  let { nidFront, nidBack } = request.files || {};
 
-  if (
-    !type ||
-    !name ||
-    !phoneNumber ||
-    !email ||
-    !storeName ||
-    !storeAddress ||
-    !state ||
-    !area ||
-    !district ||
-    !postcode ||
-    !fullAddress ||
-    !pickupAddress ||
-    !nidNumber ||
-    !tin ||
-    !tradeLicense ||
-    !bankAccountType ||
-    !bankAccountName ||
-    !bankAccountNumber ||
-    !password
-  )
-    return next(new ErrorResponse("Missing information", 421));
+  // Validate required fields and pinpoint missing ones
+  const missingFields = [];
+  
+  if (!type) missingFields.push("Vendor type");
+  if (!name) missingFields.push("Full name");
+  if (!phoneNumber) missingFields.push("Phone number");
+  if (!email) missingFields.push("Email address");
+  if (!storeName) missingFields.push("Store name");
+  if (!storeAddress) missingFields.push("Store address");
+  if (!state) missingFields.push("State/Division");
+  if (!area) missingFields.push("Area/Thana");
+  if (!district) missingFields.push("District");
+  if (!postcode) missingFields.push("Postcode");
+  if (!pickupAddress) missingFields.push("Pickup address");
+  if (!nidFront || !nidFront[0]) missingFields.push("NID front image");
+  if (!nidBack || !nidBack[0]) missingFields.push("NID back image");
+  if (!nidNumber) missingFields.push("NID number");
+  if (!tin) missingFields.push("TIN");
+  if (!tradeLicense) missingFields.push("Trade license");
+  if (!bankAccountType) missingFields.push("Bank account type");
+  if (!bankAccountName) missingFields.push("Bank account holder name");
+  if (!bankAccountNumber) missingFields.push("Bank account number");
+  if (!password) missingFields.push("Password");
+  
+  if (type === "Company" && !companyRegistration) {
+    missingFields.push("Company registration number");
+  }
 
-  if (type === "Company" && !companyRegistration)
-    return next("Missing information", 421);
+  if (missingFields.length > 0) {
+    const errorMessage = `Missing required fields: ${missingFields.join(", ")}`;
+    return next(new ErrorResponse(errorMessage, 422));
+  }
 
   try {
     let vendor = await Vendor.create({
