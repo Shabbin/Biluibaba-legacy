@@ -1,47 +1,57 @@
-"use client";
+import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
+import { cn } from "@/src/lib/utils"
 
-import React from "react";
 
-type BadgeVariant = "default" | "outline" | "success" | "warning" | "danger" | "info" | "secondary" | "gradient";
-type BadgeSize = "sm" | "md" | "lg";
 
-interface BadgeProps {
-  children: React.ReactNode;
-  variant?: BadgeVariant;
-  size?: BadgeSize;
-  className?: string;
+const badgeVariants = cva(
+  "inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  {
+    variants: {
+      variant: {
+        default:
+          "border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80",
+        secondary:
+          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        destructive:
+          "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
+        outline: "text-foreground",
+        success: "border-transparent bg-green-500 text-white hover:bg-green-600",
+        warning: "border-transparent bg-yellow-500 text-white hover:bg-yellow-600",
+        danger: "border-transparent bg-red-500 text-white hover:bg-red-600",
+        info: "border-transparent bg-blue-500 text-white hover:bg-blue-600",
+        gradient: "border-transparent bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow hover:opacity-90",
+      },
+      size: {
+        default: "px-2.5 py-0.5 text-xs",
+        sm: "px-2 py-0.5 text-[10px]",
+        md: "px-2.5 py-0.5 text-xs", // Compatibility
+        lg: "px-3 py-1 text-sm",
+      },
+      pill: {
+        true: "rounded-full",
+        false: "rounded-md"
+      }
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+      pill: true
+    },
+  }
+)
+
+export interface BadgeProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof badgeVariants> {
+    // Legacy mapping prop? No, variant handles most.
 }
 
-const Badge: React.FC<BadgeProps> = ({ 
-  children, 
-  variant = "default", 
-  size = "md", 
-  className = "" 
-}) => {
-  const variants = {
-    default: "bg-petzy-coral text-white",
-    outline: "border-2 border-petzy-coral text-petzy-coral bg-white",
-    success: "bg-green-500 text-white",
-    warning: "bg-yellow-500 text-white",
-    danger: "bg-red-500 text-white",
-    info: "bg-blue-500 text-white",
-    secondary: "bg-petzy-periwinkle text-petzy-slate",
-    gradient: "bg-gradient-to-r from-petzy-coral to-pink-400 text-white",
-  };
-
-  const sizes = {
-    sm: "px-2 py-0.5 text-xs",
-    md: "px-3 py-1 text-sm",
-    lg: "px-4 py-1.5 text-base",
-  };
-
+function Badge({ className, variant, size, pill, ...props }: BadgeProps) {
   return (
-    <span
-      className={`inline-flex items-center justify-center font-semibold rounded-pill whitespace-nowrap ${variants[variant]} ${sizes[size]} ${className}`}
-    >
-      {children}
-    </span>
-  );
-};
+    <div className={cn(badgeVariants({ variant, size, pill }), className)} {...props} />
+  )
+}
 
-export default Badge;
+export { Badge, badgeVariants }
+export default Badge

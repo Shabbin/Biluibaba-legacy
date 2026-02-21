@@ -157,7 +157,7 @@ export default function Page() {
                   ]}
                   className="!w-auto"
                   value={filter}
-                  onChange={(event) => setFilter(event.target.value)}
+                  onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setFilter(event.target.value)}
                 ></Select>
               </div>
             </div>
@@ -241,7 +241,6 @@ export default function Page() {
                       category={product.category}
                       description={product.description}
                       slug={product.slug}
-                      size={product.size}
                     />
                   </div>
                 ))

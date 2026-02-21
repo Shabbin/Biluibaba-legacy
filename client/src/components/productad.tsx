@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "@/src/components/ui/button";
+import {Button} from "@/src/components/ui/button";
 
 interface ProductAdProps {
   title: string;
@@ -25,7 +25,7 @@ const ProductAd: React.FC<ProductAdProps> = ({ title, desc, buttonText }) => {
           <div className="text-2xl md:text-3xl lg:text-4xl font-extrabold my-4 md:my-5">{title}</div>
           <div className="my-6 md:my-10 text-sm md:text-base">{desc}</div>
         </div>
-        <Button type="default" text={buttonText} className="w-full md:w-2/3 lg:w-1/2" />
+        <Button type="default" className="w-full md:w-2/3 lg:w-1/2">{buttonText}</Button>
       </div>
     </div>
   );

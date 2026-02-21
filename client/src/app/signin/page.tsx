@@ -165,7 +165,6 @@ const SignupContent = () => {
               className="w-full !py-3.5 text-lg shadow-lg shadow-petzy-coral/20 hover:shadow-petzy-coral/40 mt-4"
               onClick={() => handleRegister("traditional")}
               icon={null}
-              iconAlign={null}
             />
           </form>
 

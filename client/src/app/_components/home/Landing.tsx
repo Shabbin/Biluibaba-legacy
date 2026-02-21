@@ -12,11 +12,11 @@ import { ArrowRight, ArrowLeft } from "@/src/components/svg";
 import { ProductImage } from "@/src/types";
 
 interface SliderItem extends ProductImage {
-  _id: string;
+  _id?: string;
 }
 
 interface LandingProps {
-  slider: SliderItem[];
+  slider: (SliderItem | string)[];
 }
 
 const Landing: React.FC<LandingProps> = ({ slider }) => {
@@ -45,14 +45,18 @@ const Landing: React.FC<LandingProps> = ({ slider }) => {
         modules={[Autoplay, Navigation]}
         loop={true}
       >
-        {slider?.map((slide, index) => (
-          <SwiperSlide key={slide._id}>
-            <div
-              className="bg-cover bg-no-repeat bg-center w-full md:h-[400px] h-[120px] rounded-3xl shadow-soft"
-              style={{ backgroundImage: `url(${slide.path})` }}
-            ></div>
-          </SwiperSlide>
-        ))}
+        {slider?.map((slide, index) => {
+          const imagePath = typeof slide === 'string' ? slide : slide.path;
+          const slideId = typeof slide === 'string' ? `slide-${index}` : (slide._id || `slide-${index}`);
+          return (
+            <SwiperSlide key={slideId}>
+              <div
+                className="bg-cover bg-no-repeat bg-center w-full md:h-[400px] h-[120px] rounded-3xl shadow-soft"
+                style={{ backgroundImage: `url(${imagePath})` }}
+              ></div>
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
     </div>
   );

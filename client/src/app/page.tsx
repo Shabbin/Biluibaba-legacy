@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Button from "@/src/components/ui/button";
+import {Button} from "@/src/components/ui/button";
 import { FaArrowRight, FaStar } from "react-icons/fa6"; // Added icons
 import { WavyDivider } from "../components/ui";
 import type { SiteSettings } from "@/src/types";
@@ -237,10 +237,9 @@ export default function Home() {
               <div className="flex justify-center mt-12">
                 <Link href="/vets">
                   <Button
-                    text="Book a Consultation"
                     type="default"
                     className="shadow-lg shadow-petzy-coral/30"
-                  />
+                  >Book a Consultation</Button>
                 </Link>
               </div>
            </div>

@@ -147,9 +147,10 @@ export default function VendorRegistrationPage() {
         toast.success("Vendor application created successfully!");
         setSuccess(true);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
-      toast.error(error.response?.data?.error || "Something went wrong.");
+      const axiosError = error as { response?: { data?: { error?: string } } };
+      toast.error(axiosError.response?.data?.error || "Something went wrong.");
     } finally {
       setLoading(false);
     }
@@ -321,8 +322,9 @@ function StepOne({ data, onChange, onSelect, setStep }: StepOneProps) {
       setLoading(true);
       const { data: res } = await axiosInstance.post("/api/app/check-email", { email: data.email });
       if (res.success) setStep(2);
-    } catch (error) {
-      toast.error(error.response?.data?.error || "Email check failed");
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: { error?: string } } };
+      toast.error(axiosError.response?.data?.error || "Email check failed");
     } finally {
       setLoading(false);
     }

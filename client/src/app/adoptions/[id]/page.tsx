@@ -9,8 +9,8 @@ export function generateStaticParams() {
 }
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
-  const resolvedParams = await params;
-  return <AdoptionProfile params={resolvedParams} />;
+  await params; // Await params to satisfy Next.js 15 requirements
+  return <AdoptionProfile />;
 };
 
 export default Page;

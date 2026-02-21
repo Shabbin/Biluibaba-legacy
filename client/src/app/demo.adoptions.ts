@@ -1,4 +1,4 @@
-module.exports = [
+const AdoptionData = [
   {
     id: 0,
     pet: "Cat",
@@ -188,3 +188,5 @@ module.exports = [
     ],
   },
 ];
+
+export default AdoptionData;

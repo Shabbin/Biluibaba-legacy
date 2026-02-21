@@ -19,7 +19,7 @@ import { WithRouterProps } from "@/src/app/controllers/router";
 
 interface CheckoutState {
   loading: boolean;
-  cart: { quantity: number; price: number; name: string; src: string; size?: number }[];
+  cart: { id?: string; quantity: number; price: number; name: string; src: string; size?: number }[];
   region: number;
   fullName: string;
   phoneNumber: string;
@@ -88,7 +88,7 @@ export default withRouter(
       const region = Number(this.state.region); // Ensure region is a number
 
       // Define shipping rates based on selected region
-      const shippingRates = {
+      const shippingRates: Record<number, { base: number; perKg: number }> = {
         0: { base: 100, perKg: 20 }, // Inside Dhaka (Regular)
         1: { base: 120, perKg: 20 }, // Inside Dhaka (Express)
         2: { base: 120, perKg: 20 }, // Dhaka to Savar/Narayanganj/Keraniganj/Gazipur (Regular)
@@ -118,6 +118,7 @@ export default withRouter(
       else if (region === 2)
         return "Dhaka to Savar/Narayanganj/Keraniganj/Gazipur (Regular)";
       else if (region === 3) return "Outside Dhaka (Regular)";
+      return "Unknown Region";
     }
 
     async onSubmit() {
@@ -218,21 +219,21 @@ export default withRouter(
                           <div>Region *</div>
                           <Select
                             data={[
-                              { value: 0, text: "Inside Dhaka (Regular)" },
-                              { value: 1, text: "Inside Dhaka (Express)" },
+                              { value: "0", text: "Inside Dhaka (Regular)" },
+                              { value: "1", text: "Inside Dhaka (Express)" },
                               {
-                                value: 2,
+                                value: "2",
                                 text: "Dhaka to Savar/Narayanganj/Keraniganj/Gazipur (Regular)",
                               },
-                              { value: 3, text: "Outside Dhaka (Regular)" },
+                              { value: "3", text: "Outside Dhaka (Regular)" },
                             ]}
-                            onChange={(event) =>
+                            onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
                               this.setState(
                                 { region: Number(event.target.value) },
                                 () => this.shippingCost()
                               )
                             }
-                            value={this.state.region}
+                            value={String(this.state.region)}
                           />
                         </div>
                         <div className="basis-1/2">
@@ -243,7 +244,7 @@ export default withRouter(
                               { value: "Area 2", text: "Area 2" },
                             ]}
                             value={this.state.area}
-                            onChange={(event) =>
+                            onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
                               this.setState({ area: event.target.value })
                             }
                           />
@@ -252,22 +253,20 @@ export default withRouter(
 
                       <div>Full Address*</div>
                       <Textarea
-                        type="text"
                         placeholder="Enter your street address here"
                         className="mb-5"
                         value={this.state.fullAddress}
-                        onChange={(event) =>
+                        onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
                           this.setState({ fullAddress: event.target.value })
                         }
                       />
 
                       <div>Notes</div>
                       <Textarea
-                        type="text"
                         placeholder="Enter additional notes here"
                         className="mb-5"
                         value={this.state.notes}
-                        onChange={(event) =>
+                        onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
                           this.setState({ notes: event.target.value })
                         }
                       />
@@ -378,6 +377,7 @@ export default withRouter(
                         <div className="flex items-center gap-2">
                           <Radio
                             name="payment"
+                            value="Cash on delivery"
                             checked={
                               this.state.paymentMethod === "Cash on delivery"
                             }
@@ -392,6 +392,7 @@ export default withRouter(
                         <div className="flex items-center gap-2">
                           <Radio
                             name="payment"
+                            value="Online"
                             checked={this.state.paymentMethod === "Online"}
                             onChange={() =>
                               this.setState({ paymentMethod: "Online" })

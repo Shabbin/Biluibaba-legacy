@@ -1,44 +1,29 @@
-import React from "react";
+import * as React from "react"
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  error?: string;
+import { cn } from "@/src/lib/utils"
+
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+    error?: string
 }
 
-const Input: React.FC<InputProps> = ({
-  type,
-  value,
-  placeholder,
-  className = "",
-  name,
-  onChange,
-  required,
-  pattern,
-  error,
-  disabled,
-  accept,
-  ...props
-}) => {
-  return (
-    <>
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, error, ...props }, ref) => {
+    return (
       <input
         type={type}
-        value={value}
-        placeholder={placeholder}
-        name={name}
-        onChange={onChange}
-        required={required}
-        pattern={pattern}
-        disabled={disabled}
-        accept={accept}
-        className={
-          "w-full px-4 md:px-6 my-3 py-3 md:py-4 rounded-3xl text-petzy-slate border-2 border-gray-200 focus:border-petzy-coral focus:ring-2 focus:outline-none focus:ring-petzy-coral/20 bg-white shadow-soft transition-all duration-300 placeholder:text-petzy-slate-light/50 text-sm md:text-base " +
+        className={cn(
+          "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+          error && "border-red-500 focus-visible:ring-red-500",
           className
-        }
+        )}
+        ref={ref}
         {...props}
-      ></input>
-    </>
-  );
-};
+      />
+    )
+  }
+)
+Input.displayName = "Input"
 
-export { Input };
-export default Input;
+export { Input }
+export default Input

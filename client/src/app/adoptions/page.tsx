@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { Adoption, AdoptionFilters, ApiAxiosError } from "@/src/types";
+import type { Adoption as AdoptionType, AdoptionFilters, ApiAxiosError } from "@/src/types";
 
 import Header from "@/src/components/header";
 import Filter from "@/src/components/filter/adoptions";
@@ -23,7 +23,7 @@ import LocationData from "@/src/app/adoptions/post/location.data";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(true);
-  const [adoptions, setAdoptions] = useState<Adoption[]>([]);
+  const [adoptions, setAdoptions] = useState<AdoptionType[]>([]);
   const [count, setCount] = useState<number>(0); // Current page count (0-based)
   const [adoptionCount, setAdoptionCount] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(1); // Initialize totalPages
@@ -45,12 +45,12 @@ export default function Page() {
     try {
       // Build query params
       const params = new URLSearchParams();
-      params.append("count", pageCount);
+      params.append("count", String(pageCount));
 
       // Add filters to query params if they exist
       Object.entries(filterParams).forEach(([key, value]) => {
         if (value && value !== "") {
-          params.append(key, value);
+          params.append(key, String(value));
         }
       });
 
@@ -149,7 +149,7 @@ export default function Page() {
                 { value: "30 years", text: "30 years" },
                 { value: "30+ years", text: "30+ years" },
               ]}
-              onChange={(value) => handleFilterChange("age", value)}
+              onChange={(event: React.ChangeEvent<HTMLSelectElement>) => handleFilterChange("age", event)}
               className="!bg-white !text-sm !text-gray-400"
             ></Select>
           </div>
@@ -164,7 +164,7 @@ export default function Page() {
                 })),
               ]}
               className="!bg-white !text-sm !text-gray-400"
-              onChange={(value) => handleFilterChange("species", value)}
+              onChange={(event: React.ChangeEvent<HTMLSelectElement>) => handleFilterChange("species", event)}
             ></Select>
           </div>
           <div className="basis-1/5 w-full md:-me-2 px-3">
@@ -180,7 +180,7 @@ export default function Page() {
                 })) || []),
               ]}
               className="!bg-white !text-sm !text-gray-400"
-              onChange={(value) => handleFilterChange("breed", value)}
+              onChange={(event: React.ChangeEvent<HTMLSelectElement>) => handleFilterChange("neutered", event)}
             ></Select>
           </div>
           <div className="basis-1/5 w-full md:-me-2 px-3">
@@ -192,7 +192,7 @@ export default function Page() {
                 { text: "Female", value: "Female" },
               ]}
               className="!bg-white !text-sm !text-gray-400"
-              onChange={(value) => handleFilterChange("gender", value)}
+              onChange={(event: React.ChangeEvent<HTMLSelectElement>) => handleFilterChange("gender", event)}
             ></Select>
           </div>
           <div className="basis-1/5 w-full md:-me-2 px-3">
@@ -205,7 +205,7 @@ export default function Page() {
                 { text: "Large", value: "Large" },
               ]}
               className="!bg-white !text-sm !text-gray-400"
-              onChange={(value) => handleFilterChange("size", value)}
+              onChange={(event: React.ChangeEvent<HTMLSelectElement>) => handleFilterChange("size", event)}
             ></Select>
           </div>
           <div className="basis-1/5 w-full md:-me-2 px-3">
@@ -216,7 +216,7 @@ export default function Page() {
                 { value: "Yes", text: "Yes" },
                 { value: "No", text: "No" },
               ]}
-              onChange={(value) => handleFilterChange("vaccinated", value)}
+              onChange={(event: React.ChangeEvent<HTMLSelectElement>) => handleFilterChange("vaccinated", event)}
               disabled={
                 filters.species === "Cat" || filters.species === "Dog"
                   ? false
@@ -236,7 +236,7 @@ export default function Page() {
                 })),
               ]}
               className="!bg-white !text-sm !text-gray-400"
-              onChange={(value) => handleFilterChange("color", value)}
+              onChange={(event: React.ChangeEvent<HTMLSelectElement>) => handleFilterChange("color", event)}
             ></Select>
           </div>
           <div className="basis-1/5 w-full md:-me-2 px-3">
@@ -250,7 +250,7 @@ export default function Page() {
                 })),
               ]}
               className="!bg-white !text-sm !text-gray-400"
-              onChange={(value) => handleFilterChange("location", value)}
+              onChange={(event: React.ChangeEvent<HTMLSelectElement>) => handleFilterChange("location", event)}
             ></Select>
           </div>
           <div className="basis-1/5 w-full md:-me-2 px-3">
@@ -261,7 +261,7 @@ export default function Page() {
                 { value: "Yes", text: "Yes" },
                 { value: "No", text: "No" },
               ]}
-              onChange={(value) => handleFilterChange("neutered", value)}
+              onChange={(event: React.ChangeEvent<HTMLSelectElement>) => handleFilterChange("neutered", event)}
               disabled={
                 filters.species === "Cat" || filters.species === "Dog"
                   ? false
@@ -322,7 +322,7 @@ export default function Page() {
           }} />
         ) : (
           <div className="flex md:flex-row flex-col flex-wrap justify-center gap-5">
-            {adoptions.map((adoption: Adoption, index: number) => (
+            {adoptions.map((adoption: AdoptionType, index: number) => (
               <>
                 <div
                   className="basis-1/4 md:-m-5 md:p-5"
@@ -331,13 +331,12 @@ export default function Page() {
                   <Adoption
                     pic={adoption.images[0].path}
                     name={adoption.name}
-                    pet={adoption.species}
+                    pet={adoption.species || ''}
                     location={adoption.location}
                     gender={adoption.gender}
-                    addedOn={adoption.updatedAt}
                     breed={adoption.breed}
                     age={adoption.age}
-                    id={adoption.adoptionId}
+                    id={adoption.adoptionId || adoption._id}
                   />
                 </div>
                 {(index + 1) % 8 === 0 && index !== adoptions.length - 1 && (

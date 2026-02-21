@@ -59,7 +59,7 @@ export default function ExpertVets() {
               reviews={100}
               verified={vet.verified}
               slots={vet.appointments.slots}
-              price={vet.appointments["online"]?.fee}
+              price={vet.appointments["online"]?.fee || 0}
               type="online"
               key={i}
             />
