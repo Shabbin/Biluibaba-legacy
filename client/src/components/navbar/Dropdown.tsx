@@ -20,11 +20,8 @@ const Dropdown: React.FC<DropdownProps> = ({ label, icon, category }) => {
       </button>
       
       {/* Dropdown Card */}
-<<<<<<< HEAD
+
       <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-soft-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:-translate-y-1 z-50 overflow-visible">
-=======
-      <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-soft-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:-translate-y-1 z-50">
->>>>>>> origin/main
          <div className="p-2">
            {category?.categories.map((sub, idx) => (
              <div key={idx} className="group/item relative">
