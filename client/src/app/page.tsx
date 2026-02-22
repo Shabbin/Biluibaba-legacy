@@ -7,7 +7,7 @@ import {Button} from "@/src/components/ui/button";
 import { FaArrowRight, FaStar } from "react-icons/fa6"; // Added icons
 import { WavyDivider } from "../components/ui";
 import type { SiteSettings } from "@/src/types";
-
+import SafeImg from "@/src/components/ui/safe-img";
 // Components
 import Services from "@/src/app/_components/home/Services";
 import ProductCategory from "@/src/app/_components/home/ProductCategory";
@@ -125,11 +125,11 @@ export default function Home() {
                 className="group cursor-pointer flex flex-col items-center"
               >
                 <div className="w-full aspect-square bg-petzy-blue-light/30 rounded-full p-4 mb-4 transition-all duration-300 group-hover:bg-petzy-coral/10 group-hover:scale-105 shadow-sm group-hover:shadow-md flex items-center justify-center border border-transparent group-hover:border-petzy-coral/20">
-                  <img
-                    src={category.image}
-                    alt={category.category}
-                    className="w-3/4 h-3/4 object-contain transition-transform duration-500 group-hover:rotate-3"
-                  />
+                 <SafeImg
+  src={category.image}
+  alt={category.category}
+  className="w-3/4 h-3/4 object-contain transition-transform duration-500 group-hover:rotate-3"
+/>
                 </div>
                 <h3 className="font-bold text-petzy-slate group-hover:text-petzy-coral transition-colors">
                   {category.category}
@@ -164,17 +164,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- BIG BANNER --- */}
-      <section className="container mx-auto px-5 mb-20">
-        <div className="rounded-3xl overflow-hidden shadow-soft-lg group">
-          <img
-            src={site.product_banner_one.path}
-            alt="Season Special"
-            className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
-          />
-        </div>
-      </section>
-
+    {/* --- BIG BANNER --- */}
+<section className="container mx-auto px-5 mb-20">
+  <div className="rounded-3xl overflow-hidden shadow-soft-lg group">
+    <SafeImg
+      src={site.product_banner_one.path}
+      alt="Season Special"
+      className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
+    />
+  </div>
+</section>
       {/* --- BEST SELLERS --- */}
       <section className="container mx-auto px-5 mb-20">
         <SectionHeader title="Best Sellers" />
@@ -204,11 +203,11 @@ export default function Home() {
                 key={index} 
                 className="w-1/3 md:w-1/6 p-4 bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer grayscale hover:grayscale-0 opacity-80 hover:opacity-100"
               >
-                <img
-                  src={brand.path}
-                  alt={brand.name}
-                  className="w-full h-auto object-contain aspect-[3/2]"
-                />
+                <SafeImg
+  src={brand.path}
+  alt={brand.name}
+  className="w-full h-auto object-contain aspect-[3/2]"
+/>
               </div>
             ))}
           </div>
@@ -258,20 +257,20 @@ export default function Home() {
       {/*
       <section className="container mx-auto px-5 py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="md:col-span-2 rounded-3xl overflow-hidden shadow-soft group">
-            <img
-              src={site.vet_banner_one.path}
-              alt="Vet Services"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-          </div>
+        <div className="md:col-span-2 rounded-3xl overflow-hidden shadow-soft group">
+  <SafeImg
+    src={site.vet_banner_one.path}
+    alt="Vet Services"
+    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+  />
+</div>
           {site.vet_grid_banners.map((banner, index) => (
             <div key={index} className="rounded-3xl overflow-hidden shadow-soft group h-64 md:h-80">
-              <img
-                src={banner.path}
-                alt={`Vet Banner ${index}`}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
+           <SafeImg
+  src={banner.path}
+  alt={`Vet Banner ${index}`}
+  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+/>
             </div>
           ))}
         </div>
