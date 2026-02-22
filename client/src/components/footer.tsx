@@ -141,11 +141,11 @@ const Footer = () => {
               <span className="absolute -bottom-2 left-0 w-1/2 h-1 bg-petzy-coral rounded-full"></span>
             </h3>
             <div className="flex flex-col gap-1">
-              <FooterLink>My Account</FooterLink>
-              <FooterLink>Refund Policy</FooterLink>
-              <FooterLink>Return Policy</FooterLink>
-              <FooterLink>Terms of Use</FooterLink>
-              <FooterLink>Privacy Policy</FooterLink>
+              <FooterLink href="/my-account">My Account</FooterLink>
+              <FooterLink href="/refund-policy">Refund Policy</FooterLink>
+              <FooterLink href="/return-policy">Return Policy</FooterLink>
+              <FooterLink href="/terms-of-use">Terms of Use</FooterLink>
+              <FooterLink href="/privacy-policy">Privacy Policy</FooterLink>
             </div>
           </div>
 
