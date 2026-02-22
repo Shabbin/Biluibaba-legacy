@@ -75,11 +75,8 @@ const Footer = () => {
               Your one-stop destination for all pet needs. We bring happiness to your pets with premium products and expert care services.
             </p>
             <div className="flex gap-3">
-              <SocialIcon Icon={FaFacebook} />
-              <SocialIcon Icon={FaXTwitter} />
-              <SocialIcon Icon={FaInstagram} />
-              <SocialIcon Icon={FaLinkedin} />
-              <SocialIcon Icon={FaYoutube} />
+              <SocialIcon Icon={FaFacebook} href="https://www.facebook.com/biluibaba" />
+              <SocialIcon Icon={FaInstagram} href="https://www.instagram.com/biluibaba" />
             </div>
           </div>
 
@@ -126,11 +123,11 @@ const Footer = () => {
               <span className="absolute -bottom-2 left-0 w-1/2 h-1 bg-petzy-coral rounded-full"></span>
             </h3>
             <div className="flex flex-col gap-1">
-              <FooterLink>Become Seller</FooterLink>
+              <FooterLink  href="/become-seller">Become Seller</FooterLink>
               {/* [FUTURE] Non-ecommerce partner links — uncomment when enabling vet features */}
               {/* <FooterLink>Join As Veterinary</FooterLink> */}
-              <FooterLink>Spotlight</FooterLink>
-              <FooterLink>Affiliates</FooterLink>
+              <FooterLink href="/best-deals">Best Deals</FooterLink>
+              {/* <FooterLink href="/affiliates">Affiliates</FooterLink> */}
             </div>
           </div>
 
