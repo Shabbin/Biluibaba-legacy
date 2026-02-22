@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { RiVipCrownFill } from "react-icons/ri";
 import type { ApiAxiosError } from "@/src/types";
-
+import SafeImg from "@/src/components/ui/safe-img";
 // Components
 import Button from "@/src/components/ui/button";
 import ExpertVets from "@/src/app/_components/vets/ExpertVets";
@@ -66,11 +66,11 @@ const Vet = () => {
              }`}>
                {site.vet_landing_slider.map((slide, index) => (
                  <div key={index} className="rounded-3xl overflow-hidden shadow-soft-lg group">
-                   <img 
-                      src={slide.path || slide} 
-                      alt="Vet Service Highlight" 
-                      className="w-full h-auto object-contain hover:scale-[1.02] transition-transform duration-500" 
-                   />
+                  <SafeImg 
+  src={(typeof slide === "string" ? slide : slide?.path) || null}
+  alt="Vet Service Highlight" 
+  className="w-full h-auto object-contain hover:scale-[1.02] transition-transform duration-500" 
+/>
                  </div>
                ))}
              </div>
@@ -145,11 +145,11 @@ const Vet = () => {
       <div className="container mx-auto px-5 mb-24">
          <div className="rounded-[2.5rem] overflow-hidden shadow-2xl group hover:shadow-3xl transition-shadow duration-300">
             {/* Removed object-cover, used h-auto to respect aspect ratio */}
-            <img
-              src={site.vet_banner_one.path}
-              alt="Vet Banner One"
-              className="w-full h-auto block"
-            />
+          <SafeImg
+  src={site.vet_banner_one.path}
+  alt="Vet Banner One"
+  className="w-full h-auto block"
+/>
          </div>
       </div>
 
