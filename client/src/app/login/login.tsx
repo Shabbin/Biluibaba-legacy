@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -20,7 +20,11 @@ const Login = () => {
   const searchParams = useSearchParams();
 
   const from = searchParams.get("from");
-
+useEffect(() => {
+  if (user) {
+    router.replace(from || "/");
+  }
+}, [user, from, router]);
   if (!from && typeof window !== "undefined") {
     // router.push is better than redirect logic inside render
     // preventing infinite loops if handled in useEffect usually, 
@@ -35,7 +39,7 @@ const Login = () => {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [facebookLoading, setFacebookLoading] = useState(false);
 
-  if (user) router.push("/");
+  
 
   const login = async (authType: string) => {
     if (authType === "traditional") {

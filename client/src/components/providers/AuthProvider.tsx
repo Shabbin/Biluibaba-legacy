@@ -23,19 +23,32 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const data = await response.json();
         setUser(data);
       } else {
-        console.log("Failed to fetch user data");
+         setUser(null);
       }
     } catch (error) {
+       setUser(null);
       console.log("Error fetching user data:");
     }
   };
+const logout = async () => {
+  // Immediately update UI
+  setUser(null);
 
+  try {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
+  } catch (error) {
+    console.log("Logout failed:", error);
+  }
+};
   useEffect(() => {
     fetchUserData();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser, fetchUserData }}>
+<AuthContext.Provider value={{ user, setUser, fetchUserData, logout }}>
       {children}
     </AuthContext.Provider>
   );

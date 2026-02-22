@@ -35,6 +35,7 @@ export interface AuthContextType {
   user: User | null;
   setUser: (user: User | null) => void;
   fetchUserData: () => Promise<void>;
+  logout: () => Promise<void>; // ✅ add this line
 }
 
 // ============================================================

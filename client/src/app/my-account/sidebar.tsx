@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/src/components/ui/button"; // Importing YOUR component
-
+import { useAuth } from "@/src/components/providers/AuthProvider";
 import {
   FaUser,
   FaMapLocationDot,
@@ -82,7 +82,7 @@ const sidebarNav: SidebarItem[] = [
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
-
+const { logout } = useAuth();
   // Helper to determine active styles
   const getButtonClass = (isActive: boolean) => {
     // We override justify-center (default in your button) to justify-start for sidebar alignment
@@ -146,7 +146,10 @@ export default function Sidebar() {
             icon={<FaRightFromBracket />}
             iconAlign="left"
             type="custom"
-            onClick={() => router.push("/logout")}
+           onClick={async () => {
+  await logout();
+ router.replace("/");
+}}
             className="w-full !justify-start !rounded-xl !text-sm !py-3 text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors flex items-center px-3"
           />
         </div>
