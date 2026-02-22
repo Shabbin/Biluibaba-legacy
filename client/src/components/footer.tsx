@@ -85,7 +85,7 @@ const Footer = () => {
 
           <div className="lg:col-span-7 flex flex-col justify-center bg-white/50 backdrop-blur-sm rounded-2xl p-6 lg:p-10 shadow-sm border border-white">
             <h3 className="text-xl font-bold text-petzy-slate mb-2">Join our Pet Community</h3>
-            <p className="text-petzy-slate-light mb-4 text-sm">Subscribe for latest products, veterinary tips, and exclusive offers.</p>
+            <p className="text-petzy-slate-light mb-4 text-sm">Subscribe for latest products, deals, and exclusive offers.</p>
             <div className="flex flex-col sm:flex-row gap-3">
               <input 
                 type="email" 
@@ -109,7 +109,11 @@ const Footer = () => {
               <span className="absolute -bottom-2 left-0 w-1/2 h-1 bg-petzy-coral rounded-full"></span>
             </h3>
             <div className="flex flex-col gap-1">
-              {['Cats', 'Dogs', 'Birds', 'Pet Shop', 'Consult a Vet', 'Pet Adoption'].map((item) => (
+              {[
+                'Cats', 'Dogs', 'Birds', 'Pet Shop',
+                // [FUTURE] Non-ecommerce footer links — uncomment when enabling vet & adoption features
+                // 'Consult a Vet', 'Pet Adoption'
+              ].map((item) => (
                 <FooterLink key={item}>{item}</FooterLink>
               ))}
             </div>
@@ -123,7 +127,8 @@ const Footer = () => {
             </h3>
             <div className="flex flex-col gap-1">
               <FooterLink>Become Seller</FooterLink>
-              <FooterLink>Join As Veterinary</FooterLink>
+              {/* [FUTURE] Non-ecommerce partner links — uncomment when enabling vet features */}
+              {/* <FooterLink>Join As Veterinary</FooterLink> */}
               <FooterLink>Spotlight</FooterLink>
               <FooterLink>Affiliates</FooterLink>
             </div>

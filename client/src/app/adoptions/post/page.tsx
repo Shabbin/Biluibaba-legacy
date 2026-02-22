@@ -1,3 +1,5 @@
+// [FUTURE] Adoption post page — uncomment entire file and remove ComingSoon export at bottom to restore
+/*
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -579,4 +581,10 @@ export default function Page() {
       </div>
     </div>
   );
+}
+*/
+
+import ComingSoon from "@/src/components/coming-soon";
+export default function Page() {
+  return <ComingSoon title="Pet Adoption — Coming Soon" description="Post pets for adoption coming soon!" />;
 }

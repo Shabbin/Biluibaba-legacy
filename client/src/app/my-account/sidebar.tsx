@@ -50,28 +50,31 @@ const sidebarNav: SidebarItem[] = [
       { href: "/my-account/orders?type=returns", label: "Returns", icon: <FaRotateLeft /> },
     ],
   },
-  {
-    title: "My Bookings",
-    items: [
-      { href: "/my-account/vet?type=online", label: "Online Vet", icon: <FaUserDoctor /> },
-      { href: "/my-account/vet?type=physical", label: "Clinic Visit", icon: <FaHouseMedical /> },
-      { href: "/my-account/vet?type=homeService", label: "Home Service", icon: <FaTruckMedical /> },
-      { href: "/my-account/vet?type=emergency", label: "Emergency", icon: <FaKitMedical /> },
-      { href: "/my-account/vet?type=vaccine", label: "Vaccination", icon: <FaSyringe /> },
-      { href: "/my-account/vet?type=neutered", label: "Spay/Neuter", icon: <FaPaw /> },
-    ],
-  },
-  {
-    title: "Adoptions",
-    items: [
-      { href: "/adoptions/post", label: "Create Post", icon: <FaFileCirclePlus /> },
-      { href: "/my-account/adoptions", label: "My Adoptions", icon: <FaPaw /> },
-      { href: "/my-account/adoptions/wishlist", label: "Adoption Wishlist", icon: <FaHeart /> },
-    ],
-  },
+  // [FUTURE] Vet Bookings — uncomment when enabling vet features
+  // {
+  //   title: "My Bookings",
+  //   items: [
+  //     { href: "/my-account/vet?type=online", label: "Online Vet", icon: <FaUserDoctor /> },
+  //     { href: "/my-account/vet?type=physical", label: "Clinic Visit", icon: <FaHouseMedical /> },
+  //     { href: "/my-account/vet?type=homeService", label: "Home Service", icon: <FaTruckMedical /> },
+  //     { href: "/my-account/vet?type=emergency", label: "Emergency", icon: <FaKitMedical /> },
+  //     { href: "/my-account/vet?type=vaccine", label: "Vaccination", icon: <FaSyringe /> },
+  //     { href: "/my-account/vet?type=neutered", label: "Spay/Neuter", icon: <FaPaw /> },
+  //   ],
+  // },
+  // [FUTURE] Adoptions — uncomment when enabling adoption features
+  // {
+  //   title: "Adoptions",
+  //   items: [
+  //     { href: "/adoptions/post", label: "Create Post", icon: <FaFileCirclePlus /> },
+  //     { href: "/my-account/adoptions", label: "My Adoptions", icon: <FaPaw /> },
+  //     { href: "/my-account/adoptions/wishlist", label: "Adoption Wishlist", icon: <FaHeart /> },
+  //   ],
+  // },
   // Single Link Groups
-  { title: "Donations", href: "/my-account/donations", icon: <FaHandHoldingDollar /> },
-  { title: "Subscription", href: "/my-account/subscription", icon: <FaCrown /> },
+  // [FUTURE] Non-ecommerce single links — uncomment when enabling these features
+  // { title: "Donations", href: "/my-account/donations", icon: <FaHandHoldingDollar /> },
+  // { title: "Subscription", href: "/my-account/subscription", icon: <FaCrown /> },
   { title: "Notifications", href: "/my-account/notifications", icon: <FaBell /> },
   { title: "Wishlist", href: "/wishlist", icon: <FaHeart /> },
 ];

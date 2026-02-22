@@ -1,3 +1,5 @@
+// [FUTURE] Vet profile page — uncomment when enabling vet features
+/*
 import { Suspense } from "react";
 import { PageLoader } from "@/src/components/ui";
 
@@ -16,3 +18,9 @@ const VetProfile = async ({ params }: { params: Promise<{ id: string }> }) => {
 };
 
 export default VetProfile;
+*/
+
+import ComingSoon from "@/src/components/coming-soon";
+export default function Page() {
+  return <ComingSoon title="Vet Care — Coming Soon" description="Vet profiles will be available soon!" />;
+}

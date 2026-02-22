@@ -1,3 +1,9 @@
+// [FUTURE] Adoptions page — uncomment when enabling adoption features
+// Original adoption page content preserved below. To restore:
+// 1. Remove the ComingSoon import and default export at the bottom
+// 2. Uncomment the entire original code block
+
+/*
 "use client";
 
 import { useState, useEffect } from "react";
@@ -369,5 +375,18 @@ export default function Page() {
         )}
       </div>
     </div>
+  );
+}
+*/
+
+// Active export — shows Coming Soon placeholder
+import ComingSoon from "@/src/components/coming-soon";
+
+export default function Page() {
+  return (
+    <ComingSoon 
+      title="Pet Adoption — Coming Soon" 
+      description="Find your lifelong furry friend here soon. Browse adoptable pets, post adoption listings, and more!" 
+    />
   );
 }

@@ -20,28 +20,29 @@ const services = [
       link: "/products",
     },
   },
-  {
-    id: 1,
-    name: "Get A Vet",
-    icon: <LuStethoscope size="2em" color="white" />,
-    description:
-      "Tempor culpa labore voluptate labore aliqua tempor aute exercitation qui laborum voluptate sit exercitation cupidatat. Quis cupidatat quis magna laborum laborum magna excepteur eiusmod nulla id do. Magna veniam ullamco excepteur occaecat nisi consectetur excepteur magna qui nisi voluptate esse adipisicing. Ut ea consequat dolore quis adipisicing nulla quis eu incididunt qui cupidatat occaecat commodo. Deserunt elit quis cillum incididunt in cillum commodo. Occaecat ullamco voluptate nostrud exercitation sit tempor dolore ex amet ea non enim ut amet.Tempor ad commodo incididunt incididunt occaecat minim cupidatat anim nulla adipisicing nulla. Culpa nulla consequat et excepteur quis qui laboris nostrud. Sit Lorem dolor cupidatat excepteur culpa consequat ea.",
-    button: {
-      text: "Browse Vet",
-      link: "/vet",
-    },
-  },
-  {
-    id: 2,
-    name: "Lost & Found",
-    icon: <FaPaw size="2em" color="white" />,
-    description:
-      "Occaecat eu esse aliquip laborum irure enim aliquip ullamco minim est ea laborum fugiat irure. Ex exercitation aliqua ipsum dolore labore eu minim laboris qui enim id enim officia. Laboris reprehenderit ad proident ipsum consectetur consectetur tempor culpa consectetur elit esse. Excepteur mollit nulla laboris anim eu occaecat elit veniam dolore occaecat aute irure.Lorem ullamco excepteur eiusmod ipsum. Minim cupidatat occaecat non in ut sint laborum aute consectetur quis. Excepteur culpa tempor laboris eiusmod voluptate. Ad et aute consequat nulla et ad fugiat ipsum est aliquip consequat quis. Consequat occaecat qui duis laboris elit labore proident nisi officia culpa nisi. Aute anim minim officia eu exercitation nisi aliqua aute cupidatat adipisicing.",
-    button: {
-      text: "List/Find Pets",
-      link: "/adoptions",
-    },
-  },
+  // [FUTURE] Non-ecommerce services — uncomment when enabling vet & adoption features
+  // {
+  //   id: 1,
+  //   name: "Get A Vet",
+  //   icon: <LuStethoscope size="2em" color="white" />,
+  //   description:
+  //     "Tempor culpa labore voluptate labore aliqua tempor aute exercitation qui laborum voluptate sit exercitation cupidatat. Quis cupidatat quis magna laborum laborum magna excepteur eiusmod nulla id do. Magna veniam ullamco excepteur occaecat nisi consectetur excepteur magna qui nisi voluptate esse adipisicing. Ut ea consequat dolore quis adipisicing nulla quis eu incididunt qui cupidatat occaecat commodo. Deserunt elit quis cillum incididunt in cillum commodo. Occaecat ullamco voluptate nostrud exercitation sit tempor dolore ex amet ea non enim ut amet.Tempor ad commodo incididunt incididunt occaecat minim cupidatat anim nulla adipisicing nulla. Culpa nulla consequat et excepteur quis qui laboris nostrud. Sit Lorem dolor cupidatat excepteur culpa consequat ea.",
+  //   button: {
+  //     text: "Browse Vet",
+  //     link: "/vet",
+  //   },
+  // },
+  // {
+  //   id: 2,
+  //   name: "Lost & Found",
+  //   icon: <FaPaw size="2em" color="white" />,
+  //   description:
+  //     "Occaecat eu esse aliquip laborum irure enim aliquip ullamco minim est ea laborum fugiat irure. Ex exercitation aliqua ipsum dolore labore eu minim laboris qui enim id enim officia. Laboris reprehenderit ad proident ipsum consectetur consectetur tempor culpa consectetur elit esse. Excepteur mollit nulla laboris anim eu occaecat elit veniam dolore occaecat aute irure.Lorem ullamco excepteur eiusmod ipsum. Minim cupidatat occaecat non in ut sint laborum aute consectetur quis. Excepteur culpa tempor laboris eiusmod voluptate. Ad et aute consequat nulla et ad fugiat ipsum est aliquip consequat quis. Consequat occaecat qui duis laboris elit labore proident nisi officia culpa nisi. Aute anim minim officia eu exercitation nisi aliqua aute cupidatat adipisicing.",
+  //   button: {
+  //     text: "List/Find Pets",
+  //     link: "/adoptions",
+  //   },
+  // },
 ];
 
 const Services = () => {

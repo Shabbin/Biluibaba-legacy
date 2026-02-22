@@ -13,8 +13,9 @@ import Services from "@/src/app/_components/home/Services";
 import ProductCategory from "@/src/app/_components/home/ProductCategory";
 import Landing from "@/src/app/_components/home/Landing";
 import FeatureProducts from "@/src/app/_components/home/FeatureProducts";
-import ExpertVets from "@/src/app/_components/home/ExpertVets";
-import Adoptions from "@/src/app/_components/home/Adoptions";
+// [FUTURE] Non-ecommerce imports — uncomment when enabling vet & adoption features
+// import ExpertVets from "@/src/app/_components/home/ExpertVets";
+// import Adoptions from "@/src/app/_components/home/Adoptions";
 import Testimonials from "@/src/app/_components/home/Testimonials";
 import ProductAd from "@/src/components/productad";
 
@@ -62,12 +63,13 @@ export default function Home() {
     featured_product: null,
     product_banner_one: { filename: "", path: "" },
     product_brands_in_spotlight: [],
-    vet_landing_slider: [],
-    vet_banner_one: { filename: "", path: "" },
-    vet_grid_banners: [],
-    adoption_banner_one: { filename: "", path: "" },
-    adoption_banner_two: { filename: "", path: "" },
-    featured_adoptions: [],
+    // [FUTURE] Non-ecommerce site settings — uncomment when enabling vet & adoption features
+    // vet_landing_slider: [],
+    // vet_banner_one: { filename: "", path: "" },
+    // vet_grid_banners: [],
+    // adoption_banner_one: { filename: "", path: "" },
+    // adoption_banner_two: { filename: "", path: "" },
+    // featured_adoptions: [],
   });
 
   const fetchSiteSettings = async () => {
@@ -213,9 +215,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- VET SECTION --- */}
+      {/* [FUTURE] VET SECTION — uncomment when enabling vet features */}
+      {/*
       <div className="relative">
-        {/* Wavy Top */}
         <div className="text-petzy-periwinkle-light -mb-1 relative z-20">
            <WavyDivider flip={false} />
         </div>
@@ -246,13 +248,14 @@ export default function Home() {
            </div>
         </div>
 
-         {/* Wavy Bottom */}
          <div className="text-petzy-periwinkle-light -mt-1 relative z-20 transform rotate-180">
            <WavyDivider flip={false} />
         </div>
       </div>
+      */}
 
-      {/* --- VET BANNERS GRID --- */}
+      {/* [FUTURE] VET BANNERS GRID — uncomment when enabling vet features */}
+      {/*
       <section className="container mx-auto px-5 py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2 rounded-3xl overflow-hidden shadow-soft group">
@@ -273,8 +276,10 @@ export default function Home() {
           ))}
         </div>
       </section>
+      */}
 
-      {/* --- ADOPTION SECTION --- */}
+      {/* [FUTURE] ADOPTION SECTION — uncomment when enabling adoption features */}
+      {/*
       <section className="container mx-auto px-5 mb-20">
         <div className="text-center mb-12">
            <FaStar className="inline-block text-petzy-yellow text-4xl mb-4" />
@@ -294,8 +299,10 @@ export default function Home() {
           </Link>
         </div>
       </section>
+      */}
 
-      {/* --- DONATION AD --- */}
+      {/* [FUTURE] DONATION AD — uncomment when enabling adoption/donation features */}
+      {/*
       <section className="py-16 bg-petzy-mint-light relative overflow-hidden">
         <div className="container mx-auto px-5 relative z-10">
           <ProductAd
@@ -305,6 +312,7 @@ export default function Home() {
           />
         </div>
       </section>
+      */}
 
       {/* --- TESTIMONIALS --- */}
       <section className="py-10">

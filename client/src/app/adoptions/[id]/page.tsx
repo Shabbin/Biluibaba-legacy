@@ -1,3 +1,5 @@
+// [FUTURE] Adoption detail page — uncomment below and remove ComingSoon export to restore
+/*
 import AdoptionProfile from "./adoption";
 
 import AdoptionData from "@/src/app/demo.adoptions";
@@ -14,3 +16,9 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
 };
 
 export default Page;
+*/
+
+import ComingSoon from "@/src/components/coming-soon";
+export default function Page() {
+  return <ComingSoon title="Pet Adoption — Coming Soon" description="Adoption profiles will be available soon!" />;
+}

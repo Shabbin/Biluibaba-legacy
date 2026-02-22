@@ -507,12 +507,13 @@ export interface SiteSettings {
   featured_product: Product | null;
   product_banner_one: ProductImage;
   product_brands_in_spotlight: BrandSpotlight[];
-  vet_landing_slider: (ProductImage | string)[];
-  vet_banner_one: ProductImage;
-  vet_grid_banners: ProductImage[];
-  adoption_banner_one: ProductImage;
-  adoption_banner_two: ProductImage;
-  featured_adoptions: Adoption[];
+  // [FUTURE] Non-ecommerce site settings — make required when enabling vet & adoption features
+  vet_landing_slider?: (ProductImage | string)[];
+  vet_banner_one?: ProductImage;
+  vet_grid_banners?: ProductImage[];
+  adoption_banner_one?: ProductImage;
+  adoption_banner_two?: ProductImage;
+  featured_adoptions?: Adoption[];
 }
 
 // ============================================================

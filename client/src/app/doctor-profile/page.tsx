@@ -1,3 +1,9 @@
+// [FUTURE] Doctor Profile page — uncomment when enabling vet features
+// Original doctor-profile page content preserved below. To restore:
+// 1. Remove the ComingSoon import and default export at the bottom
+// 2. Uncomment the entire original code block
+
+/*
 "use client";
 
 import React from "react";
@@ -67,4 +73,17 @@ export default class Doctor extends React.Component<Record<string, never>, Docto
       </div>
     );
   }
+}
+*/
+
+// Active export — shows Coming Soon placeholder
+import ComingSoon from "@/src/components/coming-soon";
+
+export default function Page() {
+  return (
+    <ComingSoon 
+      title="Doctor Dashboard — Coming Soon" 
+      description="The doctor dashboard for managing vet appointments will be available soon!" 
+    />
+  );
 }

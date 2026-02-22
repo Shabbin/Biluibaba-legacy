@@ -1,3 +1,5 @@
+// [FUTURE] Adoption wishlist page — uncomment entire file and remove ComingSoon export at bottom to restore
+/*
 "use client";
 
 import { useState, useEffect } from "react";
@@ -73,4 +75,10 @@ export default function Page() {
       </div>
     </div>
   );
+}
+*/
+
+import ComingSoon from "@/src/components/coming-soon";
+export default function Page() {
+  return <ComingSoon title="Adoption Wishlist — Coming Soon" description="Your adoption wishlist will be available soon!" />;
 }

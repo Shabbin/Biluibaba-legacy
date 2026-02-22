@@ -61,8 +61,9 @@ export const config = {
     "/my-account/:path*",
     "/my-account",
     "/checkout",
-    "/adoptions/post",
-    "/adoptions/checkout",
-    "/vets/checkout",
+    // [FUTURE] Non-ecommerce protected routes — uncomment when enabling these features
+    // "/adoptions/post",
+    // "/adoptions/checkout",
+    // "/vets/checkout",
   ],
 };

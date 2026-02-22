@@ -1,3 +1,5 @@
+// [FUTURE] Adoption checkout page — uncomment entire file and remove ComingSoon export at bottom to restore
+/*
 "use client";
 
 import React from "react";
@@ -352,3 +354,9 @@ export default withRouter(
     }
   }
 );
+*/
+
+import ComingSoon from "@/src/components/coming-soon";
+export default function Page() {
+  return <ComingSoon title="Pet Adoption — Coming Soon" description="Adoption checkout will be available soon!" />;
+}

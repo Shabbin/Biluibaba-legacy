@@ -1,3 +1,9 @@
+// [FUTURE] Become Vet page — uncomment when enabling vet features
+// Original become-vet page content preserved below. To restore:
+// 1. Remove the ComingSoon import and default export at the bottom
+// 2. Uncomment the entire original code block
+
+/*
 "use client";
 
 import { useState } from "react";
@@ -958,5 +964,18 @@ function StepSeven({ data, handleDataChange, setStep, handleSubmit }: VetStepSev
         />
       </div>
     </div>
+  );
+}
+*/
+
+// Active export — shows Coming Soon placeholder
+import ComingSoon from "@/src/components/coming-soon";
+
+export default function Page() {
+  return (
+    <ComingSoon 
+      title="Join As Veterinary — Coming Soon" 
+      description="Want to join our platform as a veterinary professional? This feature will be available soon!" 
+    />
   );
 }

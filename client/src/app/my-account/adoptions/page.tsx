@@ -1,3 +1,5 @@
+// [FUTURE] My adoptions page — uncomment entire file and remove ComingSoon export at bottom to restore
+/*
 "use client";
 
 import { useState, useEffect } from "react";
@@ -132,3 +134,9 @@ const Adoption: React.FC<MyAdoptionCardProps> = ({ pic, pet, name, location, age
     </div>
   );
 };
+*/
+
+import ComingSoon from "@/src/components/coming-soon";
+export default function Page() {
+  return <ComingSoon title="My Adoptions — Coming Soon" description="Your adoption posts will appear here soon!" />;
+}

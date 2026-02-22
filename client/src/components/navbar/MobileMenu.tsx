@@ -4,7 +4,9 @@ import Image from "next/image";
 import { FaXmark, FaUser, FaHeart } from "react-icons/fa6";
 import { FaCat, FaDog, FaDove } from "react-icons/fa6";
 import { GiRabbit } from "react-icons/gi";
-import { MdLocalOffer, MdHealthAndSafety, MdVolunteerActivism } from "react-icons/md";
+import { MdLocalOffer } from "react-icons/md";
+// [FUTURE] Non-ecommerce icon imports — uncomment when enabling vet & adoption features
+// import { MdHealthAndSafety, MdVolunteerActivism } from "react-icons/md";
 
 import type { User } from "@/src/types";
 
@@ -63,9 +65,10 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, user }) => (
              <MobileLink href="/products?pet=rabbit" icon={<GiRabbit />} label="Small Pets" />
 
              <div className="my-2 border-t border-gray-100" />
-             <div className="text-xs font-bold text-petzy-slate-light uppercase tracking-wider mb-2 mt-2">Services</div>
-             <MobileLink href="/vets" icon={<MdHealthAndSafety />} label="Vet Consultation" />
-             <MobileLink href="/adoptions" icon={<MdVolunteerActivism />} label="Adoptions" />
+             {/* [FUTURE] Non-ecommerce mobile links — uncomment when enabling vet & adoption features */}
+             {/* <div className="text-xs font-bold text-petzy-slate-light uppercase tracking-wider mb-2 mt-2">Services</div> */}
+             {/* <MobileLink href="/vets" icon={<MdHealthAndSafety />} label="Vet Consultation" /> */}
+             {/* <MobileLink href="/adoptions" icon={<MdVolunteerActivism />} label="Adoptions" /> */}
              <MobileLink href="/wishlist" icon={<FaHeart />} label="My Wishlist" />
           </nav>
        </div>

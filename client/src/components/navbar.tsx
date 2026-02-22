@@ -28,8 +28,10 @@ import {
   FaDove,
   FaArrowRightToBracket
 } from "react-icons/fa6";
-import { MdLocalOffer, MdHealthAndSafety, MdVolunteerActivism } from "react-icons/md";
-import { RiVipCrownFill } from "react-icons/ri";
+import { MdLocalOffer } from "react-icons/md";
+// [FUTURE] Non-ecommerce icon imports — uncomment when enabling vet, adoption & pro features
+// import { MdHealthAndSafety, MdVolunteerActivism } from "react-icons/md";
+// import { RiVipCrownFill } from "react-icons/ri";
 
 import Logo from "@/public/logo-black.png";
 import { Button } from "./ui/button";
@@ -215,9 +217,10 @@ const Navbar = () => {
 
                <div className="w-px h-6 bg-gray-200 mx-2"></div>
 
-               <NavItem href="/vets" icon={<MdHealthAndSafety />} label="Vet Care" />
-               <NavItem href="/adoptions" icon={<MdVolunteerActivism />} label="Adoptions" />
-               <NavItem href="/pro" icon={<RiVipCrownFill />} label="Pro Access" />
+               {/* [FUTURE] Non-ecommerce nav items — uncomment when enabling vet, adoption & pro features */}
+               {/* <NavItem href="/vets" icon={<MdHealthAndSafety />} label="Vet Care" /> */}
+               {/* <NavItem href="/adoptions" icon={<MdVolunteerActivism />} label="Adoptions" /> */}
+               {/* <NavItem href="/pro" icon={<RiVipCrownFill />} label="Pro Access" /> */}
             </nav>
           </div>
         </div>

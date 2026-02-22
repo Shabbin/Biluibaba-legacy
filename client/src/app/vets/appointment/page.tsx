@@ -1,3 +1,5 @@
+// [FUTURE] Vet appointment page — uncomment when enabling vet features
+/*
 "use client";
 
 import React from "react";
@@ -516,4 +518,11 @@ class ReasonForm extends React.Component<ReasonFormProps> {
       </Modal>
     );
   }
+}
+*/
+
+// [FUTURE] Vet appointment page — uncomment above and remove below to restore
+import ComingSoon from "@/src/components/coming-soon";
+export default function Page() {
+  return <ComingSoon title="Vet Care — Coming Soon" description="Vet appointments will be available soon!" />;
 }

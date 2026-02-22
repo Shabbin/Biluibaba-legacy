@@ -1,3 +1,9 @@
+// [FUTURE] Subscription Plans page — uncomment when enabling premium/subscription features
+// Original plans page content preserved below. To restore:
+// 1. Remove the ComingSoon import and default export at the bottom
+// 2. Uncomment the entire original code block
+
+/*
 const packages = [
   {
     name: "Silver",
@@ -62,5 +68,18 @@ export default function Page() {
         ))}
       </div>
     </div>
+  );
+}
+*/
+
+// Active export — shows Coming Soon placeholder
+import ComingSoon from "@/src/components/coming-soon";
+
+export default function Page() {
+  return (
+    <ComingSoon 
+      title="Subscription Plans — Coming Soon" 
+      description="Premium subscription plans with exclusive discounts, free delivery, and priority support will be available soon!" 
+    />
   );
 }

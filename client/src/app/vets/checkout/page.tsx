@@ -1,3 +1,5 @@
+// [FUTURE] Vet checkout page — uncomment when enabling vet features
+/*
 "use client";
 
 import { useState, useEffect } from "react";
@@ -240,4 +242,10 @@ export default function Page() {
       </div>
     </div>
   );
+}
+*/
+
+import ComingSoon from "@/src/components/coming-soon";
+export default function Page() {
+  return <ComingSoon title="Vet Care — Coming Soon" description="Vet checkout will be available soon!" />;
 }
