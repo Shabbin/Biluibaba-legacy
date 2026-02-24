@@ -259,24 +259,53 @@ module.exports.updateProduct = async (request, response, next) => {
     discount,
     quantity,
     productId,
+    deletedImages,
   } = request.body;
-
-  console.log(request.body);
 
   try {
     const product = await Products.findOne({ productId });
 
     if (!product) return next(new ErrorResponse("Product not found", 421));
 
-    product.status = false;
+    if (deletedImages) {
+      const idsToDelete = Array.isArray(deletedImages) ? deletedImages : [deletedImages];
+
+
+      const imagesToRemove = product.images.filter((img) => 
+        idsToDelete.includes(img._id.toString())
+      );
+
+      imagesToRemove.forEach((img) => {
+        const filePath = path.join(__dirname, "../uploads/product", img.filename);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      });
+
+      product.images = product.images.filter((img) => 
+        !idsToDelete.includes(img._id.toString())
+      );
+    }
+
+    if (request.files && request.files.newImages) {
+      const url = request.protocol + "://" + request.get("host");
+
+      const newUploadedImages = request.files.newImages.map((file) => ({
+        filename: file.filename,
+        path: url + "/uploads/product/" + file.filename,
+      }));
+
+      product.images.push(...newUploadedImages);
+    }
+    product.status = false; 
     product.name = name;
     product.description = description;
     product.categories = categories;
     product.tags = tags;
-    product.size = Number(size);
-    product.price = Number(price);
-    product.discount = Number(discount);
-    product.quantity = Number(quantity);
+    product.size = Number(size) || 0;
+    product.price = Number(price) || 0;
+    product.discount = Number(discount) || 0;
+    product.quantity = Number(quantity) || 0;
 
     await product.save();
 
@@ -337,4 +366,5 @@ const productImageStorage = multer.diskStorage({
 
 exports.uploadProductImage = Upload(productImageStorage).fields([
   { name: "images", maxCount: 4 },
+  { name: "newImages", maxCount: 4 },
 ]);

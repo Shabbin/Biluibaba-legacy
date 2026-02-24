@@ -114,7 +114,7 @@ export default function Page() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="page-header">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <Link
             href="/dashboard/products"
