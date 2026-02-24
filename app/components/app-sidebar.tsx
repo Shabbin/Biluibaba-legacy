@@ -66,6 +66,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Image from "next/image";
 
 export function AppSidebar() {
   const router = useRouter();
@@ -110,18 +111,11 @@ export function AppSidebar() {
       <SidebarContent className="py-2">
         {/* Brand header */}
         <div className="px-4 py-4 mb-2">
-          <Link href="/dashboard" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#FF8A80] to-[#FF6B61] rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-glow transition-shadow duration-300">
-              <PawPrint className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <span className="text-base font-bold text-foreground tracking-tight block leading-tight">
-                Biluibaba
-              </span>
-              <span className="text-[11px] font-medium text-muted-foreground capitalize">
-                {user.type || "Dashboard"}
-              </span>
-            </div>
+          <Link href="/dashboard" className="">
+            <Image src="/logo.png" alt="Biluibaba Logo" width={120} height={30}/>
+            
+               <p className="text-xs mt-2">{user.type || "Dashboard"}</p>
+            
           </Link>
         </div>
 

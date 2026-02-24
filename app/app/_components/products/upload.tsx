@@ -33,7 +33,7 @@ import { productCategories } from "@/app/_components/products/categories";
 
 import axios from "@/lib/axios";
 
-import { Loader2 } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 
 export default function Page({ product }: { product?: any }) {
   const [loading, setLoading] = useState<boolean>(false);
@@ -57,6 +57,8 @@ export default function Page({ product }: { product?: any }) {
       tags: product?.tags || [],
     },
   });
+
+  const {images: newProductImages} = newProductForm.watch()
 
   const category = useFieldArray({
     control: newProductForm.control,
@@ -429,7 +431,7 @@ export default function Page({ product }: { product?: any }) {
 
           <div className="space-y-4">
             <FormLabel>Product Images</FormLabel>
-            {product?.images ? (
+            {product?.images ? (  
               <div className="flex flex-wrap gap-3 my-2">
                 {product.images.map((image: any) => (
                   <div key={image.id} className="relative group">
@@ -443,6 +445,21 @@ export default function Page({ product }: { product?: any }) {
               </div>
             ) : (
               <div className="space-y-3">
+                {newProductImages&&newProductImages?.length > 0 && (
+                  <div className="flex flex-wrap gap-3 my-2">
+                    {newProductImages.map((image, index) => (
+                      image.file && (
+                        <div key={index} className="relative group">
+                          <img
+                            src={URL.createObjectURL(image.file)}
+                            alt={`Preview ${index + 1}`}
+                            className="w-32 h-20 object-cover rounded-md ring-1 ring-border/60"
+                          />
+                        </div>
+                      )
+                    ))}
+                  </div>
+                )}
                 {images.fields.map((field, index) => (
                   <div key={field.id} className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 border border-border/40">
                     <FormItem className="w-full">

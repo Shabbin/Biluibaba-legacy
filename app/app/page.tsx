@@ -24,6 +24,7 @@ import axios from "@/lib/axios";
 import { LoginSchema } from "@/schema/LoginSchema";
 
 import { Loader2, PawPrint, ShieldCheck, TrendingUp, Star } from "lucide-react";
+import Image from "next/image";
 
 export default function Home() {
   const router = useRouter();
@@ -79,12 +80,7 @@ export default function Home() {
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-              <PawPrint className="w-7 h-7 text-white" />
-            </div>
-            <span className="text-2xl font-bold text-white tracking-tight">
-              Biluibaba
-            </span>
+            <Image src="/logo-black.png" alt="Biluibaba Logo" width={160} height={30} />
           </div>
 
           {/* Center content */}
@@ -107,8 +103,7 @@ export default function Home() {
             <div className="space-y-3">
               {[
                 { icon: TrendingUp, label: "Track orders & revenue in real-time" },
-                { icon: ShieldCheck, label: "Secure & reliable platform" },
-                { icon: Star, label: "Trusted by vendors & vets across Bangladesh" },
+                { icon: ShieldCheck, label: "Secure & reliable platform" }
               ].map((feature, i) => (
                 <div
                   key={i}
@@ -137,12 +132,7 @@ export default function Home() {
         <div className="w-full max-w-[420px] animate-fadeIn">
           {/* Mobile logo */}
           <div className="flex items-center gap-3 mb-10 lg:hidden">
-            <div className="w-10 h-10 bg-[#FF8A80] rounded-xl flex items-center justify-center">
-              <PawPrint className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-xl font-bold text-foreground tracking-tight">
-              Biluibaba
-            </span>
+            <Image src="/logo.png" alt="Biluibaba Logo" width={48} height={48} className="w-12 h-12" />
           </div>
 
           <div className="space-y-2 mb-8">
