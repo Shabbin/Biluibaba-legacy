@@ -316,6 +316,7 @@ export default withRouter(
                           src={product.src}
                           alt={product.name}
                           className="w-[60px] h-[60px]"
+                          onError={(e) => { (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' fill='%23f5f5f5'%3E%3Crect width='60' height='60'/%3E%3Ctext x='50%25' y='50%25' fill='%23999' font-size='10' text-anchor='middle' dy='.3em'%3ENo img%3C/text%3E%3C/svg%3E"; }}
                         />
                         <div className="flex flex-col flex-1 my-1">
                           <div className="mb-5">

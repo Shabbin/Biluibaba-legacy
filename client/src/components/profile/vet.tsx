@@ -5,6 +5,7 @@ import "tippy.js/dist/tippy.css"; // Ensure tippy CSS is imported
 import moment from "moment";
 import { FaStar, FaCheck, FaCalendarCheck, FaUserDoctor } from "react-icons/fa6";
 import { formatCurrency } from "@/src/lib/currency";
+import { Avatar, AvatarImage, AvatarFallback } from "@/src/components/ui/avatar";
 
 import type { VetSlots } from "@/src/types";
 
@@ -91,11 +92,16 @@ const VetProfile: React.FC<VetProfileProps> = ({
         {/* Avatar with Status Dot */}
         <div className="relative mb-4">
           <div className="w-28 h-28 rounded-full p-1 bg-white border-2 border-petzy-blue-light/30 shadow-sm group-hover:border-petzy-coral/30 transition-colors duration-300">
-             <img
-               src={src || "/default-vet.png"} // Fallback image
-               alt={name}
-               className="w-full h-full rounded-full object-cover"
-             />
+             <Avatar className="w-full h-full">
+               <AvatarImage
+                 src={src || "/default-vet.png"}
+                 alt={name}
+                 className="object-cover"
+               />
+               <AvatarFallback className="bg-gradient-to-br from-petzy-blue-light to-petzy-coral/30 text-white text-2xl font-bold">
+                 {name?.charAt(0)?.toUpperCase() || "V"}
+               </AvatarFallback>
+             </Avatar>
           </div>
           {/* Verified Badge Absolute */}
           {verified && (

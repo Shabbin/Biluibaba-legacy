@@ -5,7 +5,7 @@ export async function middleware(request: NextRequest) {
   try {
     const token = request.cookies.get("app-token")?.value;
 
-    if (!token && request.nextUrl.pathname !== "/" && !request.nextUrl.pathname.startsWith("/register")) {
+    if (!token && request.nextUrl.pathname !== "/" && !request.nextUrl.pathname.startsWith("/register") && !request.nextUrl.pathname.startsWith("/forgot-password") && !request.nextUrl.pathname.startsWith("/reset-password")) {
       return NextResponse.redirect(new URL("/", request.url));
     }
 

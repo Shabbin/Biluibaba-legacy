@@ -3,6 +3,7 @@
 import { FaStar, FaQuoteLeft } from "react-icons/fa6";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import { Avatar, AvatarImage, AvatarFallback } from "@/src/components/ui/avatar";
 
 // Import Swiper styles
 import "swiper/css";
@@ -115,11 +116,16 @@ const Testimonials = () => {
                 {/* User Info */}
                 <div className="flex items-center gap-4 mt-auto pt-6 border-t border-gray-100">
                   <div className="w-14 h-14 rounded-full p-1 bg-gradient-to-tr from-petzy-blue-light to-petzy-coral/30">
-                    <img
-                      src={t.src}
-                      alt="User"
-                      className="w-full h-full object-cover rounded-full border-2 border-white"
-                    />
+                    <Avatar className="w-full h-full">
+                      <AvatarImage
+                        src={t.src}
+                        alt={t.name}
+                        className="object-cover border-2 border-white"
+                      />
+                      <AvatarFallback className="bg-petzy-blue-light text-petzy-slate text-lg font-bold border-2 border-white">
+                        {t.name?.charAt(0)?.toUpperCase() || "U"}
+                      </AvatarFallback>
+                    </Avatar>
                   </div>
                   <div>
                     <h4 className="font-bold text-petzy-slate text-lg">

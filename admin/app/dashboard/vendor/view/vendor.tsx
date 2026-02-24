@@ -252,6 +252,7 @@ export default function Page() {
                         src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/vendor/${vendor.nid.front}`}
                         alt={vendor.nid.number}
                         className="rounded-xl border w-[300px]"
+                        onError={(e) => { (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' fill='%23f5f5f5'%3E%3Crect width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' fill='%23999' font-size='14' text-anchor='middle' dy='.3em'%3EImage unavailable%3C/text%3E%3C/svg%3E"; }}
                       />
                     </div>
                     <div>
@@ -260,6 +261,7 @@ export default function Page() {
                         src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/vendor/${vendor.nid.back}`}
                         alt={vendor.nid.number}
                         className="rounded-xl border w-[300px]"
+                        onError={(e) => { (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' fill='%23f5f5f5'%3E%3Crect width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' fill='%23999' font-size='14' text-anchor='middle' dy='.3em'%3EImage unavailable%3C/text%3E%3C/svg%3E"; }}
                       />
                     </div>
                   </div>

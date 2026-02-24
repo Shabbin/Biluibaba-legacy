@@ -11,6 +11,7 @@ import axios from "@/lib/axios";
 import { formatDate } from "@/lib/time";
 
 import { Loader2, User } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Page() {
   const search = useSearchParams();
@@ -131,6 +132,7 @@ export default function Page() {
                       src={image.path}
                       alt={adoption.name}
                       className="rounded-lg m-2 w-auto h-auto basis-1/4"
+                      onError={(e) => { (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' fill='%23ddd'%3E%3Crect width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' fill='%23999' font-size='14' text-anchor='middle' dy='.3em'%3ENo Image%3C/text%3E%3C/svg%3E"; }}
                     />
                   ))}
                 </div>
@@ -143,11 +145,12 @@ export default function Page() {
                 </h2>
 
                 <div className="flex flex-row items-center gap-2 mb-2 py-4">
-                  <img
-                    src={adoption.userId.avatar}
-                    alt={adoption.userId.name}
-                    className="w-10 h-10 rounded-full"
-                  />
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src={adoption.userId.avatar} alt={adoption.userId.name} />
+                    <AvatarFallback className="bg-gradient-to-br from-[#FF8A80] to-[#FF6B61] text-white text-sm font-bold">
+                      {adoption.userId.name?.charAt(0)?.toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
                   <div className="text-xl">{adoption.userId.name}</div>
                 </div>
 

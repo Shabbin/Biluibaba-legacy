@@ -13,6 +13,8 @@ const {
   getBookings,
   forgotPassword,
   resetPassword,
+  updateAvatar,
+  uploadAvatar,
 } = require("../controllers/auth");
 
 const { protectUser } = require("../middleware/auth");
@@ -28,6 +30,7 @@ router.use(protectUser);
 
 router.route("/me").get(getUserInfo);
 router.route("/update-profile").post(updateUserInfo);
+router.route("/update-avatar").post(uploadAvatar, updateAvatar);
 router.route("/orders").get(getOrders);
 router.route("/vet").get(getBookings);
 router.route("/logout").get(logoutUser);

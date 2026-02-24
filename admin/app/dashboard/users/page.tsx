@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/table";
 
 import { Loader2, Users } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -83,11 +84,12 @@ export default function Page() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <img
-                        src={user.avatar}
-                        className="w-8 h-8 rounded-full object-cover ring-2 ring-primary/10"
-                        alt={user.name}
-                      />
+                      <Avatar className="w-8 h-8 ring-2 ring-primary/10">
+                        <AvatarImage src={user.avatar} alt={user.name} />
+                        <AvatarFallback className="bg-gradient-to-br from-[#FF8A80] to-[#FF6B61] text-white text-xs font-bold">
+                          {user.name?.charAt(0)?.toUpperCase() || "U"}
+                        </AvatarFallback>
+                      </Avatar>
                       <span className="font-medium">{user.name}</span>
                     </div>
                   </TableCell>

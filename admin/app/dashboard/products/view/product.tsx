@@ -246,6 +246,7 @@ export default function Page() {
                       src={image.path}
                       alt={product.name}
                       className="rounded-xl border object-cover"
+                      onError={(e) => { (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' fill='%23ddd'%3E%3Crect width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' fill='%23999' font-size='14' text-anchor='middle' dy='.3em'%3ENo Image%3C/text%3E%3C/svg%3E"; }}
                     />
                   ))}
                 </div>

@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
-import { FaPenToSquare, FaFloppyDisk, FaXmark } from "react-icons/fa6";
+import { FaPenToSquare, FaFloppyDisk, FaXmark, FaCamera } from "react-icons/fa6";
 
 import Button from "@/src/components/ui/button";
 import { PageLoader } from "@/src/components/ui";
 import Input from "@/src/components/ui/input";
 import Select from "@/src/components/ui/select";
+import { Avatar, AvatarImage, AvatarFallback } from "@/src/components/ui/avatar";
 
 import axios from "@/src/lib/axiosInstance";
 import LocationData from "./location.data"; // Ensure this import path is correct
@@ -27,6 +28,8 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [updateLoading, setUpdateLoading] = useState(false);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   // Edit Modes
   const [editProfile, setEditProfile] = useState(false);
@@ -115,6 +118,39 @@ export default function ProfilePage() {
     }
   };
 
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!["image/jpeg", "image/jpg", "image/png"].includes(file.type)) {
+      return toast.error("Only JPG, JPEG, and PNG files are allowed");
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      return toast.error("File size must be less than 5MB");
+    }
+
+    setAvatarUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("avatar", file);
+
+      const { data } = await axios.post("/api/auth/update-avatar", formData);
+
+      if (data.success) {
+        toast.success("Profile picture updated!");
+        fetchUser();
+      }
+    } catch (error) {
+      console.error(error);
+      const axiosError = error as ApiAxiosError;
+      toast.error(axiosError.response?.data?.error || "Failed to upload avatar");
+    } finally {
+      setAvatarUploading(false);
+      if (avatarInputRef.current) avatarInputRef.current.value = "";
+    }
+  };
+
   if (loading) return <PageLoader />;
 
   return (
@@ -136,11 +172,34 @@ export default function ProfilePage() {
 
         <div className="flex flex-col md:flex-row gap-8 items-start">
            {/* Avatar */}
-           <div className="shrink-0">
-              <img 
-                 src={user?.avatar || "https://ui-avatars.com/api/?name=" + user?.name} 
-                 alt="Avatar" 
-                 className="w-32 h-32 rounded-2xl object-cover shadow-md"
+           <div className="shrink-0 relative group">
+              <Avatar className="w-32 h-32 rounded-2xl shadow-md">
+                <AvatarImage 
+                  src={user?.avatar} 
+                  alt={user?.name || "Avatar"} 
+                  className="object-cover rounded-2xl"
+                />
+                <AvatarFallback className="bg-gradient-to-br from-petzy-coral to-petzy-coral/70 text-white text-4xl font-bold rounded-2xl">
+                  {user?.name?.charAt(0)?.toUpperCase() || "U"}
+                </AvatarFallback>
+              </Avatar>
+              <button
+                onClick={() => avatarInputRef.current?.click()}
+                disabled={avatarUploading}
+                className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer"
+              >
+                {avatarUploading ? (
+                  <div className="w-6 h-6 border-2 border-white/60 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <FaCamera className="text-white text-xl" />
+                )}
+              </button>
+              <input
+                ref={avatarInputRef}
+                type="file"
+                accept="image/jpeg,image/jpg,image/png"
+                className="hidden"
+                onChange={handleAvatarUpload}
               />
            </div>
 

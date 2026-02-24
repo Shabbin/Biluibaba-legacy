@@ -473,6 +473,7 @@ export default function Page({ product }: { product?: any }) {
             src={image.path}
             alt={image.alt || "Product image"}
             className="w-20 h-20 object-cover rounded-xl ring-1 ring-border/60"
+            onError={(e) => { (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' fill='%23f5f5f5'%3E%3Crect width='80' height='80'/%3E%3Ctext x='50%25' y='50%25' fill='%23999' font-size='10' text-anchor='middle' dy='.3em'%3ENo Image%3C/text%3E%3C/svg%3E"; }}
           />
           <button
             type="button"

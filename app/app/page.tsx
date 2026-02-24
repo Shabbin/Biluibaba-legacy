@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -203,7 +204,12 @@ export default function Home() {
 
           <div className="mt-8 space-y-3">
             <p className="text-xs text-muted-foreground text-center">
-              Having trouble signing in? Contact your administrator.
+              <Link
+                href="/forgot-password"
+                className="text-[#FF8A80] hover:text-[#FF6B61] font-semibold transition-colors"
+              >
+                Forgot your password?
+              </Link>
             </p>
             <div className="relative">
               <div className="absolute inset-0 flex items-center">

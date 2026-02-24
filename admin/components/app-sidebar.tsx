@@ -60,6 +60,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -455,8 +456,12 @@ export function AppSidebar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton className="h-12 rounded-lg mx-2">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FF8A80] to-[#FF6B61] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-                    A
+                  <div className="w-8 h-8 flex-shrink-0">
+                    <Avatar className="w-8 h-8">
+                      <AvatarFallback className="bg-gradient-to-br from-[#FF8A80] to-[#FF6B61] text-white text-xs font-bold">
+                        A
+                      </AvatarFallback>
+                    </Avatar>
                   </div>
                   <div className="flex flex-col items-start min-w-0">
                     <span className="text-sm font-semibold truncate max-w-[140px]">

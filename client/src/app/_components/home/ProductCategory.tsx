@@ -62,6 +62,7 @@ const ProductCategory: React.FC<ProductCategoryProps> = ({ categories }) => {
                     src={category.src}
                     alt={petName}
                     className="relative z-10 w-24 md:w-28 object-contain transition-transform duration-500 ease-out group-hover:-translate-y-2"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                   />
                   
                   {/* Active Ring Indicator (Modern UI trend) */}
