@@ -1,18 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtDecode } from "jwt-decode";
-import { decode } from "punycode";
 
 export async function middleware(request: NextRequest) {
-  console.log("hit");
   try {
     const token = request.cookies.get("app-token")?.value;
 
-    if (!token && request.nextUrl.pathname !== "/") {
+    if (!token && request.nextUrl.pathname !== "/" && !request.nextUrl.pathname.startsWith("/register")) {
       return NextResponse.redirect(new URL("/", request.url));
-    }
-
-    if (token && request.nextUrl.pathname === "/") {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
     if (token) {
@@ -21,10 +15,39 @@ export async function middleware(request: NextRequest) {
         iat: number;
         id: string;
         type: string;
+        status?: string;
       } = jwtDecode(token);
 
       if (Date.now() >= decodedToken.exp * 1000) {
         throw new Error("Token expired");
+      }
+
+      // If on login page and has valid token, redirect appropriately
+      if (request.nextUrl.pathname === "/") {
+        // Unapproved vendors go to pending-approval page
+        if (decodedToken.type === "vendor" && decodedToken.status !== "approved") {
+          return NextResponse.redirect(new URL("/dashboard/pending-approval", request.url));
+        }
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+      }
+
+      // Block unapproved vendors from all dashboard routes except pending-approval
+      if (
+        decodedToken.type === "vendor" &&
+        decodedToken.status !== "approved" &&
+        request.nextUrl.pathname.startsWith("/dashboard") &&
+        !request.nextUrl.pathname.startsWith("/dashboard/pending-approval")
+      ) {
+        return NextResponse.redirect(new URL("/dashboard/pending-approval", request.url));
+      }
+
+      // Approved vendors should not see the pending-approval page
+      if (
+        decodedToken.type === "vendor" &&
+        decodedToken.status === "approved" &&
+        request.nextUrl.pathname.startsWith("/dashboard/pending-approval")
+      ) {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
       }
 
       if (request.nextUrl.pathname.startsWith("/dashboard/vet")) {
@@ -37,7 +60,7 @@ export async function middleware(request: NextRequest) {
   } catch (error) {
     console.log(error);
 
-    if (request.nextUrl.pathname !== "/") {
+    if (request.nextUrl.pathname !== "/" && !request.nextUrl.pathname.startsWith("/register")) {
       return NextResponse.redirect(new URL("/", request.url));
     }
 

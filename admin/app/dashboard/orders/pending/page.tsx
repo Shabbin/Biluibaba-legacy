@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { ShoppingCart } from "lucide-react";
 
 import { toast } from "@/hooks/use-toast";
 import {
@@ -72,10 +73,15 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="p-5">
-      <h2 className="text-4xl">Pending Orders</h2>
+    <>
+      <div className="page-header">
+        <h2>Pending Orders</h2>
+        <p>Orders awaiting processing or fulfillment</p>
+        <div className="header-accent" />
+      </div>
 
-      {orders.length > 0 && (
+      {orders.length > 0 ? (
+        <div className="rounded-xl border border-border/60 overflow-hidden bg-card">
         <Table>
           <TableCaption>A list of pending orders</TableCaption>
           <TableHeader>
@@ -93,14 +99,29 @@ export default function Page() {
               <TableRow key={order.orderId}>
                 <TableCell>{order.orderId}</TableCell>
                 <TableCell>
-                  {" "}
-                  {order.status == true ? (
-                    <span className="px-4 py-1 bg-green-100 text-green-900 font-bold rounded">
-                      Completed
+                  {order.status == "delivered" ? (
+                    <span className="status-badge status-badge--success">
+                      Order Completed
+                    </span>
+                  ) : order.status === "pending" ? (
+                    <span className="status-badge status-badge--warning">
+                      Order Pending
+                    </span>
+                  ) : order.status === "cancelled" ? (
+                    <span className="status-badge status-badge--danger">
+                      Order Cancelled
+                    </span>
+                  ) : order.status === "dispatched" ? (
+                    <span className="status-badge status-badge--info">
+                      Order Dispatched
+                    </span>
+                  ) : order.status === "refunded" ? (
+                    <span className="status-badge status-badge--purple">
+                      Order Refunded
                     </span>
                   ) : (
-                    <span className="px-4 py-1 bg-yellow-100 text-yellow-900 font-bold rounded">
-                      Pending
+                    <span className="status-badge status-badge--neutral">
+                      Unknown Status
                     </span>
                   )}
                 </TableCell>
@@ -112,7 +133,7 @@ export default function Page() {
                 <TableCell>
                   <Link
                     href={`/dashboard/orders?orderID=${order.orderId}`}
-                    className={buttonVariants({ variant: "outline" })}
+                    className={buttonVariants({ variant: "outline" }) + " rounded-lg"}
                   >
                     View Order
                   </Link>
@@ -121,6 +142,13 @@ export default function Page() {
             ))}
           </TableBody>
         </Table>
+        </div>
+      ) : (
+        <div className="empty-state">
+          <ShoppingCart className="empty-state-icon" />
+          <h3>No pending orders</h3>
+          <p>There are no pending orders to display at this time.</p>
+        </div>
       )}
       <Pagination>
         <PaginationContent>
@@ -222,6 +250,6 @@ export default function Page() {
           </PaginationItem>
         </PaginationContent>
       </Pagination>
-    </div>
+    </>
   );
 }

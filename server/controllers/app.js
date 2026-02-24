@@ -78,5 +78,9 @@ const sendAppToken = async (app, statusCode, response) => {
         process.env.NODE_ENV === "production" ? ".biluibaba.com" : undefined,
       sameSite: "lax",
     })
-    .json({ success: true });
+    .json({
+      success: true,
+      status: app.status || "pending",
+      type: app.type || (app.specialization ? "vet" : "vendor"),
+    });
 };

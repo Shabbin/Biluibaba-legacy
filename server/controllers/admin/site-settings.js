@@ -528,9 +528,13 @@ module.exports.updateAdoptionBannerTwo = async (request, response, next) => {
 
 const productLandingSliderStorage = multer.diskStorage({
   destination: function (req, file, cb) {
+    const dir = path.join(__dirname, "../../uploads/site-settings/product-landing-slider");
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
     cb(
       null,
-      path.join(__dirname, "../../uploads/site-settings/product-landing-slider")
+      dir
     );
   },
   filename: function (req, file, cb) {
