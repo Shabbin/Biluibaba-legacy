@@ -13,9 +13,8 @@ import Services from "@/src/app/_components/home/Services";
 import ProductCategory from "@/src/app/_components/home/ProductCategory";
 import Landing from "@/src/app/_components/home/Landing";
 import FeatureProducts from "@/src/app/_components/home/FeatureProducts";
-// [FUTURE] Non-ecommerce imports — uncomment when enabling vet & adoption features
-// import ExpertVets from "@/src/app/_components/home/ExpertVets";
-// import Adoptions from "@/src/app/_components/home/Adoptions";
+import ExpertVets from "@/src/app/_components/home/ExpertVets";
+import Adoptions from "@/src/app/_components/home/Adoptions";
 import Testimonials from "@/src/app/_components/home/Testimonials";
 import ProductAd from "@/src/components/productad";
 
@@ -25,9 +24,20 @@ import axios from "@/src/lib/axiosInstance";
 const productCategories = [
   { src: "/pets/cat.png", link: "/products?pet=cat" },
   { src: "/pets/dog.png", link: "/products?pet=dog" },
-  { src: "/pets/fish.png", link: "/products?pet=fish" },
+  { name: "Pet Parents", src: "/pets/pet-parents.png", link: "/products?category=pet-parents" },
   { src: "/pets/bird.png", link: "/products?pet=bird" },
+  { src: "/pets/fish.png", link: "/products?pet=fish" },
   { src: "/pets/rabbit.png", link: "/products?pet=rabbit" },
+];
+
+const popularCategoryItems = [
+  { name: "Cat Food", icon: "🐱", link: "/products?category=cat-food" },
+  { name: "Dog Food", icon: "🐶", link: "/products?category=dog-food" },
+  { name: "Treats", icon: "🦴", link: "/products?category=treats" },
+  { name: "Litter", icon: "🪣", link: "/products?category=litter" },
+  { name: "Supplies", icon: "🧺", link: "/products?category=supplies" },
+  { name: "Grooming", icon: "✂️", link: "/products?category=grooming" },
+  { name: "Deals", icon: "🏷️", link: "/products?category=deals" },
 ];
 
 // Helper for Section Headers
@@ -63,13 +73,12 @@ export default function Home() {
     featured_product: null,
     product_banner_one: { filename: "", path: "" },
     product_brands_in_spotlight: [],
-    // [FUTURE] Non-ecommerce site settings — uncomment when enabling vet & adoption features
-    // vet_landing_slider: [],
-    // vet_banner_one: { filename: "", path: "" },
-    // vet_grid_banners: [],
-    // adoption_banner_one: { filename: "", path: "" },
-    // adoption_banner_two: { filename: "", path: "" },
-    // featured_adoptions: [],
+    vet_landing_slider: [],
+    vet_banner_one: { filename: "", path: "" },
+    vet_grid_banners: [],
+    adoption_banner_one: { filename: "", path: "" },
+    adoption_banner_two: { filename: "", path: "" },
+    featured_adoptions: [],
   });
 
   const fetchSiteSettings = async () => {
@@ -99,6 +108,11 @@ export default function Home() {
       <div className="bg-gradient-to-b from-petzy-blue-light to-white pb-0 relative">
         <div className="pt-8 px-4 md:px-8 max-w-[1400px] mx-auto">
           <Landing slider={site.product_landing_slider} />
+          <div className="text-center mt-8 mb-4">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-petzy-slate leading-snug">
+              আপনার আদরের বাচ্চার খাবারের নিশ্চিত সমাধান এখন বিলুইবাবা তে!
+            </h1>
+          </div>
         </div>
         <div className="text-white relative z-10 -mb-2 mt-8 opacity-50">
            {/* Optional: Add a subtle curve here if desired, or keep clean */}
@@ -117,26 +131,47 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 md:gap-8">
-            {site.popular_product_category.map((category) => (
-              <div
-                key={category._id}
-                onClick={() => router.push(category.categorySlug)}
+          {/* Hardcoded Popular Category Items */}
+          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4 md:gap-6 mb-12">
+            {popularCategoryItems.map((item) => (
+              <Link
+                key={item.name}
+                href={item.link}
                 className="group cursor-pointer flex flex-col items-center"
               >
-                <div className="w-full aspect-square bg-petzy-blue-light/30 rounded-full p-4 mb-4 transition-all duration-300 group-hover:bg-petzy-coral/10 group-hover:scale-105 shadow-sm group-hover:shadow-md flex items-center justify-center border border-transparent group-hover:border-petzy-coral/20">
-                 <SafeImg
-  src={category.image}
-  alt={category.category}
-  className="w-3/4 h-3/4 object-contain transition-transform duration-500 group-hover:rotate-3"
-/>
+                <div className="w-20 h-20 md:w-24 md:h-24 bg-petzy-blue-light/30 rounded-2xl p-3 mb-3 transition-all duration-300 group-hover:bg-petzy-coral/10 group-hover:scale-105 shadow-sm group-hover:shadow-md flex items-center justify-center border border-transparent group-hover:border-petzy-coral/20">
+                  <span className="text-3xl md:text-4xl">{item.icon}</span>
                 </div>
-                <h3 className="font-bold text-petzy-slate group-hover:text-petzy-coral transition-colors">
-                  {category.category}
+                <h3 className="font-bold text-sm text-petzy-slate group-hover:text-petzy-coral transition-colors text-center">
+                  {item.name}
                 </h3>
-              </div>
+              </Link>
             ))}
           </div>
+
+          {/* Dynamic Categories from DB */}
+          {site.popular_product_category.length > 0 && (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 md:gap-8">
+              {site.popular_product_category.map((category) => (
+                <div
+                  key={category._id}
+                  onClick={() => router.push(category.categorySlug)}
+                  className="group cursor-pointer flex flex-col items-center"
+                >
+                  <div className="w-full aspect-square bg-petzy-blue-light/30 rounded-full p-4 mb-4 transition-all duration-300 group-hover:bg-petzy-coral/10 group-hover:scale-105 shadow-sm group-hover:shadow-md flex items-center justify-center border border-transparent group-hover:border-petzy-coral/20">
+                    <SafeImg
+                      src={category.image}
+                      alt={category.category}
+                      className="w-3/4 h-3/4 object-contain transition-transform duration-500 group-hover:rotate-3"
+                    />
+                  </div>
+                  <h3 className="font-bold text-petzy-slate group-hover:text-petzy-coral transition-colors">
+                    {category.category}
+                  </h3>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -180,14 +215,29 @@ export default function Home() {
         <FeatureProducts type="featured" category="all" />
       </section>
 
+      {/* --- WHOLESOME FOOD PROMO BANNER --- */}
+      <section className="py-16 bg-petzy-mint-light/30 my-10 relative overflow-hidden">
+        <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-petzy-mint-light rounded-full blur-3xl opacity-50"></div>
+        <div className="container mx-auto px-5 relative z-10 text-center">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-petzy-slate mb-4">
+            Wholesome Food, Happy Pets. It&apos;s That Simple!
+          </h2>
+          <Link href="/products">
+            <Button type="default" className="mt-6 shadow-lg shadow-petzy-coral/30">
+              Shop Now
+            </Button>
+          </Link>
+        </div>
+      </section>
+
       {/* --- SPECIFIC CATEGORIES --- */}
       <section className="container mx-auto px-5 mb-20">
-        <SectionHeader title="Cat Food" seeAllLink="/products?pet=cat" />
+        <SectionHeader title="Cat Food & Accesories" seeAllLink="/products?pet=cat" />
         <FeatureProducts type="featured" category="all" />
       </section>
 
       <section className="container mx-auto px-5 mb-24">
-        <SectionHeader title="Accessories" seeAllLink="/products?pet=cat" />
+        <SectionHeader title="Dog Food & Accesories" seeAllLink="/products?pet=dog" />
         <FeatureProducts type="featured" category="all" />
       </section>
 
@@ -214,26 +264,39 @@ export default function Home() {
         </div>
       </section>
 
-      {/* [FUTURE] VET SECTION — uncomment when enabling vet features */}
-      {/*
+      {/* --- VET SECTION --- */}
       <div className="relative">
         <div className="text-petzy-periwinkle-light -mb-1 relative z-20">
            <WavyDivider flip={false} />
         </div>
-        
+
         <div className="bg-petzy-periwinkle-light pt-10 pb-20 px-5">
            <div className="container mx-auto mb-10">
-              <Landing slider={site.vet_landing_slider} />
+              <Landing slider={site.vet_landing_slider ?? []} />
            </div>
-           
+
            <div className="container mx-auto bg-white/60 backdrop-blur-md rounded-[3rem] p-8 md:p-12 shadow-xl border border-white">
-              <div className="text-center mb-10">
-                <div className="inline-block bg-petzy-coral text-white px-4 py-1 rounded-full text-sm font-bold mb-4 uppercase tracking-wider">Health First</div>
-                <h2 className="text-3xl md:text-5xl font-bold text-petzy-slate">
-                  Expert Veterinary Advice
+              <div className="text-center mb-4">
+                <div className="inline-block bg-petzy-coral text-white px-5 py-1.5 rounded-full text-sm font-bold mb-4 uppercase tracking-wider">
+                  For every concern, We&apos;re just a video call away.
+                </div>
+                <h2 className="text-3xl md:text-5xl font-bold text-petzy-slate mb-4">
+                  Expert care from vets you can trust
                 </h2>
+                <p className="text-petzy-slate-light max-w-2xl mx-auto mb-6">
+                  Your pet is in great hands with vets who excel at both care &amp; compassion..
+                </p>
+                <div className="flex flex-wrap justify-center gap-4 mb-8">
+                  <span className="inline-flex items-center gap-2 bg-petzy-mint-light text-petzy-slate px-4 py-2 rounded-full text-sm font-semibold">
+                    <FaStar className="text-petzy-yellow" /> 100% US-licensed vets
+                  </span>
+                  <span className="inline-flex items-center gap-2 bg-petzy-mint-light text-petzy-slate px-4 py-2 rounded-full text-sm font-semibold">
+                    <FaStar className="text-petzy-yellow" /> Highly rated by members
+                  </span>
+                </div>
               </div>
 
+              <h3 className="text-xl font-bold text-petzy-slate text-center mb-6">Available Vets</h3>
               <ExpertVets />
 
               <div className="flex justify-center mt-12">
@@ -241,7 +304,7 @@ export default function Home() {
                   <Button
                     type="default"
                     className="shadow-lg shadow-petzy-coral/30"
-                  >Book a Consultation</Button>
+                  >Talk to a vet</Button>
                 </Link>
               </div>
            </div>
@@ -251,67 +314,57 @@ export default function Home() {
            <WavyDivider flip={false} />
         </div>
       </div>
-      */}
 
-      {/* [FUTURE] VET BANNERS GRID — uncomment when enabling vet features */}
-      {/*
+      {/* --- VET BANNERS GRID --- */}
       <section className="container mx-auto px-5 py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="md:col-span-2 rounded-3xl overflow-hidden shadow-soft group">
-  <SafeImg
-    src={site.vet_banner_one.path}
-    alt="Vet Services"
-    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-  />
-</div>
-          {site.vet_grid_banners.map((banner, index) => (
+          <div className="md:col-span-2 rounded-3xl overflow-hidden shadow-soft group">
+            <SafeImg
+              src={site.vet_banner_one?.path ?? ""}
+              alt="Vet Services"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+          </div>
+          {(site.vet_grid_banners ?? []).map((banner, index) => (
             <div key={index} className="rounded-3xl overflow-hidden shadow-soft group h-64 md:h-80">
-           <SafeImg
-  src={banner.path}
-  alt={`Vet Banner ${index}`}
-  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-/>
+              <SafeImg
+                src={banner.path}
+                alt={`Vet Banner ${index}`}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
             </div>
           ))}
         </div>
       </section>
-      */}
 
-      {/* [FUTURE] ADOPTION SECTION — uncomment when enabling adoption features */}
-      {/*
+      {/* --- ADOPTION SECTION --- */}
       <section className="container mx-auto px-5 mb-20">
         <div className="text-center mb-12">
            <FaStar className="inline-block text-petzy-yellow text-4xl mb-4" />
-           <h2 className="text-4xl lg:text-5xl font-bold text-petzy-slate mb-4">Find a Lifelong Friend</h2>
-           <p className="text-petzy-slate-light">Open your heart and home to a pet in need.</p>
+           <h2 className="text-4xl lg:text-5xl font-bold text-petzy-slate mb-2">Take me Home</h2>
+           <h3 className="text-xl md:text-2xl font-semibold text-petzy-coral mb-4">Start your adoption journey online</h3>
+           <p className="text-petzy-slate-light max-w-2xl mx-auto mb-4">Our pet adoption tool can help you find adoptable pets in your area.</p>
+           <p className="text-lg font-semibold text-petzy-slate">They&apos;ve been waiting for you!</p>
+           <p className="text-petzy-coral font-bold text-xl mt-2">Find Them a Loving Home!</p>
         </div>
 
         <Adoptions />
 
-        <div className="flex justify-center mt-12">
+        <div className="flex flex-wrap justify-center gap-4 mt-12">
           <Link href="/adoptions">
             <Button
               type="default"
-              text="View All Adoptions"
               className="font-bold text-lg px-10 py-4 shadow-xl shadow-petzy-coral/20"
-            />
+            >Adopt Now</Button>
+          </Link>
+          <Link href="/adoptions/post">
+            <Button
+              type="default"
+              className="font-bold text-lg px-10 py-4 shadow-xl shadow-petzy-slate/10 bg-petzy-slate text-white hover:bg-petzy-slate/90"
+            >Post Adoption</Button>
           </Link>
         </div>
       </section>
-      */}
-
-      {/* [FUTURE] DONATION AD — uncomment when enabling adoption/donation features */}
-      {/*
-      <section className="py-16 bg-petzy-mint-light relative overflow-hidden">
-        <div className="container mx-auto px-5 relative z-10">
-          <ProductAd
-            title="Donate and Save Animals"
-            desc="Your contribution provides food, shelter, and medical care for rescued animals."
-            buttonText="Donate Now"
-          />
-        </div>
-      </section>
-      */}
 
       {/* --- TESTIMONIALS --- */}
       <section className="py-10">

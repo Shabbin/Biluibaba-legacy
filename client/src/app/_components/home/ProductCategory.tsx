@@ -25,7 +25,7 @@ const ProductCategory: React.FC<ProductCategoryProps> = ({ categories }) => {
               Collections
             </h4>
             <h2 className="text-3xl md:text-4xl font-bold text-petzy-slate">
-              Shop by Pet
+              Who are you shopping for today?
             </h2>
           </div>
           <div className="hidden md:block pb-1">

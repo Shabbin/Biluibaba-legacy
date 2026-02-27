@@ -160,7 +160,7 @@ const Footer = () => {
                  </div>
                  <div>
                     <div className="text-xs font-bold text-petzy-slate uppercase tracking-wide">Email Us</div>
-                    <div className="text-petzy-slate-light font-medium break-all">info@biluibaba.com</div>
+                    <div className="text-petzy-slate-light font-medium break-all">info@admin.com</div>
                  </div>
               </div>
               <div className="flex items-start gap-4 p-3 bg-white/60 rounded-xl border border-white/50 hover:bg-white transition-colors">
