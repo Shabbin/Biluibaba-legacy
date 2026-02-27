@@ -8,9 +8,11 @@ const {
   fetchAllOrders,
   fetchOrder,
   getProduct,
+  getPublicStore,
 } = require("../controllers/vendor");
 
 router.route("/create").post(uploadVendor, createVendor);
+router.route("/store/:id").get(getPublicStore);
 
 router.use(protectVendor);
 

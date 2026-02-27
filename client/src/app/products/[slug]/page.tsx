@@ -16,8 +16,7 @@ interface ProductPageProps {
 }
 
 const Product = async ({ params }: ProductPageProps) => {
-  const resolvedParams = await params;
-  return <DisplayProduct />;
+  return <div className="mt-10"><DisplayProduct /></div>;
 };
 
 export default Product;
