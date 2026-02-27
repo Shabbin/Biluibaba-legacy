@@ -15,38 +15,21 @@ import {
   TableBody,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 
 import { Loader2, Users } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
+  const [count, setCount] = useState<number>(0);
+
   const [users, setUsers] = useState<any[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
-  const itemsPerPage = 10;
 
-  const fetchUsers = async (pageCount = 0) => {
-    setLoading(true);
+  const fetchUsers = async () => {
     try {
-      const { data } = await axios.get(`/api/admin/users?count=${pageCount}`);
+      const { data } = await axios.get(`/api/admin/users?count=${count}`);
 
-      if (data.success) {
-        setUsers(data.users);
-        const calculatedTotalPages = Math.ceil(
-          (data.totalUsers || data.users.length) / itemsPerPage
-        );
-        setTotalPages(calculatedTotalPages > 0 ? calculatedTotalPages : 1);
-      }
+      if (data.success) setUsers(data.users);
     } catch (error) {
       console.error(error);
       toast({
@@ -59,15 +42,10 @@ export default function Page() {
     }
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    fetchUsers(page - 1);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   useEffect(() => {
-    fetchUsers(0);
-  }, []);
+    setLoading(true);
+    fetchUsers();
+  }, [count]);
 
   return (
     <div className="py-5">
@@ -133,83 +111,6 @@ export default function Page() {
           </p>
         </div>
       )}
-
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
-              className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
-            />
-          </PaginationItem>
-
-          <PaginationItem>
-            <PaginationLink
-              onClick={() => handlePageChange(1)}
-              isActive={currentPage === 1}
-              className="cursor-pointer"
-            >
-              1
-            </PaginationLink>
-          </PaginationItem>
-
-          {currentPage > 3 && (
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-          )}
-
-          {Array.from({ length: totalPages })
-            .slice(1, totalPages)
-            .map((_, index) => {
-              const pageNumber = index + 2;
-              if (
-                pageNumber === currentPage ||
-                pageNumber === currentPage - 1 ||
-                pageNumber === currentPage + 1
-              ) {
-                if (pageNumber === 1 || pageNumber === totalPages) return null;
-                return (
-                  <PaginationItem key={pageNumber}>
-                    <PaginationLink
-                      onClick={() => handlePageChange(pageNumber)}
-                      isActive={currentPage === pageNumber}
-                      className="cursor-pointer"
-                    >
-                      {pageNumber}
-                    </PaginationLink>
-                  </PaginationItem>
-                );
-              }
-              return null;
-            })}
-
-          {currentPage < totalPages - 2 && (
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-          )}
-
-          {totalPages > 1 && (
-            <PaginationItem>
-              <PaginationLink
-                onClick={() => handlePageChange(totalPages)}
-                isActive={currentPage === totalPages}
-                className="cursor-pointer"
-              >
-                {totalPages}
-              </PaginationLink>
-            </PaginationItem>
-          )}
-
-          <PaginationItem>
-            <PaginationNext
-              onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
-              className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
     </div>
   );
 }

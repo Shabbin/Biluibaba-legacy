@@ -262,46 +262,18 @@ export function AppSidebar() {
               </Collapsible>
 
               {/* Vets */}
-              <Collapsible
-                defaultOpen={isGroupActive("/dashboard/vets")}
-                className="group/collapsible"
-              >
-                <SidebarMenuItem>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuButton className="rounded-lg mx-2">
-                      <Stethoscope className="w-4 h-4" />
-                      <span>Vets</span>
-                      <ChevronDown className="ml-auto w-4 h-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarMenuSub className="ml-5 border-l border-border/50 pl-3">
-                      <SidebarMenuSubItem>
-                        <SidebarMenuSubButton
-                          asChild
-                          isActive={isActive("/dashboard/vets/approved")}
-                        >
-                          <Link href="/dashboard/vets/approved">
-                            <CheckCircle className="w-3.5 h-3.5" />
-                            <span>Approved</span>
-                          </Link>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                      <SidebarMenuSubItem>
-                        <SidebarMenuSubButton
-                          asChild
-                          isActive={isActive("/dashboard/vets/pending")}
-                        >
-                          <Link href="/dashboard/vets/pending">
-                            <Clock className="w-3.5 h-3.5" />
-                            <span>Pending</span>
-                          </Link>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                </SidebarMenuItem>
-              </Collapsible>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname.startsWith("/dashboard/vets")}
+                  className="rounded-lg mx-2"
+                >
+                  <Link href="/dashboard/users">
+                    <Stethoscope className="w-4 h-4" />
+                    <span>Vets</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
 
               {/* Adoptions */}
               <Collapsible

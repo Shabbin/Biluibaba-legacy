@@ -413,37 +413,6 @@ module.exports.updateAvatar = async (request, response, next) => {
   });
 };
 
-module.exports.changePassword = async (request, response, next) => {
-  const { currentPassword, newPassword } = request.body;
-
-  if (!currentPassword || !newPassword)
-    return next(new ErrorResponse("Please provide current and new password", 422));
-
-  if (newPassword.length < 8)
-    return next(new ErrorResponse("New password must be at least 8 characters", 422));
-
-  const user = await User.findById(request.user.id).select("+password");
-
-  if (!user) return next(new ErrorResponse("User not found", 404));
-
-  // Users who signed up with OAuth don't have a password
-  if (user.authType !== "traditional")
-    return next(new ErrorResponse("Password change is not available for social login accounts", 400));
-
-  const isMatch = await user.matchPassword(currentPassword);
-
-  if (!isMatch)
-    return next(new ErrorResponse("Current password is incorrect", 401));
-
-  user.password = newPassword;
-  await user.save();
-
-  return response.status(200).json({
-    success: true,
-    data: "Password changed successfully",
-  });
-};
-
 // Multer storage for user avatar uploads
 const avatarStorage = multer.diskStorage({
   destination: (request, file, cb) => {

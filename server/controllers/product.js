@@ -82,18 +82,18 @@ module.exports.getPetProducts = async (request, response, next) => {
     const { parent, category, count } = request.query;
 
     // Base query to get all products under the parent category
-    let baseQuery = { "categories.parent": parent, status: true };
+    let query = { status: true };
 
-    // Query for exact category (and sub-category if provided)
-    let categoryQuery = { ...baseQuery, "categories.category": category };
+    if (parent) query["categories.parent"] = parent;
+    if (category) query["categories.category"] = category;
 
-    // Fetch products that match the exact category/sub-category
-    let products = await Products.find(categoryQuery)
+    // Fetch products that match the query
+    let products = await Products.find(query)
       .limit(40)
       .skip(count * 40)
       .sort("-createdAt");
 
-    let totalProducts = await Products.countDocuments(categoryQuery);
+    let totalProducts = await Products.countDocuments(query);
 
     return response
       .status(200)

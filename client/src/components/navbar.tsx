@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/src/components/providers/AuthProvider";
-import axios from "@/src/lib/axiosInstance";
 import { productCategories } from "@/src/lib/categories";
 
 // Components
@@ -55,7 +54,6 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
-  const [locationName, setLocationName] = useState("Dhaka, Bangladesh");
 
   // Handle Scroll Effect
   useEffect(() => {
@@ -66,32 +64,8 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Location Logic
-  const getUserCoordinates = (): Promise<{ lat: number; lng: number }> => {
-    return new Promise((resolve, reject) => {
-      if (!navigator.geolocation) reject(new Error("Geolocation not supported"));
-      navigator.geolocation.getCurrentPosition(
-        (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-        (err) => reject(err.message)
-      );
-    });
-  };
-
-  const getLocation = async () => {
-    try {
-      const { lat, lng } = await getUserCoordinates();
-      // Mocking the call for UI demo purposes, replace with your actual API
-      const { data } = await axios.get(`/location?lat=${lat}&lng=${lng}`);
-      if (data.success) localStorage.setItem("location", JSON.stringify(data));
-      setLocationName(data.locationName || "Current Location");
-    } catch (error) {
-      console.error("Location Error:", error);
-    }
-  };
-
   useEffect(() => {
     if (!localStorage.getItem("cart")) localStorage.setItem("cart", "[]");
-    getLocation();
   }, []);
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement> | React.MouseEvent<HTMLButtonElement>) => {
@@ -154,7 +128,7 @@ const Navbar = () => {
                 <span className="text-[10px] font-bold text-petzy-slate-light uppercase tracking-wide">Delivering To</span>
                 <div className="flex items-center gap-1 text-xs font-bold text-petzy-slate cursor-pointer hover:text-petzy-coral transition-colors">
                   <FaLocationDot className="text-petzy-coral" />
-                  <span className="truncate max-w-[120px]">{locationName}</span>
+                  <span className="truncate max-w-[120px]">Dhaka, Bangladesh</span>
                 </div>
               </div>
 
