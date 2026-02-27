@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { IconType } from "react-icons";
+import NewsletterForm from "./newsletter-form";
 import {
   FaFacebook,
   FaInstagram,
@@ -83,16 +84,7 @@ const Footer = () => {
           <div className="lg:col-span-7 flex flex-col justify-center bg-white/50 backdrop-blur-sm rounded-2xl p-6 lg:p-10 shadow-sm border border-white">
             <h3 className="text-xl font-bold text-petzy-slate mb-2">Join our Pet Community</h3>
             <p className="text-petzy-slate-light mb-4 text-sm">Subscribe for latest products, deals, and exclusive offers.</p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <input 
-                type="email" 
-                placeholder="Enter your email address" 
-                className="flex-1 px-5 py-3 rounded-xl bg-white border border-petzy-slate/10 focus:outline-none focus:border-petzy-coral/50 focus:ring-2 focus:ring-petzy-coral/20 transition-all text-petzy-slate"
-              />
-              <button className="px-8 py-3 bg-petzy-coral text-white font-bold rounded-xl hover:bg-opacity-90 transition-all shadow-lg shadow-petzy-coral/30 hover:shadow-petzy-coral/40 active:scale-95">
-                Subscribe
-              </button>
-            </div>
+            <NewsletterForm />
           </div>
         </div>
 
@@ -127,7 +119,7 @@ const Footer = () => {
               {/* [FUTURE] Non-ecommerce partner links — uncomment when enabling vet features */}
               {/* <FooterLink>Join As Veterinary</FooterLink> */}
               <FooterLink href="/best-deals">Best Deals</FooterLink>
-              {/* <FooterLink href="/affiliates">Affiliates</FooterLink> */}
+              <FooterLink href="/affiliates">Affiliates</FooterLink>
             </div>
           </div>
 

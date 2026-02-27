@@ -51,7 +51,6 @@ export default function Page() {
         setTotalPages(calculatedTotalPages > 0 ? calculatedTotalPages : 1);
         setCount(pageCount);
       }
-      setOrders(data.orders);
     } catch (error) {
       console.log(error);
       toast({

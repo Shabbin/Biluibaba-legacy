@@ -29,6 +29,8 @@ const OrderSchema = new mongoose.Schema(
     area: String,
     fullAddress: String,
     notes: String,
+    cancellationReason: String,
+    returnReason: String,
   },
   { collection: "order-data", timestamps: true }
 );

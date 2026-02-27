@@ -337,6 +337,78 @@ module.exports.validateProductOrder = async (request, response, next) => {
   }
 };
 
+module.exports.getOrderById = async (request, response, next) => {
+  const { id } = request.params;
+
+  if (!id) return next(new ErrorResponse("Missing order ID", 422));
+
+  const order = await Order.findOne({
+    orderId: id,
+    userId: request.user._id,
+  }).populate("products.id", "name images slug");
+
+  if (!order) return next(new ErrorResponse("Order not found", 404));
+
+  return response.status(200).json({ success: true, order });
+};
+
+module.exports.cancelOrder = async (request, response, next) => {
+  const { orderId, reason } = request.body;
+
+  if (!orderId) return next(new ErrorResponse("Missing order ID", 422));
+
+  const order = await Order.findOne({
+    orderId,
+    userId: request.user._id,
+  });
+
+  if (!order) return next(new ErrorResponse("Order not found", 404));
+
+  if (order.status === "delivered")
+    return next(new ErrorResponse("Cannot cancel a delivered order. Please request a return instead.", 400));
+
+  if (order.status === "cancelled")
+    return next(new ErrorResponse("Order is already cancelled", 400));
+
+  order.status = "cancelled";
+  order.cancellationReason = reason || "Cancelled by customer";
+  await order.save();
+
+  return response.status(200).json({
+    success: true,
+    data: "Order cancelled successfully",
+  });
+};
+
+module.exports.returnOrder = async (request, response, next) => {
+  const { orderId, reason } = request.body;
+
+  if (!orderId || !reason)
+    return next(new ErrorResponse("Please provide order ID and reason for return", 422));
+
+  const order = await Order.findOne({
+    orderId,
+    userId: request.user._id,
+  });
+
+  if (!order) return next(new ErrorResponse("Order not found", 404));
+
+  if (order.status !== "delivered")
+    return next(new ErrorResponse("Only delivered orders can be returned", 400));
+
+  if (order.status === "returned")
+    return next(new ErrorResponse("Return request already submitted", 400));
+
+  order.status = "returned";
+  order.returnReason = reason;
+  await order.save();
+
+  return response.status(200).json({
+    success: true,
+    data: "Return request submitted successfully",
+  });
+};
+
 const addOrderToVendors = async (order) => {
   try {
     // Ensure the order has products and an orderId

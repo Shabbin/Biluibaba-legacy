@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 
 // Components
 import Button from "@/src/components/ui/button";
+import axios from "@/src/lib/axiosInstance";
 
 interface ContactFormData {
   name: string;
@@ -39,20 +40,21 @@ const Contact = () => {
     setLoading(true);
 
     try {
-      // TODO: Implement actual contact form submission
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
+      const { data } = await axios.post("/api/contact", formData);
       
-      toast.success("Message sent successfully! We'll get back to you soon.");
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        subject: "",
-        message: ""
-      });
+      if (data.success) {
+        toast.success(data.data || "Message sent successfully! We'll get back to you soon.");
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          subject: "",
+          message: ""
+        });
+      }
     } catch (error: unknown) {
-      console.error(error);
-      toast.error("Failed to send message. Please try again.");
+      const err = error as any;
+      toast.error(err?.response?.data?.error || "Failed to send message. Please try again.");
     } finally {
       setLoading(false);
     }

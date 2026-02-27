@@ -106,6 +106,7 @@ app.use("/api/vet", require("./routes/vet"));
 app.use("/api/room", require("./routes/room"));
 app.use("/api/adoptions", require("./routes/adoptions"));
 app.use("/api/admin", require("./routes/admin"));
+app.use("/api/contact", require("./routes/contact"));
 
 app.get("/location", async (request, response) => {
   const res = await fetch(

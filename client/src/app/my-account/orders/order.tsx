@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import axios from "@/src/lib/axiosInstance";
 import { OrderSkeleton, NoOrders } from "@/src/components/ui";
@@ -10,6 +10,7 @@ import type { Order } from "@/src/types";
 
 export default function Order() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const type = searchParams.get("type");
 
   const [loading, setLoading] = useState(true);
@@ -97,9 +98,7 @@ export default function Order() {
                         <button
                           className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
                           onClick={() => {
-                            // Handle manage order action
-                            console.log("Manage order:", order._id);
-                            // You can add navigation to order details page here
+                            router.push(`/my-account/orders/${order.orderId || order._id}`);
                           }}
                         >
                           Manage

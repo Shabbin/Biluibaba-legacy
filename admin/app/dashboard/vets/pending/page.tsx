@@ -1,20 +1,20 @@
 "use client";
 
 import { useState, useEffect } from "react";
-
-import axios from "@/lib/axios";
-import { formatDate } from "@/lib/time";
+import Link from "next/link";
+import { Stethoscope } from "lucide-react";
 
 import { toast } from "@/hooks/use-toast";
 import {
   Table,
-  TableCaption,
-  TableHeader,
-  TableHead,
-  TableCell,
   TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Pagination,
   PaginationContent,
@@ -25,99 +25,105 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-import { Loader2, Users } from "lucide-react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import axios from "@/lib/axios";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Page() {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [users, setUsers] = useState<any[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
+  const [vets, setVets] = useState<any[]>([]);
+  const [count, setCount] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(0);
   const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalVets, setTotalVets] = useState<number>(0);
 
-  const fetchUsers = async (pageCount = 0) => {
-    setLoading(true);
+  const fetchVets = async (pageCount = 0) => {
     try {
-      const { data } = await axios.get(`/api/admin/users?count=${pageCount}`);
+      const { data } = await axios.get(
+        `/api/admin/vets?count=${pageCount}&status=pending`
+      );
 
       if (data.success) {
-        setUsers(data.users);
-        const calculatedTotalPages = Math.ceil(
-          (data.totalUsers || data.users.length) / itemsPerPage
-        );
+        setVets(data.vets);
+        setTotalVets(data.totalVets);
+
+        const calculatedTotalPages = Math.ceil(data.totalVets / itemsPerPage);
         setTotalPages(calculatedTotalPages > 0 ? calculatedTotalPages : 1);
+        setCount(pageCount);
       }
     } catch (error) {
-      console.error(error);
       toast({
-        title: "Error fetching users",
-        description: "Please try again later.",
+        title: "Error fetching vets",
+        description: "There was an error fetching the pending vets.",
         variant: "destructive",
       });
-    } finally {
-      setLoading(false);
     }
   };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    fetchUsers(page - 1);
+    fetchVets(page - 1);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   useEffect(() => {
-    fetchUsers(0);
+    fetchVets(count);
   }, []);
 
   return (
-    <div className="py-5">
+    <>
       <div className="page-header">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Registered Users</h2>
-          <p className="text-muted-foreground mt-1">
-            View and manage all registered customer accounts.
-          </p>
-        </div>
+        <h2>Pending Vets</h2>
+        <p>Veterinarian applications awaiting your review</p>
+        <div className="header-accent" />
       </div>
 
-      {loading ? (
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-      ) : users?.length > 0 ? (
-        <div className="rounded-xl border bg-card overflow-hidden">
+      {vets.length > 0 ? (
+        <div className="rounded-xl border border-border/60 overflow-hidden bg-card">
           <Table>
-            <TableCaption className="pb-4">
-              List of all registered users
-            </TableCaption>
+            <TableCaption>A list of pending veterinarian applications</TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Name</TableHead>
+                <TableHead>Vet</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Joined</TableHead>
+                <TableHead>Phone</TableHead>
+                <TableHead>Degree</TableHead>
+                <TableHead>Hospital</TableHead>
+                <TableHead>Applied</TableHead>
+                <TableHead></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users.map((user) => (
-                <TableRow key={user._id}>
-                  <TableCell className="font-mono text-xs text-muted-foreground">
-                    {user._id}
-                  </TableCell>
+              {vets.map((vet: any) => (
+                <TableRow key={vet._id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <Avatar className="w-8 h-8 ring-2 ring-primary/10">
-                        <AvatarImage src={user.avatar} alt={user.name} />
+                        <AvatarImage src={vet.profilePicture} alt={vet.name} />
                         <AvatarFallback className="bg-gradient-to-br from-[#FF8A80] to-[#FF6B61] text-white text-xs font-bold">
-                          {user.name?.charAt(0)?.toUpperCase() || "U"}
+                          {vet.name?.charAt(0)?.toUpperCase() || "V"}
                         </AvatarFallback>
                       </Avatar>
-                      <span className="font-medium">{user.name}</span>
+                      <span className="font-medium text-sm">{vet.name}</span>
                     </div>
                   </TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {formatDate(user.createdAt)}
+                  <TableCell className="text-sm">{vet.email}</TableCell>
+                  <TableCell className="text-sm">{vet.phoneNumber}</TableCell>
+                  <TableCell className="text-sm">{vet.degree || "—"}</TableCell>
+                  <TableCell className="text-sm">{vet.hospital || "—"}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground">
+                    {new Date(vet.createdAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </TableCell>
+                  <TableCell>
+                    <Link
+                      href={`/dashboard/vets/view?id=${vet._id}`}
+                      className={buttonVariants({ variant: "outline" }) + " rounded-lg"}
+                    >
+                      Review
+                    </Link>
                   </TableCell>
                 </TableRow>
               ))}
@@ -126,11 +132,11 @@ export default function Page() {
         </div>
       ) : (
         <div className="empty-state">
-          <Users className="h-12 w-12 text-muted-foreground/50" />
-          <h3 className="text-lg font-semibold">No users found</h3>
-          <p className="text-muted-foreground text-sm">
-            There are no registered users yet.
-          </p>
+          <div className="empty-state-icon">
+            <Stethoscope />
+          </div>
+          <h3>No pending applications</h3>
+          <p>There are no veterinarian applications awaiting review.</p>
         </div>
       )}
 
@@ -210,6 +216,6 @@ export default function Page() {
           </PaginationItem>
         </PaginationContent>
       </Pagination>
-    </div>
+    </>
   );
 }

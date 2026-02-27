@@ -6,6 +6,13 @@ const { protectAdmin } = require("../middleware/auth");
 const { login } = require("../controllers/admin");
 
 const { getUsers } = require("../controllers/admin/users");
+const { getStats } = require("../controllers/admin/stats");
+
+const {
+  getVets,
+  getVetById,
+  updateVetStatus,
+} = require("../controllers/admin/vets");
 
 const {
   getVendors,
@@ -64,6 +71,7 @@ router.use(protectAdmin);
 
 // User route
 router.route("/users").get(getUsers);
+router.route("/stats").get(getStats);
 router.route("/adoptions/fetch").get(getApprovedAdoptions);
 router.route("/adoptions/status/:id").post(setAdoptionStatus);
 router.route("/adoptions/order").get(getAdoptionOrders);
@@ -74,6 +82,11 @@ router.route("/vendors").get(getVendors);
 router.route("/vendors/products").get(getProducts);
 router.route("/vendors/:id").get(getVendorById);
 router.route("/vendors/status").post(updateVendorStatus);
+
+// Vet routes
+router.route("/vets").get(getVets);
+router.route("/vets/status").post(updateVetStatus);
+router.route("/vets/:id").get(getVetById);
 
 router.route("/orders").get(getOrders);
 router.route("/orders/:id").get(fetchOrder);
