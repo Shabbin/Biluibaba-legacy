@@ -9,7 +9,14 @@ import { Button } from "@/components/ui/button";
 import axios from "@/lib/axios";
 import { formatDate } from "@/lib/time";
 
-import { Loader2, User } from "lucide-react";
+import {
+  Loader2,
+  Store,
+  MapPin,
+  Landmark,
+  FileText,
+  IdCard,
+} from "lucide-react";
 
 export default function Page() {
   const search = useSearchParams();
@@ -24,7 +31,6 @@ export default function Page() {
   const fetchVendor = async () => {
     try {
       const { data } = await axios.get(`/api/admin/vendors/${vendorId}`);
-      console.log(data);
       setVendor(data.vendor);
     } catch (error) {
       toast({
@@ -72,154 +78,238 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="p-5">
+    <div className="dashboard-content">
       {loading ? (
-        <Loader2 className="animate-spin" />
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
       ) : (
         <div>
-          <div className="flex md:flex-row flex-col items-center gap-5">
-            <h2 className="text-2xl">Vendor Details: #{vendorId}</h2>
-            <p>
-              {vendor.status === "approved" ? (
-                <span className="px-4 py-1 bg-green-100 text-green-900 rounded">
-                  Approved
-                </span>
-              ) : vendor.status === "pending" ? (
-                <span className="px-4 py-1 bg-yellow-100 text-yellow-900  rounded">
-                  Pending
-                </span>
-              ) : (
-                <span className="px-4 py-1 bg-red-100 text-red-900 rounded">
-                  Rejected
-                </span>
-              )}
-            </p>
-          </div>
-
-          <p className="my-2">{formatDate(vendor.createdAt)}</p>
-
-          <div className="flex md:flex-row flex-col gap-5">
-            <div className="basis-2/3">
-              <div className="p-4 border rounded-xl my-2">
-                <p className="mb-2">
-                  <strong>Vendor name:</strong> {vendor.name}
-                </p>
-                <p className="mb-2">
-                  <strong>Vendor type:</strong> {vendor.type}
-                </p>
-                <p className="mb-2">
-                  <strong>Phone Number: </strong> {vendor.phoneNumber}
-                </p>
-                <p className="mb-2">
-                  <strong>Email: </strong> {vendor.email}
-                </p>
-                <p className="mb-2">
-                  <strong>Store name: </strong> {vendor.storeName}
-                </p>
-                <h2 className="text-lg font-bold my-2">Address</h2>
-                <p className="mb-2">
-                  <strong>Store address: </strong> {vendor.address.store}
-                </p>
-                <p className="mb-2">
-                  <strong>Store state: </strong> {vendor.address.state}
-                </p>
-                <p className="mb-2">
-                  <strong>Store area: </strong> {vendor.address.area}
-                </p>
-                <p className="mb-2">
-                  <strong>Store district: </strong> {vendor.address.district}
-                </p>
-                <p className="mb-2">
-                  <strong>Store postcode: </strong> {vendor.address.postcode}
-                </p>
-                <p className="mb-2">
-                  <strong>Full address: </strong> {vendor.address.fullAddress}
-                </p>
-                <p className="mb-2">
-                  <strong>Pickup address: </strong>{" "}
-                  {vendor.address.pickupAddress}
-                </p>
-
-                <h2 className="text-lg font-bold my-2">Bank Information</h2>
-                <p className="mb-2">
-                  <strong>Account type: </strong> {vendor.bank.accountType}
-                </p>
-                <p className="mb-2">
-                  <strong>Account name: </strong> {vendor.bank.accountName}
-                </p>
-                <p className="mb-2">
-                  <strong>Account number: </strong> {vendor.bank.accountNumber}
-                </p>
-
-                <h2 className="text-lg font-bold my-2">Tax Information</h2>
-                <p className="mb-2">
-                  <strong>TIN: </strong> {vendor.tax.tin}
-                </p>
-                <p className="mb-2">
-                  <strong>Trade license: </strong> {vendor.tax.tradeLicense}
+          {/* Page Header */}
+          <div className="page-header">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+              <div className="flex-1">
+                <h2>Vendor Details</h2>
+                <p>
+                  #{vendorId} · Joined {formatDate(vendor.createdAt)}
                 </p>
               </div>
+              <div>
+                {vendor.status === "approved" ? (
+                  <span className="status-badge status-badge--success">
+                    Approved
+                  </span>
+                ) : vendor.status === "pending" ? (
+                  <span className="status-badge status-badge--warning">
+                    Pending
+                  </span>
+                ) : (
+                  <span className="status-badge status-badge--danger">
+                    Rejected
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="header-accent" />
+          </div>
 
-              <div className="p-4 border rounded-xl my-2">
-                <h2 className="text-xl font-semibold mb-2">
-                  Other Informations
-                </h2>
-                <p className="mb-2">
-                  <strong>NID Number: </strong> {vendor.nid.number}
-                </p>
-                <p className="mb-2 font-bold">NID front</p>
-                <img
-                  src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/vendor/${vendor.nid.front}`}
-                  alt={vendor.nid.number}
-                  className="rounded-lg m-2 w-[300px]"
-                />
-                <p className="mb-2 font-bold">NID back</p>
-                <img
-                  src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/vendor/${vendor.nid.back}`}
-                  alt={vendor.nid.number}
-                  className="rounded-lg m-2 w-[300px]"
-                />
+          <div className="flex md:flex-row flex-col gap-6">
+            {/* Left Column */}
+            <div className="basis-2/3 space-y-6">
+              {/* Vendor Information Card */}
+              <div className="rounded-xl border bg-card overflow-hidden">
+                <div className="p-4 border-b bg-muted/30">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <Store className="h-5 w-5 text-primary" />
+                    Vendor Information
+                  </h3>
+                </div>
+                <div className="p-4">
+                  <div className="grid grid-cols-3 gap-1 py-2 border-b last:border-0">
+                    <span className="text-muted-foreground text-sm">Vendor Name</span>
+                    <span className="col-span-2 text-sm font-medium">{vendor.name}</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1 py-2 border-b last:border-0">
+                    <span className="text-muted-foreground text-sm">Vendor Type</span>
+                    <span className="col-span-2 text-sm font-medium">{vendor.type}</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1 py-2 border-b last:border-0">
+                    <span className="text-muted-foreground text-sm">Phone Number</span>
+                    <span className="col-span-2 text-sm font-medium">{vendor.phoneNumber}</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1 py-2 border-b last:border-0">
+                    <span className="text-muted-foreground text-sm">Email</span>
+                    <span className="col-span-2 text-sm font-medium">{vendor.email}</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1 py-2 border-b last:border-0">
+                    <span className="text-muted-foreground text-sm">Store Name</span>
+                    <span className="col-span-2 text-sm font-medium">{vendor.storeName}</span>
+                  </div>
+                </div>
+              </div>
 
-                <p className="mb-2">
-                  <strong></strong>
-                </p>
+              {/* Address Card */}
+              <div className="rounded-xl border bg-card overflow-hidden">
+                <div className="p-4 border-b bg-muted/30">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <MapPin className="h-5 w-5 text-primary" />
+                    Address
+                  </h3>
+                </div>
+                <div className="p-4">
+                  <div className="grid grid-cols-3 gap-1 py-2 border-b last:border-0">
+                    <span className="text-muted-foreground text-sm">Store Address</span>
+                    <span className="col-span-2 text-sm font-medium">{vendor.address.store}</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1 py-2 border-b last:border-0">
+                    <span className="text-muted-foreground text-sm">State</span>
+                    <span className="col-span-2 text-sm font-medium">{vendor.address.state}</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1 py-2 border-b last:border-0">
+                    <span className="text-muted-foreground text-sm">Area</span>
+                    <span className="col-span-2 text-sm font-medium">{vendor.address.area}</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1 py-2 border-b last:border-0">
+                    <span className="text-muted-foreground text-sm">District</span>
+                    <span className="col-span-2 text-sm font-medium">{vendor.address.district}</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1 py-2 border-b last:border-0">
+                    <span className="text-muted-foreground text-sm">Postcode</span>
+                    <span className="col-span-2 text-sm font-medium">{vendor.address.postcode}</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1 py-2 border-b last:border-0">
+                    <span className="text-muted-foreground text-sm">Full Address</span>
+                    <span className="col-span-2 text-sm font-medium">{vendor.address.fullAddress}</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1 py-2 border-b last:border-0">
+                    <span className="text-muted-foreground text-sm">Pickup Address</span>
+                    <span className="col-span-2 text-sm font-medium">{vendor.address.pickupAddress}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bank Information Card */}
+              <div className="rounded-xl border bg-card overflow-hidden">
+                <div className="p-4 border-b bg-muted/30">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <Landmark className="h-5 w-5 text-primary" />
+                    Bank Information
+                  </h3>
+                </div>
+                <div className="p-4">
+                  <div className="grid grid-cols-3 gap-1 py-2 border-b last:border-0">
+                    <span className="text-muted-foreground text-sm">Account Type</span>
+                    <span className="col-span-2 text-sm font-medium">{vendor.bank.accountType}</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1 py-2 border-b last:border-0">
+                    <span className="text-muted-foreground text-sm">Account Name</span>
+                    <span className="col-span-2 text-sm font-medium">{vendor.bank.accountName}</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1 py-2 border-b last:border-0">
+                    <span className="text-muted-foreground text-sm">Account Number</span>
+                    <span className="col-span-2 text-sm font-medium">{vendor.bank.accountNumber}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tax Information Card */}
+              <div className="rounded-xl border bg-card overflow-hidden">
+                <div className="p-4 border-b bg-muted/30">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-primary" />
+                    Tax Information
+                  </h3>
+                </div>
+                <div className="p-4">
+                  <div className="grid grid-cols-3 gap-1 py-2 border-b last:border-0">
+                    <span className="text-muted-foreground text-sm">TIN</span>
+                    <span className="col-span-2 text-sm font-medium">{vendor.tax.tin}</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1 py-2 border-b last:border-0">
+                    <span className="text-muted-foreground text-sm">Trade License</span>
+                    <span className="col-span-2 text-sm font-medium">{vendor.tax.tradeLicense}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* NID / Identity Card */}
+              <div className="rounded-xl border bg-card overflow-hidden">
+                <div className="p-4 border-b bg-muted/30">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <IdCard className="h-5 w-5 text-primary" />
+                    Identity Documents
+                  </h3>
+                </div>
+                <div className="p-4 space-y-4">
+                  <div className="grid grid-cols-3 gap-1 py-2 border-b last:border-0">
+                    <span className="text-muted-foreground text-sm">NID Number</span>
+                    <span className="col-span-2 text-sm font-medium">{vendor.nid.number}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-4 pt-2">
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-2">NID Front</p>
+                      <img
+                        src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/vendor/${vendor.nid.front}`}
+                        alt={vendor.nid.number}
+                        className="rounded-xl border w-[300px]"
+                        onError={(e) => { (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' fill='%23f5f5f5'%3E%3Crect width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' fill='%23999' font-size='14' text-anchor='middle' dy='.3em'%3EImage unavailable%3C/text%3E%3C/svg%3E"; }}
+                      />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-2">NID Back</p>
+                      <img
+                        src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/vendor/${vendor.nid.back}`}
+                        alt={vendor.nid.number}
+                        className="rounded-xl border w-[300px]"
+                        onError={(e) => { (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' fill='%23f5f5f5'%3E%3Crect width='300' height='200'/%3E%3Ctext x='50%25' y='50%25' fill='%23999' font-size='14' text-anchor='middle' dy='.3em'%3EImage unavailable%3C/text%3E%3C/svg%3E"; }}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
+            {/* Right Sidebar */}
             <div className="basis-1/3">
-              <h2 className="text-xl font-semibold mb-2">Update Status</h2>
-              <div className="my-5 flex flex-col gap-2">
-                {vendor.status === "approved" ? (
-                  <Button
-                    className="w-full"
-                    onClick={() => updateStatus("rejected")}
-                    disabled={statusLoading}
-                  >
-                    {statusLoading && <Loader2 className="mr-2" />}
-                    Reject Vendor
+              <div className="rounded-xl border bg-card overflow-hidden sticky top-6">
+                <div className="p-4 border-b bg-muted/30">
+                  <h3 className="text-lg font-semibold">Update Status</h3>
+                </div>
+                <div className="p-4 flex flex-col gap-3">
+                  {vendor.status === "approved" ? (
+                    <Button
+                      className="w-full"
+                      variant="outline"
+                      onClick={() => updateStatus("rejected")}
+                      disabled={statusLoading}
+                    >
+                      {statusLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      Reject Vendor
+                    </Button>
+                  ) : vendor.status === "pending" ? (
+                    <Button
+                      className="w-full"
+                      onClick={() => updateStatus("approved")}
+                      disabled={statusLoading}
+                    >
+                      {statusLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      Approve Vendor
+                    </Button>
+                  ) : (
+                    <Button
+                      className="w-full"
+                      variant="outline"
+                      onClick={() => updateStatus("approved")}
+                      disabled={statusLoading}
+                    >
+                      {statusLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      Reactivate Vendor
+                    </Button>
+                  )}
+                  <Button className="w-full" variant="destructive">
+                    Delete Vendor
                   </Button>
-                ) : vendor.status === "pending" ? (
-                  <Button
-                    className="w-full"
-                    onClick={() => updateStatus("approved")}
-                    disabled={statusLoading}
-                  >
-                    {statusLoading && <Loader2 className="mr-2" />}
-                    Approve Vendor
-                  </Button>
-                ) : (
-                  <Button
-                    className="w-full"
-                    onClick={() => updateStatus("approved")}
-                    disabled={statusLoading}
-                  >
-                    {statusLoading && <Loader2 className="mr-2" />}
-                    Reactivate Vendor
-                  </Button>
-                )}
-                <Button className="w-full" variant="destructive">
-                  Delete Vendor
-                </Button>
+                </div>
               </div>
             </div>
           </div>

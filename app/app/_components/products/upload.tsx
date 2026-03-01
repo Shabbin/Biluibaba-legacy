@@ -33,11 +33,13 @@ import { productCategories } from "@/app/_components/products/categories";
 
 import axios from "@/lib/axios";
 
-import { Loader2 } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 
 export default function Page({ product }: { product?: any }) {
   const [loading, setLoading] = useState<boolean>(false);
   const [updateLoading, setUpdateLoading] = useState<boolean>(false);
+  const [existingImages, setExistingImages] = useState<any[]>(product?.images || []);
+  const [deletedImageIds, setDeletedImageIds] = useState<string[]>([]);
 
   const newProductForm = useForm<z.infer<typeof ProductSchema>>({
     resolver: zodResolver(ProductSchema),
@@ -58,6 +60,13 @@ export default function Page({ product }: { product?: any }) {
     },
   });
 
+  const removeExistingImage = (id: string) => {
+    setExistingImages((prev) => prev.filter((img) => (img._id || img.id) !== id));
+  setDeletedImageIds((prev) => [...prev, id]);
+  };
+
+  const {images: newProductImages} = newProductForm.watch()
+
   const category = useFieldArray({
     control: newProductForm.control,
     name: "categories",
@@ -75,7 +84,7 @@ export default function Page({ product }: { product?: any }) {
     formData.append("description", form.description);
     formData.append("price", form.price.toString());
     formData.append("size", form.size.toString());
-    formData.append("discount", form.discount.toString());
+    formData.append("discount", form?.discount?.toString() || form.price.toString());
     formData.append("quantity", form.quantity.toString());
 
     form.categories.forEach((category, index) => {
@@ -126,46 +135,70 @@ export default function Page({ product }: { product?: any }) {
   }
 
   async function onUpdate(form: z.infer<typeof ProductSchema>) {
-    setUpdateLoading(true);
+  setUpdateLoading(true);
 
-    try {
-      const { data } = await axios.post("/api/product/update", {
-        productId: product.productId,
-        name: form.name,
-        description: form.description,
-        price: form.price.toString(),
-        size: form.size.toString(),
-        discount: form.discount.toString(),
-        quantity: form.quantity.toString(),
-        categories: form.categories,
-        tags: form.tags,
+  try {
+    const formData = new FormData();
+
+    formData.append("productId", product.productId);
+    formData.append("name", form.name);
+    formData.append("description", form.description);
+    formData.append("price", form.price.toString());
+    formData.append("size", form.size.toString());
+    formData.append("discount", form?.discount?.toString() || form.price.toString());
+    formData.append("quantity", form.quantity.toString());
+
+    // Append categories
+    form.categories.forEach((category, index) => {
+      formData.append(`categories[${index}][parent]`, category.parent);
+      formData.append(`categories[${index}][category]`, category.category);
+      formData.append(`categories[${index}][sub]`, category.sub);
+    });
+
+    // Append tags
+    form.tags?.forEach((tag, index) => {
+      formData.append(`tags[${index}]`, tag);
+    });
+
+    // Append NEW image files
+    form.images.forEach((image) => {
+      if (image.file) formData.append("newImages", image.file);
+    });
+
+    deletedImageIds.forEach((id) => {
+      formData.append("deletedImages", id);
+    });
+
+    const { data } = await axios.post("/api/product/update", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    if (data.success) {
+      toast({
+        title: "Success",
+        description: "Product updated successfully",
       });
-
-      if (data.success) {
-        toast({
-          title: "Success",
-          description: "Product updated successfully",
-        });
-
-        return window.location.reload();
-      } else {
-        toast({
-          title: "Error",
-          description: "Failed to update product",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error(error);
+      return window.location.reload();
+    } else {
       toast({
         title: "Error",
-        description: "Something went wrong. Please try again!",
+        description: "Failed to update product",
         variant: "destructive",
       });
-    } finally {
-      setUpdateLoading(false);
     }
+  } catch (error) {
+    console.error(error);
+    toast({
+      title: "Error",
+      description: "Something went wrong. Please try again!",
+      variant: "destructive",
+    });
+  } finally {
+    setUpdateLoading(false);
   }
+}
 
   return (
     <div className="p-6">
@@ -428,65 +461,94 @@ export default function Page({ product }: { product?: any }) {
           />
 
           <div className="space-y-4">
-            <FormLabel>Product Images</FormLabel>
-            {product?.images ? (
-              <div className="flex flex-wrap gap-3 my-2">
-                {product.images.map((image: any) => (
-                  <div key={image.id} className="relative group">
-                    <img
-                      src={image.path}
-                      alt={image.alt}
-                      className="w-20 h-20 object-cover rounded-xl ring-1 ring-border/60"
-                    />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {images.fields.map((field, index) => (
-                  <div key={field.id} className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 border border-border/40">
-                    <FormItem className="w-full">
-                      <FormControl>
-                        <Input
-                          type="file"
-                          accept="image/jpeg, image/png, image/jpg"
-                          onChange={(e) => {
-                            newProductForm.setValue(
-                              `images.${index}.file`,
-                              e.target.files?.[0] || null
-                            );
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage>
-                        {newProductForm.formState.errors.images?.[index]?.file
-                          ?.message ||
-                          newProductForm.formState.errors.images?.[index]
-                            ?.message}
-                      </FormMessage>
-                    </FormItem>
+  <FormLabel>Product Images</FormLabel>
+  
+  {/* 1. Show Existing Images with a Remove Button */}
+  {existingImages.length > 0 && (
+    <div className="flex flex-wrap gap-3 my-2">
+      {existingImages.map((image: any) => {
+        const imageId = image._id || image.id;
+        return <div key={imageId} className="relative group">
+          <img
+            src={image.path}
+            alt={image.alt || "Product image"}
+            className="w-20 h-20 object-cover rounded-xl ring-1 ring-border/60"
+            onError={(e) => { (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' fill='%23f5f5f5'%3E%3Crect width='80' height='80'/%3E%3Ctext x='50%25' y='50%25' fill='%23999' font-size='10' text-anchor='middle' dy='.3em'%3ENo Image%3C/text%3E%3C/svg%3E"; }}
+          />
+          <button
+            type="button"
+            onClick={() => removeExistingImage(imageId)}
+            className="absolute -top-2 -right-2 bg-destructive text-white rounded-full p-1 hidden group-hover:block"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      })}
+    </div>
+  )}
 
-                    <Button
-                      variant="destructive"
-                      type="button"
-                      disabled={images.fields.length === 1}
-                      onClick={() => images.remove(index)}
-                    >
-                      Remove
-                    </Button>
-                  </div>
-                ))}
-                {images.fields.length < 4 && (
-                  <Button
-                    type="button"
-                    onClick={() => images.append({ file: null })}
-                  >
-                    Add More Image
-                  </Button>
-                )}
-              </div>
-            )}
+  {/* 2. Show New Image Previews */}
+  {newProductImages && newProductImages?.length > 0 && (
+    <div className="flex flex-wrap gap-3 my-2">
+      {newProductImages.map((image, index) => (
+        image.file && (
+          <div key={index} className="relative group">
+            <img
+              src={URL.createObjectURL(image.file)}
+              alt={`Preview ${index + 1}`}
+              className="w-20 h-20 object-cover rounded-md ring-1 ring-border/60"
+            />
           </div>
+        )
+      ))}
+    </div>
+  )}
+
+  {/* 3. Render File Inputs for New Images */}
+  <div className="space-y-3">
+    {images.fields.map((field, index) => (
+      <div key={field.id} className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 border border-border/40">
+        <FormItem className="w-full">
+          <FormControl>
+            <Input
+              type="file"
+              accept="image/jpeg, image/png, image/jpg"
+              onChange={(e) => {
+                newProductForm.setValue(
+                  `images.${index}.file`,
+                  e.target.files?.[0] || null
+                );
+              }}
+            />
+          </FormControl>
+          <FormMessage>
+            {newProductForm.formState.errors.images?.[index]?.file?.message ||
+             newProductForm.formState.errors.images?.[index]?.message}
+          </FormMessage>
+        </FormItem>
+
+        <Button
+          variant="destructive"
+          type="button"
+          disabled={images.fields.length === 1 && existingImages.length === 0}
+          onClick={() => images.remove(index)}
+        >
+          Remove
+        </Button>
+      </div>
+    ))}
+    
+    {/* Limit total images (existing + new) to 4, adjust as needed */}
+    {(images.fields.length + existingImages.length) < 4 && (
+      <Button
+        type="button"
+        onClick={() => images.append({ file: null })}
+      >
+        Add More Image
+      </Button>
+    )}
+  </div>
+</div>
 
           <FormField
             control={newProductForm.control}

@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/pagination";
 
 import { Loader2 } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -104,11 +105,10 @@ export default function Page() {
                 <TableRow key={order.id}>
                   <TableCell>{order.orderId}</TableCell>
                   <TableCell className="flex flex-row items-center gap-2">
-                    <img
-                      src={order.adoptionId.images[0].path}
-                      className="w-8 h-8 rounded-full"
-                      alt={order.adoptionId.name}
-                    />
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={order.adoptionId.images[0]?.path} alt={order.adoptionId.name} />
+                      <AvatarFallback className="bg-muted text-muted-foreground text-xs">🐾</AvatarFallback>
+                    </Avatar>
                     <div>{order.adoptionId.name}</div>
                   </TableCell>
                   <TableCell>
@@ -127,11 +127,12 @@ export default function Page() {
                     )}
                   </TableCell>
                   <TableCell className="flex flex-row items-center gap-2">
-                    <img
-                      src={order.userId.avatar}
-                      className="w-8 h-8 rounded-full"
-                      alt={order.userId.name}
-                    />
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={order.userId.avatar} alt={order.userId.name} />
+                      <AvatarFallback className="bg-gradient-to-br from-[#FF8A80] to-[#FF6B61] text-white text-xs font-bold">
+                        {order.userId.name?.charAt(0)?.toUpperCase() || "U"}
+                      </AvatarFallback>
+                    </Avatar>
                     <div>{order.userId.name}</div>
                   </TableCell>
                   <TableCell>{formatDate(order.createdAt)}</TableCell>

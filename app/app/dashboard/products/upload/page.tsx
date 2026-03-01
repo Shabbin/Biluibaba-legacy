@@ -1,3 +1,4 @@
+"use client"
 import ProductUploadForm from "@/app/_components/products/upload";
 
 export default function Page() {

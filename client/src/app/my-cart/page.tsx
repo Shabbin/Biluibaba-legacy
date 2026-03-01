@@ -237,24 +237,16 @@ export default function Cart() {
               </div>
               <div className="col-span-1">
                 <div className="bg-white rounded-lg p-5 mb-5">
-                  <div className="flex flex-row items-center justify-between border-dotted border-b-2 py-5">
-                    <div className="flex items-center gap-2">
-                      <img src="/coupon.png" alt="coupon" className="w-8 h-8" />
-                      <div>
-                        <div className="text-sm uppercase">Whiskas</div>
-                        <div className="text-xs text-green-500">
-                          Save ৳234 using this coupon
-                        </div>
+                  <div className="flex items-center gap-3 py-3">
+                    <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center shrink-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                    </div>
+                    <div>
+                      <div className="font-medium text-sm">Have a coupon?</div>
+                      <div className="text-xs text-gray-500">
+                        You can apply coupon codes at checkout
                       </div>
                     </div>
-                    <Button
-                      text="Apply"
-                      type="default"
-                      className="!py-2 !px-8"
-                    />
-                  </div>
-                  <div className="text-green-700 text-center cursor-pointer pt-5">
-                    View all Coupons &gt;
                   </div>
                 </div>
                 <div className="p-4 border rounded-lg bg-white">

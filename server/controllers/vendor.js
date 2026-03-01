@@ -130,6 +130,37 @@ module.exports.createVendor = async (request, response, next) => {
   }
 };
 
+module.exports.getPublicStore = async (request, response, next) => {
+  const { id } = request.params;
+  const { page = 1, sort = "-createdAt" } = request.query;
+  const limit = 20;
+
+  const vendor = await Vendor.findById(id).select(
+    "storeName name address.store address.state address.district ratings totalListedProducts createdAt"
+  );
+
+  if (!vendor) return next(new ErrorResponse("Store not found", 404));
+
+  const totalProducts = await Products.countDocuments({
+    vendorId: id,
+    status: true,
+  });
+
+  const products = await Products.find({ vendorId: id, status: true })
+    .sort(sort)
+    .skip((page - 1) * limit)
+    .limit(limit);
+
+  return response.status(200).json({
+    success: true,
+    vendor,
+    products,
+    totalProducts,
+    totalPages: Math.ceil(totalProducts / limit),
+    currentPage: Number(page),
+  });
+};
+
 module.exports.fetchAllProducts = async (request, response, next) => {
   let { count, type } = request.query;
 

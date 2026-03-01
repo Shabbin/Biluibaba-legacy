@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/pagination";
 
 import { Loader2 } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -105,21 +106,21 @@ export default function Page() {
                 <TableRow key={adoption.id}>
                   <TableCell>{adoption.adoptionId}</TableCell>
                   <TableCell className="flex flex-row items-center gap-2">
-                    <img
-                      src={adoption.images[0].path}
-                      className="w-8 h-8 rounded-full"
-                      alt={adoption.name}
-                    />
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={adoption.images[0]?.path} alt={adoption.name} />
+                      <AvatarFallback className="bg-muted text-muted-foreground text-xs">🐾</AvatarFallback>
+                    </Avatar>
                     <div>{adoption.name}</div>
                   </TableCell>
                   <TableCell>{adoption.species}</TableCell>
                   <TableCell>{formatDate(adoption.createdAt)}</TableCell>
                   <TableCell className="flex flex-row items-center gap-2">
-                    <img
-                      src={adoption.userId.avatar}
-                      className="w-8 h-8 rounded-full"
-                      alt={adoption.userId.name}
-                    />
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={adoption.userId.avatar} alt={adoption.userId.name} />
+                      <AvatarFallback className="bg-gradient-to-br from-[#FF8A80] to-[#FF6B61] text-white text-xs font-bold">
+                        {adoption.userId.name?.charAt(0)?.toUpperCase() || "U"}
+                      </AvatarFallback>
+                    </Avatar>
                     <div>{adoption.userId.name}</div>
                   </TableCell>
                   <TableCell>

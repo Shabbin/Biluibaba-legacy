@@ -37,6 +37,7 @@ import {
   XCircle,
   AlertCircle,
 } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export default function AppointmentDetailsPage() {
   const search = useSearchParams();
@@ -527,11 +528,12 @@ export default function AppointmentDetailsPage() {
               <h3 className="font-semibold">Pet Owner</h3>
             </div>
             <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
-              <img
-                src={appointment.user.avatar}
-                alt={appointment.user.name}
-                className="h-12 w-12 rounded-full object-cover ring-2 ring-white shadow"
-              />
+              <Avatar className="h-12 w-12 ring-2 ring-white shadow">
+                <AvatarImage src={appointment.user.avatar} alt={appointment.user.name} />
+                <AvatarFallback className="bg-gradient-to-br from-[#FF8A80] to-[#FF6B61] text-white text-sm font-bold">
+                  {appointment.user.name?.charAt(0)?.toUpperCase() || "U"}
+                </AvatarFallback>
+              </Avatar>
               <div>
                 <h4 className="font-medium">{appointment.user.name}</h4>
                 <p className="text-sm text-muted-foreground">{appointment.user.email}</p>

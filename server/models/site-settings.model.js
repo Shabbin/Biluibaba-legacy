@@ -63,6 +63,20 @@ const SiteSettingsSchema = new mongoose.Schema(
         },
       ],
     },
+    product_ad: {
+      title: { type: String, default: "Treat Them Right" },
+      description: {
+        type: String,
+        default:
+          "Premium nutrition choices for your beloved pets with exclusive discounts.",
+      },
+      button_text: { type: String, default: "Shop Now" },
+      button_link: { type: String, default: "/products" },
+      image: {
+        filename: { type: String, default: "" },
+        path: { type: String, default: "" },
+      },
+    },
   },
   { collection: "site-settings", timestamps: true }
 );

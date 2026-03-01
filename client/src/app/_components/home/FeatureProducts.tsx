@@ -80,20 +80,21 @@ const FeatureProducts: React.FC<FeatureProductsProps> = ({ category, type }) => 
         }}
         loop={true}
       >
-        {products.map((product) => (
-          <SwiperSlide key={product._id} className="md:px-0 px-10">
+        {products.map((product) => {
+          return  (<SwiperSlide key={product._id} className="md:px-0 px-10">
             <Product
               id={product._id}
               name={product.name}
               src={product.images[0].path}
               price={product.price}
+              review={product.ratings}
               discount={product.discount}
               category={product.category}
               description={product.description}
               slug={product.slug}
             />
           </SwiperSlide>
-        ))}
+        )})}
       </Swiper>
     </div>
   );

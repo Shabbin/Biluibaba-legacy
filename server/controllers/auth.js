@@ -1,13 +1,23 @@
 const { google } = require("googleapis");
 const axios = require("axios");
 const crypto = require("crypto");
+const fs = require("fs");
+const path = require("path");
+const handlebars = require("handlebars");
+const multer = require("multer");
 
 const User = require("../models/user.model");
 const Orders = require("../models/order.model");
 const Appointments = require("../models/appointment.model");
 
 const ErrorResponse = require("../utils/ErrorResponse");
-const SendMail = require("../utils/SendMail");
+const { sendEmail } = require("../utils/SendMail");
+const Upload = require("../utils/Upload");
+
+const passwordResetTemplate = fs.readFileSync(
+  path.join(__dirname, "../templates/password-reset.hbs"),
+  "utf-8"
+);
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
@@ -24,8 +34,8 @@ module.exports.getUserInfo = async (request, response, next) => {
 module.exports.updateUserInfo = async (request, response, next) => {
   const { name, phoneNumber, shippingAddress } = request.body;
 
-  if (!name || !phoneNumber)
-    return next(new ErrorResponse("Missing information", 422));
+  if (!name)
+    return next(new ErrorResponse("Name is required", 422));
 
   const user = await User.findById(request.user.id);
 
@@ -404,14 +414,15 @@ module.exports.forgotPassword = async (request, response, next) => {
 
   // Send email
   try {
-    await SendMail({
+    const message = handlebars.compile(passwordResetTemplate)({
+      name: user.name,
+      resetUrl,
+    });
+
+    await sendEmail({
       to: user.email,
       subject: "Password Reset Request - Biluibaba",
-      template: "password-reset",
-      data: {
-        name: user.name,
-        resetUrl,
-      },
+      message,
     });
 
     return response.status(200).json({ 
@@ -456,3 +467,33 @@ module.exports.resetPassword = async (request, response, next) => {
     data: "Password reset successful" 
   });
 };
+
+module.exports.updateAvatar = async (request, response, next) => {
+  if (!request.file) return next(new ErrorResponse("Please upload an image", 422));
+
+  const url = request.protocol + "://" + request.get("host");
+  const user = await User.findById(request.user.id);
+
+  if (!user) return next(new ErrorResponse("User not found", 404));
+
+  user.avatar = url + "/uploads/profile/" + request.file.filename;
+  await user.save();
+
+  return response.status(200).json({
+    success: true,
+    data: "Avatar updated successfully",
+    avatar: user.avatar,
+  });
+};
+
+// Multer storage for user avatar uploads
+const avatarStorage = multer.diskStorage({
+  destination: (request, file, cb) => {
+    cb(null, path.join(__dirname, "../uploads/profile"));
+  },
+  filename: (request, file, cb) => {
+    cb(null, `user-${request.user.id}-${Date.now()}${path.extname(file.originalname)}`);
+  },
+});
+
+exports.uploadAvatar = Upload(avatarStorage).single("avatar");

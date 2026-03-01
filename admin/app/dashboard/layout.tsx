@@ -1,5 +1,6 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
+import { Separator } from "@/components/ui/separator";
 
 export default function DashboardLayout({
   children,
@@ -8,12 +9,22 @@ export default function DashboardLayout({
 }>) {
   return (
     <SidebarProvider>
-      {/* Sidebar */}
       <AppSidebar />
-      <div className="px-5 w-full">
-        {/* Sidebar Trigger */}
-        <SidebarTrigger />
-        <div>{children}</div>
+      <div className="flex-1 flex flex-col min-h-dvh bg-background">
+        {/* Top bar */}
+        <header className="sticky top-0 z-30 flex items-center gap-3 h-14 px-4 bg-white/80 backdrop-blur-md border-b border-border/50">
+          <SidebarTrigger className="text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors" />
+          <Separator orientation="vertical" className="h-5" />
+          <span className="text-sm font-medium text-muted-foreground">
+            Admin Dashboard
+          </span>
+        </header>
+        {/* Page content */}
+        <div className="flex-1">
+          <div className="dashboard-content animate-fadeIn">
+            {children}
+          </div>
+        </div>
       </div>
     </SidebarProvider>
   );

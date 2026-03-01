@@ -33,6 +33,7 @@ const Category: React.FC<VetCategoryProps> = ({ categories }) => {
                 src={category.src}
                 alt={category.name}
                 className="w-full hover:scale-105 transition-transform duration-300"
+                onError={(e) => { (e.target as HTMLImageElement).style.opacity = "0.3"; }}
               />
             </Link>
           ))}

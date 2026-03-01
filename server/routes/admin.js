@@ -5,7 +5,22 @@ const { protectAdmin } = require("../middleware/auth");
 
 const { login } = require("../controllers/admin");
 
+const {
+  getAllTestimonials,
+  createTestimonial,
+  updateTestimonial,
+  deleteTestimonial,
+  uploadTestimonialImage,
+} = require("../controllers/admin/testimonials");
+
 const { getUsers } = require("../controllers/admin/users");
+const { getStats } = require("../controllers/admin/stats");
+
+const {
+  getVets,
+  getVetById,
+  updateVetStatus,
+} = require("../controllers/admin/vets");
 
 const {
   getVendors,
@@ -25,6 +40,13 @@ const {
   getAdoptionOrders,
   getAdoptionOrderById,
 } = require("../controllers/admin/adoptions");
+
+const {
+  getCoupons,
+  createCoupon,
+  updateCoupon,
+  deleteCoupon,
+} = require("../controllers/admin/coupons");
 
 const {
   getSiteSettings,
@@ -54,6 +76,8 @@ const {
   addBestDealsProduct,
   deleteBestDealsProduct,
   updateBestDealsDuration,
+  updateProductAd,
+  uploadProductAd,
 } = require("../controllers/admin/site-settings");
 
 router.route("/login").post(login);
@@ -64,6 +88,7 @@ router.use(protectAdmin);
 
 // User route
 router.route("/users").get(getUsers);
+router.route("/stats").get(getStats);
 router.route("/adoptions/fetch").get(getApprovedAdoptions);
 router.route("/adoptions/status/:id").post(setAdoptionStatus);
 router.route("/adoptions/order").get(getAdoptionOrders);
@@ -75,12 +100,22 @@ router.route("/vendors/products").get(getProducts);
 router.route("/vendors/:id").get(getVendorById);
 router.route("/vendors/status").post(updateVendorStatus);
 
+// Vet routes
+router.route("/vets").get(getVets);
+router.route("/vets/status").post(updateVetStatus);
+router.route("/vets/:id").get(getVetById);
+
 router.route("/orders").get(getOrders);
 router.route("/orders/:id").get(fetchOrder);
 router.route("/orders/status").post(updateOrderStatus);
 
 router.route("/products/:productId").get(getProduct);
 router.route("/products/status").post(updateProductStatus);
+
+// Coupon routes
+router.route("/coupons").get(getCoupons);
+router.route("/coupons/create").post(createCoupon);
+router.route("/coupons/:id").put(updateCoupon).delete(deleteCoupon);
 
 //Site settings route
 router
@@ -131,5 +166,18 @@ router
   .route("/site-settings/best-deals/products/:productId")
   .delete(deleteBestDealsProduct);
 router.route("/site-settings/best-deals").post(updateBestDealsDuration);
+router
+  .route("/site-settings/product-ad")
+  .post(uploadProductAd, updateProductAd);
+
+// Testimonials routes
+router.route("/testimonials").get(getAllTestimonials);
+router
+  .route("/testimonials/create")
+  .post(uploadTestimonialImage, createTestimonial);
+router
+  .route("/testimonials/:id")
+  .put(uploadTestimonialImage, updateTestimonial)
+  .delete(deleteTestimonial);
 
 module.exports = router;

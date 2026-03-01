@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 type Vendor = {
   id?: string;
-  status?: boolean;
+  status?: string;
   name?: string;
   isVerified?: boolean;
   type?: string;

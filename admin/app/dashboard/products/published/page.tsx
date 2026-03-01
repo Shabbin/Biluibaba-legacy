@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 
 import Link from "next/link";
+import { Package } from "lucide-react";
 
 import { toast } from "@/hooks/use-toast";
 import {
@@ -72,10 +73,15 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="p-5">
-      <h2 className="text-4xl">Published Products</h2>
+    <>
+      <div className="page-header">
+        <h2>Published Products</h2>
+        <p>All approved and live products on the platform</p>
+        <div className="header-accent" />
+      </div>
 
       {products.length > 0 ? (
+        <div className="rounded-xl border border-border/60 overflow-hidden bg-card">
         <Table>
           <TableCaption>A list of all your published products</TableCaption>
           <TableHeader>
@@ -96,11 +102,11 @@ export default function Page() {
                 <TableCell>{product.name}</TableCell>
                 <TableCell>
                   {product.status == true ? (
-                    <span className="px-4 py-1 bg-green-100 text-green-900 font-bold rounded">
+                    <span className="status-badge status-badge--success">
                       Published
                     </span>
                   ) : (
-                    <span className="px-4 py-1 bg-yellow-100 text-yellow-900 font-bold rounded">
+                    <span className="status-badge status-badge--warning">
                       Pending
                     </span>
                   )}
@@ -128,7 +134,7 @@ export default function Page() {
                 <TableCell>
                   <Link
                     href={`/dashboard/products/view?id=${product.productId}`}
-                    className={buttonVariants({ variant: "default" })}
+                    className={buttonVariants({ variant: "outline" }) + " rounded-lg"}
                   >
                     View Product
                   </Link>
@@ -137,9 +143,12 @@ export default function Page() {
             ))}
           </TableBody>
         </Table>
+        </div>
       ) : (
-        <div className="font-bold text-gray-700 text-center py-5">
-          No published products found.
+        <div className="empty-state">
+          <div className="empty-state-icon"><Package /></div>
+          <h3>No published products found</h3>
+          <p>There are no published products on the platform yet.</p>
         </div>
       )}
 
@@ -243,6 +252,6 @@ export default function Page() {
           </PaginationItem>
         </PaginationContent>
       </Pagination>
-    </div>
+    </>
   );
 }

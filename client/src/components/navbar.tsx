@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/src/components/providers/AuthProvider";
-import axios from "@/src/lib/axiosInstance";
 import { productCategories } from "@/src/lib/categories";
 
 // Components
@@ -19,33 +18,42 @@ import MobileMenu from "@/src/components/navbar/MobileMenu";
 import { 
   FaMagnifyingGlass, 
   FaCartShopping, 
-  FaUser, 
   FaHeart, 
   FaLocationDot, 
   FaBars, 
   FaCat, 
   FaDog, 
   FaDove,
-  FaArrowRightToBracket
+  FaArrowRightToBracket,
+  FaUser,
+  FaArrowRightFromBracket,
 } from "react-icons/fa6";
 import { MdLocalOffer } from "react-icons/md";
 // [FUTURE] Non-ecommerce icon imports — uncomment when enabling vet, adoption & pro features
 // import { MdHealthAndSafety, MdVolunteerActivism } from "react-icons/md";
 // import { RiVipCrownFill } from "react-icons/ri";
 
+import { Avatar, AvatarImage, AvatarFallback } from "@/src/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/src/components/ui/dropdown-menu";
+
 import Logo from "@/public/logo-black.png";
 import { Button } from "./ui/button";
 
 const Navbar = () => {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   
   // State
   const [cartOpen, setCartOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
-  const [locationName, setLocationName] = useState("Dhaka, Bangladesh");
 
   // Handle Scroll Effect
   useEffect(() => {
@@ -56,32 +64,8 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Location Logic
-  const getUserCoordinates = (): Promise<{ lat: number; lng: number }> => {
-    return new Promise((resolve, reject) => {
-      if (!navigator.geolocation) reject(new Error("Geolocation not supported"));
-      navigator.geolocation.getCurrentPosition(
-        (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-        (err) => reject(err.message)
-      );
-    });
-  };
-
-  const getLocation = async () => {
-    try {
-      const { lat, lng } = await getUserCoordinates();
-      // Mocking the call for UI demo purposes, replace with your actual API
-      const { data } = await axios.get(`/location?lat=${lat}&lng=${lng}`);
-      if (data.success) localStorage.setItem("location", JSON.stringify(data));
-      setLocationName(data.locationName || "Current Location");
-    } catch (error) {
-      console.error("Location Error:", error);
-    }
-  };
-
   useEffect(() => {
     if (!localStorage.getItem("cart")) localStorage.setItem("cart", "[]");
-    getLocation();
   }, []);
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement> | React.MouseEvent<HTMLButtonElement>) => {
@@ -144,7 +128,7 @@ const Navbar = () => {
                 <span className="text-[10px] font-bold text-petzy-slate-light uppercase tracking-wide">Delivering To</span>
                 <div className="flex items-center gap-1 text-xs font-bold text-petzy-slate cursor-pointer hover:text-petzy-coral transition-colors">
                   <FaLocationDot className="text-petzy-coral" />
-                  <span className="truncate max-w-[120px]">{locationName}</span>
+                  <span className="truncate max-w-[120px]">Dhaka, Bangladesh</span>
                 </div>
               </div>
 
@@ -156,14 +140,60 @@ const Navbar = () => {
                   </div>
                 </Link>
 
-                <Link 
-                  href={user ? "/my-account" : "/login"}
-                  className="hidden md:flex flex-col items-center group"
-                >
-                  <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-petzy-slate group-hover:bg-petzy-coral group-hover:text-white transition-all duration-300">
-                    {user?<FaUser size="1.1em" />:<FaArrowRightToBracket size="1.1em" />}
+                {user ? (
+                  <div className="hidden md:block">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button className="focus:outline-none">
+                          <Avatar className="w-8 h-8 cursor-pointer ring-2 ring-transparent hover:ring-petzy-coral/30 transition-all duration-300">
+                            <AvatarImage src={user.avatar} alt={user.name} />
+                            <AvatarFallback className="bg-gradient-to-br from-petzy-coral to-petzy-coral/70 text-white text-sm font-bold">
+                              {user.name?.charAt(0)?.toUpperCase() || "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48 rounded-xl shadow-lg">
+                        <div className="px-3 py-2">
+                          <p className="text-sm font-semibold text-petzy-slate truncate">{user.name}</p>
+                          <p className="text-xs text-gray-400 truncate">{user.email}</p>
+                        </div>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem 
+                          className="cursor-pointer rounded-lg"
+                          onClick={() => router.push("/my-account")}
+                        >
+                          <FaUser className="mr-2 h-3.5 w-3.5" />
+                          My Account
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          className="cursor-pointer rounded-lg"
+                          onClick={() => router.push("/wishlist")}
+                        >
+                          <FaHeart className="mr-2 h-3.5 w-3.5" />
+                          Wishlist
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem 
+                          className="cursor-pointer rounded-lg text-red-600 focus:text-red-600 focus:bg-red-50"
+                          onClick={() => logout()}
+                        >
+                          <FaArrowRightFromBracket className="mr-2 h-3.5 w-3.5" />
+                          Sign Out
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
-                </Link>
+                ) : (
+                  <Link 
+                    href="/login"
+                    className="hidden md:flex flex-col items-center group"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-petzy-slate group-hover:bg-petzy-coral group-hover:text-white transition-all duration-300">
+                      <FaArrowRightToBracket size="1.1em" />
+                    </div>
+                  </Link>
+                )}
 
                 <div className="relative">
                    <Button

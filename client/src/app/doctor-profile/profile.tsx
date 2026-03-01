@@ -7,6 +7,7 @@ import { TimePicker, DatePicker } from "antd";
 import Input from "@/src/components/ui/input";
 import Select from "@/src/components/ui/select";
 import Button from "@/src/components/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/src/components/ui/avatar";
 
 const LazyMap = dynamic(() => import("@/src/components/map"), {
   ssr: false,
@@ -156,7 +157,10 @@ export default class DoctorProfile extends React.Component<Record<string, never>
           <div className="my-5">
             <Input type="file" />
           </div>
-          <img className="my-5 rounded-full" src="/vets/vet1.webp" />
+          <Avatar className="w-32 h-32 my-5">
+            <AvatarImage src="/vets/vet1.webp" alt="Doctor Profile" className="object-cover" />
+            <AvatarFallback className="bg-gradient-to-br from-petzy-blue-light to-petzy-coral/30 text-petzy-slate text-3xl font-bold">V</AvatarFallback>
+          </Avatar>
         </div>
 
         <div className="border p-5 rounded-xl my-5">

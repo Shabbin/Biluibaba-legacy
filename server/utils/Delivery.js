@@ -13,12 +13,21 @@ module.exports.createDeliveryRequest = async (options) => {
       }
     );
 
-    const data = await response.json();
+    const text = await response.text();
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      console.error("Steadfast API returned non-JSON response:", text);
+      return null;
+    }
+
     console.log(data);
     return data;
   } catch (error) {
     console.error("Error creating delivery request:", error);
-    throw new Error("Failed to create delivery request");
+    return null;
   }
 };
 

@@ -6,7 +6,6 @@ import axios from "@/lib/axios";
 import { formatDate } from "@/lib/time";
 
 import { toast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableCaption,
@@ -16,9 +15,9 @@ import {
   TableBody,
   TableRow,
 } from "@/components/ui/table";
-import { AlertDialogBox } from "@/components/alert-dialog";
 
-import { Loader2 } from "lucide-react";
+import { Loader2, Users } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -50,41 +49,67 @@ export default function Page() {
 
   return (
     <div className="py-5">
-      <h2 className="text-4xl">Registered users</h2>
+      <div className="page-header">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Registered Users</h2>
+          <p className="text-muted-foreground mt-1">
+            View and manage all registered customer accounts.
+          </p>
+        </div>
+      </div>
 
-      {users?.length > 0 ? (
-        <Table className="my-5">
-          <TableCaption>List of all regsitered users</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead>ID</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Created At</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {users.map((user) => (
-              <TableRow key={user._id}>
-                <TableCell>{user._id}</TableCell>
-                <TableCell className="flex flex-row items-center gap-2">
-                  <img
-                    src={user.avatar}
-                    className="w-8 h-8 rounded-full"
-                    alt={user.name}
-                  />
-                  <div>{user.name}</div>
-                </TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{formatDate(user.createdAt)}</TableCell>
-                <Button>View</Button>
+      {loading ? (
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      ) : users?.length > 0 ? (
+        <div className="rounded-xl border bg-card overflow-hidden">
+          <Table>
+            <TableCaption className="pb-4">
+              List of all registered users
+            </TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Joined</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {users.map((user) => (
+                <TableRow key={user._id}>
+                  <TableCell className="font-mono text-xs text-muted-foreground">
+                    {user._id}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <Avatar className="w-8 h-8 ring-2 ring-primary/10">
+                        <AvatarImage src={user.avatar} alt={user.name} />
+                        <AvatarFallback className="bg-gradient-to-br from-[#FF8A80] to-[#FF6B61] text-white text-xs font-bold">
+                          {user.name?.charAt(0)?.toUpperCase() || "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="font-medium">{user.name}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {formatDate(user.createdAt)}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       ) : (
-        <div className="font-bold my-5 text-center">No users</div>
+        <div className="empty-state">
+          <Users className="h-12 w-12 text-muted-foreground/50" />
+          <h3 className="text-lg font-semibold">No users found</h3>
+          <p className="text-muted-foreground text-sm">
+            There are no registered users yet.
+          </p>
+        </div>
       )}
     </div>
   );

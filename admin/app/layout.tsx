@@ -16,13 +16,13 @@ export default function RootLayout({
         <title>Biluibaba - Admin</title>
       </head>
       <body
-        className={`antialiased selection:bg-stone-950 selection:text-white`}
+        className={`antialiased selection:bg-[#FF8A80] selection:text-white`}
       >
         <main>
           {children}
           <ProgressBar
-            height="4px"
-            color="#000000"
+            height="3px"
+            color="#FF8A80"
             options={{ showSpinner: true }}
             shallowRouting
           />

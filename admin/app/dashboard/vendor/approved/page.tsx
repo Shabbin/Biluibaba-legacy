@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 
 import Link from "next/link";
+import { ShoppingBag } from "lucide-react";
 
 import { toast } from "@/hooks/use-toast";
 import {
@@ -72,67 +73,77 @@ export default function Page() {
   }, [count]);
 
   return (
-    <div className="p-5">
-      <h2 className="text-4xl">Approved Vendors</h2>
+    <>
+      <div className="page-header">
+        <h2>Approved Vendors</h2>
+        <p>All approved vendor accounts on the platform</p>
+        <div className="header-accent" />
+      </div>
 
       {vendors.length > 0 ? (
-        <Table>
-          <TableCaption>A list of all your approved vendors</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Vendor ID #</TableHead>
-              <TableHead>Vendor Name</TableHead>
-              <TableHead>Vendor Status</TableHead>
-              <TableHead>Vendor Number</TableHead>
-              <TableHead>Vendor Email</TableHead>
-              <TableHead>Created At</TableHead>
-              <TableHead></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {vendors.map((vendor: any) => (
-              <TableRow key={vendor._id}>
-                <TableCell>{vendor._id}</TableCell>
-                <TableCell>{vendor.name}</TableCell>
-                <TableCell>
-                  {vendor.status === "approved" ? (
-                    <span className="px-4 py-1 bg-green-100 text-green-900 font-bold rounded">
-                      Approved
-                    </span>
-                  ) : (
-                    <span className="px-4 py-1 bg-yellow-100 text-yellow-900 font-bold rounded">
-                      Pending
-                    </span>
-                  )}
-                </TableCell>
-                <TableCell>{vendor.phoneNumber}</TableCell>
-                <TableCell>{vendor.email}</TableCell>
-                <TableCell>
-                  {new Date(vendor.createdAt).toLocaleString("en-US", {
-                    weekday: "short",
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                    hour12: true,
-                  })}
-                </TableCell>
-                <TableCell>
-                  <Link
-                    href={`/dashboard/vendor/view?id=${vendor._id}`}
-                    className={buttonVariants({ variant: "default" })}
-                  >
-                    View Profile
-                  </Link>
-                </TableCell>
+        <div className="rounded-xl border border-border/60 overflow-hidden bg-card">
+          <Table>
+            <TableCaption>A list of all your approved vendors</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Vendor ID #</TableHead>
+                <TableHead>Vendor Name</TableHead>
+                <TableHead>Vendor Status</TableHead>
+                <TableHead>Vendor Number</TableHead>
+                <TableHead>Vendor Email</TableHead>
+                <TableHead>Created At</TableHead>
+                <TableHead></TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {vendors.map((vendor: any) => (
+                <TableRow key={vendor._id}>
+                  <TableCell>{vendor._id}</TableCell>
+                  <TableCell>{vendor.name}</TableCell>
+                  <TableCell>
+                    {vendor.status === "approved" ? (
+                      <span className="status-badge status-badge--success">
+                        Approved
+                      </span>
+                    ) : (
+                      <span className="status-badge status-badge--warning">
+                        Pending
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell>{vendor.phoneNumber}</TableCell>
+                  <TableCell>{vendor.email}</TableCell>
+                  <TableCell>
+                    {new Date(vendor.createdAt).toLocaleString("en-US", {
+                      weekday: "short",
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                      hour: "numeric",
+                      minute: "numeric",
+                      hour12: true,
+                    })}
+                  </TableCell>
+                  <TableCell>
+                    <Link
+                      href={`/dashboard/vendor/view?id=${vendor._id}`}
+                      className={buttonVariants({ variant: "outline" }) + " rounded-lg"}
+                    >
+                      View Profile
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       ) : (
-        <div className="font-bold text-gray-700 text-center py-5">
-          No approved vendors found.
+        <div className="empty-state">
+          <div className="empty-state-icon">
+            <ShoppingBag />
+          </div>
+          <h3>No vendors found</h3>
+          <p>There are no approved vendors on the platform yet.</p>
         </div>
       )}
 
@@ -236,6 +247,6 @@ export default function Page() {
           </PaginationItem>
         </PaginationContent>
       </Pagination>
-    </div>
+    </>
   );
 }

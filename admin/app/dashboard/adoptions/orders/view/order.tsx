@@ -112,6 +112,7 @@ export default function Page() {
                     src={order.adoptionId.images[0].path}
                     className="w-32"
                     alt={order.adoptionId.name}
+                    onError={(e) => { (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='128' fill='%23ddd'%3E%3Crect width='128' height='128'/%3E%3Ctext x='50%25' y='50%25' fill='%23999' font-size='12' text-anchor='middle' dy='.3em'%3ENo Image%3C/text%3E%3C/svg%3E"; }}
                   />
                   <div className="text-xl">{order.adoptionId.name}</div>
                 </div>

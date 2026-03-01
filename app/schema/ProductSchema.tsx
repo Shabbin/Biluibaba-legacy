@@ -24,7 +24,8 @@ export const ProductSchema = z.object({
   discount: z
     .string()
     .min(0, { message: "Discount must be greater than 0" })
-    .refine((val) => !Number.isNaN(parseInt(val, 10)), {
+    .optional()
+    .refine((val) => !val || !Number.isNaN(parseInt(val, 10)), {
       message: "Expected number, received a string",
     }),
   quantity: z

@@ -23,7 +23,7 @@ router.route("/:type/:category").get(getProducts);
 router.route("/get").get(getPetProducts);
 router.route("/best-deals").get(getBestDeals);
 router.route("/create").post(protectVendor, uploadProductImage, createProduct);
-router.route("/update").post(protectVendor, updateProduct);
+router.route("/update").post(protectVendor, uploadProductImage, updateProduct);
 router.route("/delete/:id").delete(protectVendor, deleteProduct);
 router.route("/status/:id").post(protectVendor, updateProductStatus);
 

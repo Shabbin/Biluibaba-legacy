@@ -1,141 +1,191 @@
 "use client";
 
-import { FaStar, FaQuoteLeft } from "react-icons/fa6";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import axiosInstance from "@/src/lib/axiosInstance";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination, Navigation } from "swiper/modules";
 
 // Import Swiper styles
 import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
 
-// Enriched data with names/roles for a more realistic look
-const data = [
+// ─── Types ────────────────────────────────────────────────────────────────────
+interface Testimonial {
+  _id: string;
+  name: string;
+  role: string;
+  quote_title: string;
+  review: string;
+  image: { filename: string; path: string };
+  display_order: number;
+}
+
+// ─── Pastel card colors cycling through 4 shades ──────────────────────────────
+const CARD_COLORS = [
+  "#EDE9FF", // Lavender / Light Purple
+  "#DCFCE7", // Mint Green
+  "#FEF3C7", // Pale Yellow
+  "#DBEAFE", // Light Blue
+];
+
+// ─── Placeholder pet images (used when no customer image is uploaded) ──────────
+const PET_PLACEHOLDERS = [
+  "/pets/cat.png",
+  "/pets/dog.png",
+  "/pets/rabbit.png",
+  "/pets/guinea-pig.png",
+];
+
+// ─── Static fallback (shown before API responds or when empty) ─────────────────
+const FALLBACK: Testimonial[] = [
   {
-    id: 0,
+    _id: "f1",
     name: "Sarah Jenkins",
     role: "Cat Mom",
+    quote_title: "I'm in love with this service.",
     review:
       "I've never seen my Tabby so excited for meal time! The delivery was super fast, and the packaging was eco-friendly. Biluibaba is now my go-to for all pet supplies.",
-    src: "/testimonialdemo.png",
+    image: { filename: "", path: "" },
+    display_order: 0,
   },
   {
-    id: 1,
+    _id: "f2",
     name: "Michael Ross",
     role: "Dog Trainer",
+    quote_title: "Absolutely the best pet store.",
     review:
       "As a professional trainer, I'm picky about treats. The selection here is top-notch. Customer service helped me pick the right supplements for my aging Golden Retriever.",
-    src: "/testimonialdemo.png",
+    image: { filename: "", path: "" },
+    display_order: 1,
   },
   {
-    id: 2,
+    _id: "f3",
     name: "Emily Chen",
     role: "Rabbit Enthusiast",
+    quote_title: "Every small pet owner needs this.",
     review:
       "Finally, a store that understands small pets! The hay quality is excellent, and the toys are durable. My bunny loves the new enclosure setup.",
-    src: "/testimonialdemo.png",
+    image: { filename: "", path: "" },
+    display_order: 2,
   },
   {
-    id: 3,
+    _id: "f4",
     name: "David Miller",
     role: "Bird Owner",
+    quote_title: "Fast delivery, great quality.",
     review:
       "Great variety of bird food and accessories. I ordered a new cage and it arrived in perfect condition within 2 hours. Highly recommended service!",
-    src: "/testimonialdemo.png",
+    image: { filename: "", path: "" },
+    display_order: 3,
   },
 ];
 
-const Testimonials = () => {
-  return (
-    <div className="relative bg-gradient-to-br from-petzy-blue-light via-[#eaf4fc] to-white py-20 overflow-hidden">
-      
-      {/* Decorative Background Elements */}
-      <div className="absolute top-0 left-0 w-64 h-64 bg-white/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-petzy-blue-light/30 rounded-full blur-3xl translate-x-1/3 translate-y-1/3 pointer-events-none"></div>
+// ─── Single card component ─────────────────────────────────────────────────────
+function TestimonialCard({
+  testimonial,
+  index,
+}: {
+  testimonial: Testimonial;
+  index: number;
+}) {
+  const cardColor = CARD_COLORS[index % CARD_COLORS.length];
+  const apiBase = process.env.NEXT_PUBLIC_API_URL;
 
-      <div className="container mx-auto px-5 relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-sm font-bold text-petzy-coral uppercase tracking-widest mb-3">
+  const imageSrc =
+    testimonial.image?.filename
+      ? `${apiBase}/uploads/testimonials/${testimonial.image.filename}`
+      : PET_PLACEHOLDERS[index % PET_PLACEHOLDERS.length];
+
+  return (
+    <div className="rounded-2xl overflow-hidden flex flex-col h-full">
+      {/* ── Top: Colored content area ── */}
+      <div
+        className="flex flex-col p-7 flex-grow"
+        style={{ backgroundColor: cardColor }}
+      >
+        <h3 className="font-bold text-[1.1rem] leading-snug text-gray-900 mb-3">
+          {testimonial.quote_title}
+        </h3>
+        <p className="text-sm text-gray-700 leading-relaxed flex-grow">
+          {testimonial.review}
+        </p>
+        <div className="mt-6 pt-4 border-t border-black/10">
+          <p className="font-semibold text-gray-900 text-sm">{testimonial.name}</p>
+          <p className="text-xs text-gray-500 mt-0.5">{testimonial.role}</p>
+        </div>
+      </div>
+
+      {/* ── Bottom: Image area ── */}
+      <div className="relative w-full aspect-square">
+        <Image
+          src={imageSrc}
+          alt={`${testimonial.name} with their pet`}
+          fill
+          className="object-cover"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+        />
+      </div>
+    </div>
+  );
+}
+
+// ─── Main Section Component ─────────────────────────────────────────────────────
+const Testimonials = () => {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(FALLBACK);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const { data } = await axiosInstance.get("/api/testimonials");
+        if (data.success && data.testimonials.length > 0) {
+          setTestimonials(data.testimonials);
+        }
+      } catch {
+        // Silently fall through — fallback data is already set
+      }
+    };
+    load();
+  }, []);
+
+  return (
+    <section className="py-20 bg-white">
+      <div className="container mx-auto px-5">
+
+        {/* ── Header ── */}
+        <div className="text-center mb-14">
+          <p className="text-xs font-bold tracking-[0.2em] uppercase text-blue-500 mb-3">
             Testimonials
+          </p>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-5">
+            Loved By Happy Pet Parents
           </h2>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-petzy-slate mb-6">
-            Loved by Happy Pet Parents
-          </h1>
-          <p className="max-w-2xl mx-auto text-petzy-slate-light text-lg">
-            Don't just take our word for it. Here is what our community has to say about the Biluibaba experience.
+          <p className="max-w-xl mx-auto text-gray-500 text-base leading-relaxed">
+            Don&apos;t just take our word for it. Here is what our community has to
+            say about the Biluibaba experience.
           </p>
         </div>
 
+        {/* ── Swiper Slider ── */}
         <Swiper
-          modules={[Autoplay, Pagination]}
-          spaceBetween={30}
+          spaceBetween={24}
           slidesPerView={1}
-          loop={true}
-          autoplay={{
-            delay: 3500,
-            disableOnInteraction: false,
-          }}
-          pagination={{
-            clickable: true,
-            bulletActiveClass: "bg-petzy-coral opacity-100", 
-            // Note: You might need global css to override swiper-pagination-bullet styles nicely
-          }}
           breakpoints={{
             640: {
-              slidesPerView: 1,
-            },
-            768: {
               slidesPerView: 2,
             },
             1024: {
-              slidesPerView: 3,
+              slidesPerView: 4,
             },
           }}
-          className="pb-14 !px-2" // Added padding bottom for pagination dots
+          className="w-full h-full"
         >
-          {data.map((t) => (
-            <SwiperSlide key={t.id} className="h-auto">
-              <div className="bg-white rounded-3xl p-8 shadow-soft border border-white/50 hover:shadow-soft-lg transition-all duration-300 h-full flex flex-col relative group">
-                
-                {/* Decorative Quote Icon */}
-                <FaQuoteLeft className="absolute top-6 right-6 text-6xl text-petzy-blue-light/20 group-hover:text-petzy-coral/10 transition-colors duration-300" />
-
-                {/* Stars */}
-                <div className="flex gap-1 mb-6 text-yellow-400">
-                  {[...Array(5)].map((_, i) => (
-                    <FaStar key={i} size="1.1em" />
-                  ))}
-                </div>
-
-                {/* Review Text */}
-                <p className="text-petzy-slate-light italic leading-relaxed mb-8 flex-grow relative z-10">
-                  "{t.review}"
-                </p>
-
-                {/* User Info */}
-                <div className="flex items-center gap-4 mt-auto pt-6 border-t border-gray-100">
-                  <div className="w-14 h-14 rounded-full p-1 bg-gradient-to-tr from-petzy-blue-light to-petzy-coral/30">
-                    <img
-                      src={t.src}
-                      alt="User"
-                      className="w-full h-full object-cover rounded-full border-2 border-white"
-                    />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-petzy-slate text-lg">
-                      {t.name}
-                    </h4>
-                    <span className="text-sm text-petzy-coral font-medium">
-                      {t.role}
-                    </span>
-                  </div>
-                </div>
-              </div>
+          {testimonials.map((t, i) => (
+            <SwiperSlide key={t._id} className="h-auto">
+              <TestimonialCard testimonial={t} index={i} />
             </SwiperSlide>
           ))}
         </Swiper>
       </div>
-    </div>
+    </section>
   );
 };
 

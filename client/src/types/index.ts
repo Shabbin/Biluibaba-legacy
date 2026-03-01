@@ -515,6 +515,13 @@ export interface SiteSettings {
   adoption_banner_one?: ProductImage;
   adoption_banner_two?: ProductImage;
   featured_adoptions?: Adoption[];
+  product_ad?: {
+    title: string;
+    description: string;
+    button_text: string;
+    button_link: string;
+    image?: { filename: string; path: string };
+  };
 }
 
 // ============================================================

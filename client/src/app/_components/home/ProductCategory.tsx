@@ -25,7 +25,7 @@ const ProductCategory: React.FC<ProductCategoryProps> = ({ categories }) => {
               Collections
             </h4>
             <h2 className="text-3xl md:text-4xl font-bold text-petzy-slate">
-              Shop by Pet
+              Who are you shopping for today?
             </h2>
           </div>
           <div className="hidden md:block pb-1">
@@ -62,6 +62,7 @@ const ProductCategory: React.FC<ProductCategoryProps> = ({ categories }) => {
                     src={category.src}
                     alt={petName}
                     className="relative z-10 w-24 md:w-28 object-contain transition-transform duration-500 ease-out group-hover:-translate-y-2"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                   />
                   
                   {/* Active Ring Indicator (Modern UI trend) */}

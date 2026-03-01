@@ -60,6 +60,14 @@ module.exports.protectVendor = async (request, response, next) => {
         )
       );
 
+    if (vendor.status !== "approved")
+      return next(
+        new ErrorResponse(
+          "Your vendor account is not yet approved. Please wait for admin approval.",
+          403
+        )
+      );
+
     request.vendor = vendor;
 
     return next();

@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/form";
 
 import { Loader2, UserCircle, Camera, Save } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const isFileDefined = typeof File !== "undefined";
 
@@ -141,15 +142,22 @@ export default function Page() {
           <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-6 text-center">
             <div className="relative inline-block">
               {profilePicture ? (
-                <img
-                  className="w-40 h-40 rounded-full object-cover ring-4 ring-[#FF8A80]/20 mx-auto"
-                  src={profilePicture}
-                  alt="Profile"
-                />
+                <Avatar className="w-40 h-40 ring-4 ring-[#FF8A80]/20 mx-auto">
+                  <AvatarImage
+                    src={profilePicture}
+                    alt="Profile"
+                    className="object-cover"
+                  />
+                  <AvatarFallback className="bg-gradient-to-br from-[#FF8A80] to-[#FF6B61] text-white">
+                    <UserCircle className="w-20 h-20" />
+                  </AvatarFallback>
+                </Avatar>
               ) : (
-                <div className="w-40 h-40 rounded-full bg-gradient-to-br from-[#FF8A80] to-[#FF6B61] flex items-center justify-center mx-auto ring-4 ring-[#FF8A80]/20">
-                  <UserCircle className="w-20 h-20 text-white" />
-                </div>
+                <Avatar className="w-40 h-40 ring-4 ring-[#FF8A80]/20 mx-auto">
+                  <AvatarFallback className="bg-gradient-to-br from-[#FF8A80] to-[#FF6B61] text-white">
+                    <UserCircle className="w-20 h-20" />
+                  </AvatarFallback>
+                </Avatar>
               )}
               <div className="absolute bottom-1 right-1 bg-white rounded-full p-2 shadow-md border border-border/60">
                 <Camera className="w-4 h-4 text-muted-foreground" />
@@ -161,11 +169,16 @@ export default function Page() {
             {previewImage && (
               <div className="mt-6 pt-6 border-t border-border/60">
                 <p className="text-sm font-medium text-muted-foreground mb-3">New Photo Preview</p>
-                <img
-                  className="w-32 h-32 rounded-full object-cover mx-auto ring-4 ring-emerald-100"
-                  src={previewImage}
-                  alt="Profile preview"
-                />
+                <Avatar className="w-32 h-32 ring-4 ring-emerald-100 mx-auto">
+                  <AvatarImage
+                    src={previewImage}
+                    alt="Profile preview"
+                    className="object-cover"
+                  />
+                  <AvatarFallback className="bg-gradient-to-br from-[#FF8A80] to-[#FF6B61] text-white">
+                    <UserCircle className="w-16 h-16" />
+                  </AvatarFallback>
+                </Avatar>
               </div>
             )}
           </div>

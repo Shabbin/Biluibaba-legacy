@@ -14,6 +14,7 @@ const Order = require("../models/order.model");
 const Vendors = require("../models/vendor.model");
 const Users = require("../models/user.model");
 const Products = require("../models/product.model");
+const Coupons = require("../models/coupon.model");
 
 const OrderPlacedCOD = fs.readFileSync(
   path.join(__dirname, "../templates/order/order-placed-cod.hbs"),
@@ -48,6 +49,7 @@ module.exports.createProductOrder = async (request, response, next) => {
     fullAddress,
     notes,
     paymentMethod,
+    couponCode,
   } = request.body;
 
   // check if all information is provided
@@ -62,6 +64,44 @@ module.exports.createProductOrder = async (request, response, next) => {
     !fullAddress
   )
     return next(new ErrorResponse("Missing information", 421));
+
+  // Validate and apply coupon server-side
+  let couponDiscount = 0;
+  let validatedCouponCode = null;
+
+  if (couponCode) {
+    const coupon = await Coupons.findOne({
+      code: couponCode.toUpperCase(),
+      isActive: true,
+    });
+
+    if (coupon) {
+      const isExpired = coupon.expiresAt && new Date(coupon.expiresAt) < new Date();
+      const isOverLimit = coupon.usageLimit && coupon.usedCount >= coupon.usageLimit;
+
+      if (!isExpired && !isOverLimit) {
+        // Calculate subtotal from products
+        let subtotal = 0;
+        product.forEach((p) => (subtotal += Number(p.quantity) * Number(p.price)));
+
+        if (subtotal >= coupon.minOrderAmount) {
+          if (coupon.discountType === "percentage") {
+            couponDiscount = Math.round((subtotal * coupon.discountValue) / 100);
+            if (coupon.maxDiscount && couponDiscount > coupon.maxDiscount) {
+              couponDiscount = coupon.maxDiscount;
+            }
+          } else {
+            couponDiscount = coupon.discountValue;
+          }
+          if (couponDiscount > subtotal) couponDiscount = subtotal;
+
+          validatedCouponCode = coupon.code;
+          coupon.usedCount += 1;
+          await coupon.save();
+        }
+      }
+    }
+  }
 
   let products = [];
 
@@ -92,6 +132,8 @@ module.exports.createProductOrder = async (request, response, next) => {
     paymentMethod,
     paymentStatus: false,
     notes,
+    couponCode: validatedCouponCode,
+    couponDiscount,
   });
 
   if (paymentMethod === "Online") {
@@ -172,18 +214,22 @@ module.exports.createProductOrder = async (request, response, next) => {
       });
     });
 
-    const deliveryResponse = await createDeliveryRequest({
-      invoice: order.orderId,
-      recipient_name: order.name,
-      recipient_phone: order.phoneNumber,
-      recipient_address: order.fullAddress,
-      cod_amount: order.totalAmount,
-    });
+    try {
+      const deliveryResponse = await createDeliveryRequest({
+        invoice: order.orderId,
+        recipient_name: order.name,
+        recipient_phone: order.phoneNumber,
+        recipient_address: order.fullAddress,
+        cod_amount: order.totalAmount,
+      });
 
-    if (deliveryResponse.status === 200) {
-      order.deliveryConsignmentId = deliveryResponse.consignment.consignment_id;
-      order.deliveryStatus = deliveryResponse.consignment.status;
-      order.deliveryTrackingCode = deliveryResponse.consignment.tracking_code;
+      if (deliveryResponse && deliveryResponse.status === 200) {
+        order.deliveryConsignmentId = deliveryResponse.consignment.consignment_id;
+        order.deliveryStatus = deliveryResponse.consignment.status;
+        order.deliveryTrackingCode = deliveryResponse.consignment.tracking_code;
+      }
+    } catch (deliveryError) {
+      console.error("Delivery request failed (non-fatal):", deliveryError.message);
     }
 
     await order.save();
@@ -225,19 +271,23 @@ module.exports.validateProductOrder = async (request, response, next) => {
       order.paymentStatus = true;
       order.paymentSessionKey = val_id;
 
-      const deliveryResponse = await createDeliveryRequest({
-        invoice: order.orderId,
-        recipient_name: order.name,
-        recipient_phone: order.phoneNumber,
-        recipient_address: order.fullAddress,
-        cod_amount: 0,
-      });
+      try {
+        const deliveryResponse = await createDeliveryRequest({
+          invoice: order.orderId,
+          recipient_name: order.name,
+          recipient_phone: order.phoneNumber,
+          recipient_address: order.fullAddress,
+          cod_amount: 0,
+        });
 
-      if (deliveryResponse.status === 200) {
-        order.deliveryConsignmentId =
-          deliveryResponse.consignment.consignment_id;
-        order.deliveryStatus = deliveryResponse.consignment.status;
-        order.deliveryTrackingCode = deliveryResponse.consignment.tracking_code;
+        if (deliveryResponse && deliveryResponse.status === 200) {
+          order.deliveryConsignmentId =
+            deliveryResponse.consignment.consignment_id;
+          order.deliveryStatus = deliveryResponse.consignment.status;
+          order.deliveryTrackingCode = deliveryResponse.consignment.tracking_code;
+        }
+      } catch (deliveryError) {
+        console.error("Delivery request failed (non-fatal):", deliveryError.message);
       }
 
       await order.save();
@@ -335,6 +385,78 @@ module.exports.validateProductOrder = async (request, response, next) => {
       .status(200)
       .redirect(`${process.env.FRONTEND_URL}/products/order?status=failed`);
   }
+};
+
+module.exports.getOrderById = async (request, response, next) => {
+  const { id } = request.params;
+
+  if (!id) return next(new ErrorResponse("Missing order ID", 422));
+
+  const order = await Order.findOne({
+    orderId: id,
+    userId: request.user._id,
+  }).populate("products.id", "name images slug");
+
+  if (!order) return next(new ErrorResponse("Order not found", 404));
+
+  return response.status(200).json({ success: true, order });
+};
+
+module.exports.cancelOrder = async (request, response, next) => {
+  const { orderId, reason } = request.body;
+
+  if (!orderId) return next(new ErrorResponse("Missing order ID", 422));
+
+  const order = await Order.findOne({
+    orderId,
+    userId: request.user._id,
+  });
+
+  if (!order) return next(new ErrorResponse("Order not found", 404));
+
+  if (order.status === "delivered")
+    return next(new ErrorResponse("Cannot cancel a delivered order. Please request a return instead.", 400));
+
+  if (order.status === "cancelled")
+    return next(new ErrorResponse("Order is already cancelled", 400));
+
+  order.status = "cancelled";
+  order.cancellationReason = reason || "Cancelled by customer";
+  await order.save();
+
+  return response.status(200).json({
+    success: true,
+    data: "Order cancelled successfully",
+  });
+};
+
+module.exports.returnOrder = async (request, response, next) => {
+  const { orderId, reason } = request.body;
+
+  if (!orderId || !reason)
+    return next(new ErrorResponse("Please provide order ID and reason for return", 422));
+
+  const order = await Order.findOne({
+    orderId,
+    userId: request.user._id,
+  });
+
+  if (!order) return next(new ErrorResponse("Order not found", 404));
+
+  if (order.status !== "delivered")
+    return next(new ErrorResponse("Only delivered orders can be returned", 400));
+
+  if (order.status === "returned")
+    return next(new ErrorResponse("Return request already submitted", 400));
+
+  order.status = "returned";
+  order.returnReason = reason;
+  await order.save();
+
+  return response.status(200).json({
+    success: true,
+    data: "Return request submitted successfully",
+  });
 };
 
 const addOrderToVendors = async (order) => {

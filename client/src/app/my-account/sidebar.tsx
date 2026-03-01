@@ -20,7 +20,8 @@ import {
   FaBell,
   FaCrown,
   FaRightFromBracket,
-  FaFileCirclePlus
+  FaFileCirclePlus,
+  FaShieldHalved,
 } from "react-icons/fa6";
 
 interface SidebarItem {
@@ -40,6 +41,7 @@ const sidebarNav: SidebarItem[] = [
     items: [
       { href: "/my-account", label: "My Profile", icon: <FaUser /> },
       { href: "/my-account/address", label: "Address Book", icon: <FaMapLocationDot /> },
+      { href: "/my-account/change-password", label: "Change Password", icon: <FaShieldHalved /> },
     ],
   },
   {

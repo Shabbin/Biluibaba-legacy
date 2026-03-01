@@ -59,15 +59,15 @@ module.exports.getVendors = async (request, response, next) => {
   if (!status || !count)
     return next(new ErrorResponse("Missing information", 422));
 
+  const totalVendors = await Vendors.countDocuments({ status });
+
   // Provides a list of vendors based on the status and count
   let vendors = await Vendors.find({ status })
     .skip(count * 10)
     .limit(10)
     .sort("-createdAt");
 
-  console.log(vendors);
-
-  return response.status(200).json({ success: true, vendors });
+  return response.status(200).json({ success: true, vendors, totalVendors });
 };
 
 module.exports.getVendorById = async (request, response, next) => {
