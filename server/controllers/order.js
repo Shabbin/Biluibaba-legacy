@@ -214,18 +214,22 @@ module.exports.createProductOrder = async (request, response, next) => {
       });
     });
 
-    const deliveryResponse = await createDeliveryRequest({
-      invoice: order.orderId,
-      recipient_name: order.name,
-      recipient_phone: order.phoneNumber,
-      recipient_address: order.fullAddress,
-      cod_amount: order.totalAmount,
-    });
+    try {
+      const deliveryResponse = await createDeliveryRequest({
+        invoice: order.orderId,
+        recipient_name: order.name,
+        recipient_phone: order.phoneNumber,
+        recipient_address: order.fullAddress,
+        cod_amount: order.totalAmount,
+      });
 
-    if (deliveryResponse.status === 200) {
-      order.deliveryConsignmentId = deliveryResponse.consignment.consignment_id;
-      order.deliveryStatus = deliveryResponse.consignment.status;
-      order.deliveryTrackingCode = deliveryResponse.consignment.tracking_code;
+      if (deliveryResponse && deliveryResponse.status === 200) {
+        order.deliveryConsignmentId = deliveryResponse.consignment.consignment_id;
+        order.deliveryStatus = deliveryResponse.consignment.status;
+        order.deliveryTrackingCode = deliveryResponse.consignment.tracking_code;
+      }
+    } catch (deliveryError) {
+      console.error("Delivery request failed (non-fatal):", deliveryError.message);
     }
 
     await order.save();
@@ -267,19 +271,23 @@ module.exports.validateProductOrder = async (request, response, next) => {
       order.paymentStatus = true;
       order.paymentSessionKey = val_id;
 
-      const deliveryResponse = await createDeliveryRequest({
-        invoice: order.orderId,
-        recipient_name: order.name,
-        recipient_phone: order.phoneNumber,
-        recipient_address: order.fullAddress,
-        cod_amount: 0,
-      });
+      try {
+        const deliveryResponse = await createDeliveryRequest({
+          invoice: order.orderId,
+          recipient_name: order.name,
+          recipient_phone: order.phoneNumber,
+          recipient_address: order.fullAddress,
+          cod_amount: 0,
+        });
 
-      if (deliveryResponse.status === 200) {
-        order.deliveryConsignmentId =
-          deliveryResponse.consignment.consignment_id;
-        order.deliveryStatus = deliveryResponse.consignment.status;
-        order.deliveryTrackingCode = deliveryResponse.consignment.tracking_code;
+        if (deliveryResponse && deliveryResponse.status === 200) {
+          order.deliveryConsignmentId =
+            deliveryResponse.consignment.consignment_id;
+          order.deliveryStatus = deliveryResponse.consignment.status;
+          order.deliveryTrackingCode = deliveryResponse.consignment.tracking_code;
+        }
+      } catch (deliveryError) {
+        console.error("Delivery request failed (non-fatal):", deliveryError.message);
       }
 
       await order.save();

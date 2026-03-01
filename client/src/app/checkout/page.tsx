@@ -15,6 +15,8 @@ import {
   FaCreditCard,
   FaMoneyBill,
   FaCircleInfo,
+  FaTriangleExclamation,
+  FaPen,
 } from "react-icons/fa6";
 
 import Input from "@/src/components/ui/input";
@@ -112,6 +114,17 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState("Online");
   const [orderLoading, setOrderLoading] = useState(false);
 
+  // Missing info form (for "self" mode when profile is incomplete)
+  const [showProfileForm, setShowProfileForm] = useState(false);
+  const [profileFormName, setProfileFormName] = useState("");
+  const [profileFormPhone, setProfileFormPhone] = useState("");
+  const [profileFormAddress, setProfileFormAddress] = useState("");
+  const [profileFormDistrict, setProfileFormDistrict] = useState("Dhaka");
+  const [profileFormArea, setProfileFormArea] = useState("");
+  const [profileFormPostcode, setProfileFormPostcode] = useState("");
+  const [profileFormState, setProfileFormState] = useState("");
+  const [profileSaving, setProfileSaving] = useState(false);
+
   // Coupon
   const [couponCode, setCouponCode] = useState("");
   const [couponLoading, setCouponLoading] = useState(false);
@@ -201,6 +214,80 @@ export default function CheckoutPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subTotal]);
+
+  // ---------- MISSING INFO LOGIC ----------
+
+  const selfMissingName = deliveryMode === "self" && !addressLoading && (!userName || userName.length < 3);
+  const selfMissingPhone = deliveryMode === "self" && !addressLoading && !userPhone;
+  const selfMissingAddress = deliveryMode === "self" && !addressLoading && (!savedAddress || !savedAddress.address);
+  const selfHasMissingInfo = selfMissingName || selfMissingPhone || selfMissingAddress;
+
+  const getMissingFieldsList = (): string[] => {
+    const missing: string[] = [];
+    if (selfMissingName) missing.push("Full Name");
+    if (selfMissingPhone) missing.push("Phone Number");
+    if (selfMissingAddress) missing.push("Address");
+    return missing;
+  };
+
+  const handleOpenProfileForm = () => {
+    setProfileFormName(userName || "");
+    setProfileFormPhone(userPhone || "");
+    setProfileFormAddress(savedAddress?.address || "");
+    setProfileFormDistrict(savedAddress?.district || "Dhaka");
+    setProfileFormArea(savedAddress?.area || "");
+    setProfileFormPostcode(savedAddress?.postcode || "");
+    setProfileFormState(savedAddress?.state || "");
+    setShowProfileForm(true);
+  };
+
+  const handleSaveProfile = async () => {
+    if (!profileFormName || profileFormName.length < 3) {
+      return toast.error("Please enter a valid name (min 3 characters).");
+    }
+    if (!profileFormPhone || profileFormPhone.length < 7) {
+      return toast.error("Please enter a valid phone number.");
+    }
+    if (!profileFormAddress) {
+      return toast.error("Please enter your address.");
+    }
+
+    setProfileSaving(true);
+    try {
+      const { data } = await axios.post("/api/auth/update-profile", {
+        name: profileFormName,
+        phoneNumber: profileFormPhone,
+        shippingAddress: {
+          address: profileFormAddress,
+          district: profileFormDistrict,
+          area: profileFormArea,
+          postcode: profileFormPostcode,
+          state: profileFormState,
+        },
+      });
+
+      if (data.success) {
+        // Update local state so checkout can proceed
+        setUserName(profileFormName);
+        setUserPhone(profileFormPhone);
+        setSavedAddress({
+          address: profileFormAddress,
+          district: profileFormDistrict,
+          area: profileFormArea,
+          postcode: profileFormPostcode,
+          state: profileFormState,
+        });
+        setShowProfileForm(false);
+        toast.success("Profile updated! You can now place your order.");
+      }
+    } catch (error: any) {
+      toast.error(
+        error.response?.data?.error || "Failed to update profile. Please try again."
+      );
+    } finally {
+      setProfileSaving(false);
+    }
+  };
 
   // ---------- COUPON HANDLERS ----------
 
@@ -478,67 +565,221 @@ export default function CheckoutPage() {
                       <div className="flex items-center justify-center py-10">
                         <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-petzy-coral"></div>
                       </div>
-                    ) : savedAddress && savedAddress.address ? (
-                      <div className="border-2 border-petzy-coral rounded-xl p-5 bg-red-50/30">
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-start gap-3">
-                            <div className="w-10 h-10 rounded-full bg-petzy-coral/10 flex items-center justify-center mt-0.5">
-                              <FaMapLocationDot className="text-petzy-coral" />
-                            </div>
-                            <div>
-                              <div className="font-semibold text-gray-900">
-                                {userName}
-                              </div>
-                              <div className="text-sm text-gray-600 mt-0.5">
-                                {userPhone}
-                              </div>
-                              <div className="text-sm text-gray-600 mt-2">
-                                {savedAddress.address}
-                              </div>
-                              <div className="text-sm text-gray-500 mt-0.5">
-                                {[
-                                  savedAddress.area,
-                                  savedAddress.district,
-                                  savedAddress.postcode,
-                                  savedAddress.state,
-                                ]
-                                  .filter(Boolean)
-                                  .join(", ")}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-1 text-petzy-coral bg-white px-3 py-1 rounded-full border border-petzy-coral/20 text-xs font-semibold">
-                            <FaCheck className="text-[10px]" /> Selected
-                          </div>
-                        </div>
-                        <Link
-                          href="/my-account/address"
-                          className="text-sm text-petzy-coral hover:underline mt-3 inline-block"
-                        >
-                          Edit Address &rarr;
-                        </Link>
-                      </div>
                     ) : (
-                      <div className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center">
-                        <FaMapLocationDot className="text-4xl text-gray-300 mx-auto mb-3" />
-                        <h3 className="font-semibold text-gray-700 mb-1">
-                          No saved address found
-                        </h3>
-                        <p className="text-sm text-gray-500 mb-4">
-                          Add an address to your account to use quick checkout
-                        </p>
-                        <Link href="/my-account/address">
-                          <Button
-                            text="Add Address"
-                            type="default"
-                            className="!py-2 !px-6"
-                          />
-                        </Link>
-                      </div>
+                      <>
+                        {/* Missing Info Alert */}
+                        {selfHasMissingInfo && !showProfileForm && (
+                          <div className="border-2 border-amber-300 bg-amber-50 rounded-xl p-5 mb-4">
+                            <div className="flex items-start gap-3">
+                              <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center mt-0.5 shrink-0">
+                                <FaTriangleExclamation className="text-amber-600" />
+                              </div>
+                              <div className="flex-1">
+                                <div className="font-semibold text-amber-800">
+                                  Profile information incomplete
+                                </div>
+                                <p className="text-sm text-amber-700 mt-1">
+                                  The following details are required to place an order:{" "}
+                                  <span className="font-medium">
+                                    {getMissingFieldsList().join(", ")}
+                                  </span>
+                                </p>
+                                <button
+                                  type="button"
+                                  onClick={handleOpenProfileForm}
+                                  className="mt-3 inline-flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                                >
+                                  <FaPen className="text-xs" />
+                                  Complete Profile Now
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Inline Profile Edit Form */}
+                        {showProfileForm && (
+                          <div className="border-2 border-petzy-coral rounded-xl p-5 bg-red-50/20 mb-4">
+                            <div className="flex items-center justify-between mb-4">
+                              <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                                <FaPen className="text-petzy-coral text-sm" />
+                                Update Your Details
+                              </h3>
+                              <button
+                                type="button"
+                                onClick={() => setShowProfileForm(false)}
+                                className="text-gray-400 hover:text-gray-600 p-1"
+                              >
+                                <FaXmark />
+                              </button>
+                            </div>
+                            <div className="space-y-4">
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                  <label className="text-sm font-medium text-gray-700">
+                                    Full Name *
+                                  </label>
+                                  <Input
+                                    type="text"
+                                    placeholder="Enter your name"
+                                    className="mt-1.5"
+                                    value={profileFormName}
+                                    onChange={(e) => setProfileFormName(e.target.value)}
+                                    onKeyPress={(e) => {
+                                      if (!/[a-zA-Z\s]/.test(e.key)) e.preventDefault();
+                                    }}
+                                  />
+                                </div>
+                                <div>
+                                  <label className="text-sm font-medium text-gray-700">
+                                    Phone Number *
+                                  </label>
+                                  <Input
+                                    type="text"
+                                    placeholder="Enter phone number"
+                                    className="mt-1.5"
+                                    value={profileFormPhone}
+                                    onChange={(e) => setProfileFormPhone(e.target.value)}
+                                    onKeyPress={(e) => {
+                                      if (!/[0-9+]/.test(e.key)) e.preventDefault();
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <div>
+                                <label className="text-sm font-medium text-gray-700">
+                                  Full Address *
+                                </label>
+                                <Textarea
+                                  placeholder="House no., Street, Area, Landmark..."
+                                  className="mt-1.5"
+                                  value={profileFormAddress}
+                                  onChange={(e) => setProfileFormAddress(e.target.value)}
+                                />
+                              </div>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                  <label className="text-sm font-medium text-gray-700">
+                                    District
+                                  </label>
+                                  <Select
+                                    data={LocationData.map((loc) => ({
+                                      value: loc,
+                                      text: loc,
+                                    }))}
+                                    className="mt-1.5"
+                                    value={profileFormDistrict}
+                                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                                      setProfileFormDistrict(e.target.value)
+                                    }
+                                  />
+                                </div>
+                                <div>
+                                  <label className="text-sm font-medium text-gray-700">
+                                    Area
+                                  </label>
+                                  <Input
+                                    type="text"
+                                    placeholder="Enter area"
+                                    className="mt-1.5"
+                                    value={profileFormArea}
+                                    onChange={(e) => setProfileFormArea(e.target.value)}
+                                  />
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                  <label className="text-sm font-medium text-gray-700">
+                                    Postcode
+                                  </label>
+                                  <Input
+                                    type="text"
+                                    placeholder="Enter postcode"
+                                    className="mt-1.5"
+                                    value={profileFormPostcode}
+                                    onChange={(e) => setProfileFormPostcode(e.target.value)}
+                                  />
+                                </div>
+                                <div>
+                                  <label className="text-sm font-medium text-gray-700">
+                                    State / Division
+                                  </label>
+                                  <Input
+                                    type="text"
+                                    placeholder="Enter state or division"
+                                    className="mt-1.5"
+                                    value={profileFormState}
+                                    onChange={(e) => setProfileFormState(e.target.value)}
+                                  />
+                                </div>
+                              </div>
+                              <div className="flex gap-3 pt-2">
+                                <Button
+                                  text={profileSaving ? "Saving..." : "Save & Continue"}
+                                  type="default"
+                                  className="!py-2.5 !px-6"
+                                  disabled={profileSaving}
+                                  loading={profileSaving}
+                                  onClick={handleSaveProfile}
+                                />
+                                <Button
+                                  text="Cancel"
+                                  type="outline"
+                                  className="!py-2.5 !px-6"
+                                  onClick={() => setShowProfileForm(false)}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Saved Address Card (only show when info is complete) */}
+                        {!selfHasMissingInfo && savedAddress && savedAddress.address ? (
+                          <div className="border-2 border-petzy-coral rounded-xl p-5 bg-red-50/30">
+                            <div className="flex items-start justify-between">
+                              <div className="flex items-start gap-3">
+                                <div className="w-10 h-10 rounded-full bg-petzy-coral/10 flex items-center justify-center mt-0.5">
+                                  <FaMapLocationDot className="text-petzy-coral" />
+                                </div>
+                                <div>
+                                  <div className="font-semibold text-gray-900">
+                                    {userName}
+                                  </div>
+                                  <div className="text-sm text-gray-600 mt-0.5">
+                                    {userPhone}
+                                  </div>
+                                  <div className="text-sm text-gray-600 mt-2">
+                                    {savedAddress.address}
+                                  </div>
+                                  <div className="text-sm text-gray-500 mt-0.5">
+                                    {[
+                                      savedAddress.area,
+                                      savedAddress.district,
+                                      savedAddress.postcode,
+                                      savedAddress.state,
+                                    ]
+                                      .filter(Boolean)
+                                      .join(", ")}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-1 text-petzy-coral bg-white px-3 py-1 rounded-full border border-petzy-coral/20 text-xs font-semibold">
+                                <FaCheck className="text-[10px]" /> Selected
+                              </div>
+                            </div>
+                            <Link
+                              href="/my-account/address"
+                              className="text-sm text-petzy-coral hover:underline mt-3 inline-block"
+                            >
+                              Edit Address &rarr;
+                            </Link>
+                          </div>
+                        ) : null}
+                      </>
                     )}
 
                     {/* Notes field even for self mode */}
-                    {savedAddress && savedAddress.address && (
+                    {!selfHasMissingInfo && savedAddress && savedAddress.address && (
                       <div className="mt-5">
                         <label className="text-sm font-medium text-gray-700">
                           Order Notes{" "}
@@ -956,9 +1197,19 @@ export default function CheckoutPage() {
 
                 <Button
                   type="default"
-                  text={orderLoading ? "Processing..." : "Place Order"}
-                  className="w-full !py-3 !text-base !font-semibold !mt-4"
-                  disabled={orderLoading}
+                  text={
+                    orderLoading
+                      ? "Processing..."
+                      : selfHasMissingInfo && deliveryMode === "self"
+                        ? "Complete Profile to Order"
+                        : "Place Order"
+                  }
+                  className={`w-full !py-3 !text-base !font-semibold !mt-4 ${
+                    selfHasMissingInfo && deliveryMode === "self"
+                      ? "!opacity-60 !cursor-not-allowed"
+                      : ""
+                  }`}
+                  disabled={orderLoading || (selfHasMissingInfo && deliveryMode === "self")}
                   onClick={handleSubmit}
                   loading={orderLoading}
                 />
