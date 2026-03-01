@@ -14,6 +14,7 @@ const Order = require("../models/order.model");
 const Vendors = require("../models/vendor.model");
 const Users = require("../models/user.model");
 const Products = require("../models/product.model");
+const Coupons = require("../models/coupon.model");
 
 const OrderPlacedCOD = fs.readFileSync(
   path.join(__dirname, "../templates/order/order-placed-cod.hbs"),
@@ -48,6 +49,7 @@ module.exports.createProductOrder = async (request, response, next) => {
     fullAddress,
     notes,
     paymentMethod,
+    couponCode,
   } = request.body;
 
   // check if all information is provided
@@ -62,6 +64,44 @@ module.exports.createProductOrder = async (request, response, next) => {
     !fullAddress
   )
     return next(new ErrorResponse("Missing information", 421));
+
+  // Validate and apply coupon server-side
+  let couponDiscount = 0;
+  let validatedCouponCode = null;
+
+  if (couponCode) {
+    const coupon = await Coupons.findOne({
+      code: couponCode.toUpperCase(),
+      isActive: true,
+    });
+
+    if (coupon) {
+      const isExpired = coupon.expiresAt && new Date(coupon.expiresAt) < new Date();
+      const isOverLimit = coupon.usageLimit && coupon.usedCount >= coupon.usageLimit;
+
+      if (!isExpired && !isOverLimit) {
+        // Calculate subtotal from products
+        let subtotal = 0;
+        product.forEach((p) => (subtotal += Number(p.quantity) * Number(p.price)));
+
+        if (subtotal >= coupon.minOrderAmount) {
+          if (coupon.discountType === "percentage") {
+            couponDiscount = Math.round((subtotal * coupon.discountValue) / 100);
+            if (coupon.maxDiscount && couponDiscount > coupon.maxDiscount) {
+              couponDiscount = coupon.maxDiscount;
+            }
+          } else {
+            couponDiscount = coupon.discountValue;
+          }
+          if (couponDiscount > subtotal) couponDiscount = subtotal;
+
+          validatedCouponCode = coupon.code;
+          coupon.usedCount += 1;
+          await coupon.save();
+        }
+      }
+    }
+  }
 
   let products = [];
 
@@ -92,6 +132,8 @@ module.exports.createProductOrder = async (request, response, next) => {
     paymentMethod,
     paymentStatus: false,
     notes,
+    couponCode: validatedCouponCode,
+    couponDiscount,
   });
 
   if (paymentMethod === "Online") {

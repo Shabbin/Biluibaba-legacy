@@ -27,6 +27,7 @@ import {
   Grid3X3,
   Layers,
   Sparkles,
+  Ticket,
 } from "lucide-react";
 
 import { toast } from "@/hooks/use-toast";
@@ -260,6 +261,20 @@ export function AppSidebar() {
                   </CollapsibleContent>
                 </SidebarMenuItem>
               </Collapsible>
+
+              {/* Coupons */}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname === "/dashboard/coupons"}
+                  className="rounded-lg mx-2"
+                >
+                  <Link href="/dashboard/coupons">
+                    <Ticket className="w-4 h-4" />
+                    <span>Coupons</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
 
               {/* Vets */}
               <SidebarMenuItem>

@@ -29,6 +29,8 @@ const OrderSchema = new mongoose.Schema(
     area: String,
     fullAddress: String,
     notes: String,
+    couponCode: String,
+    couponDiscount: { type: Number, default: 0 },
     cancellationReason: String,
     returnReason: String,
   },

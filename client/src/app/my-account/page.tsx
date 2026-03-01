@@ -81,6 +81,7 @@ export default function ProfilePage() {
     }
     
     if (section === "address") {
+       if (!formData.name) return toast.error("Please set your name in Personal Profile first");
        if (!formData.address || !formData.district || !formData.postcode) {
          return toast.error("Please fill all address fields");
        }

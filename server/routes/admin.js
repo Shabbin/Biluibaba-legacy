@@ -42,6 +42,13 @@ const {
 } = require("../controllers/admin/adoptions");
 
 const {
+  getCoupons,
+  createCoupon,
+  updateCoupon,
+  deleteCoupon,
+} = require("../controllers/admin/coupons");
+
+const {
   getSiteSettings,
   uploadProductLandingSliders,
   updateProductLandingSliders,
@@ -104,6 +111,11 @@ router.route("/orders/status").post(updateOrderStatus);
 
 router.route("/products/:productId").get(getProduct);
 router.route("/products/status").post(updateProductStatus);
+
+// Coupon routes
+router.route("/coupons").get(getCoupons);
+router.route("/coupons/create").post(createCoupon);
+router.route("/coupons/:id").put(updateCoupon).delete(deleteCoupon);
 
 //Site settings route
 router

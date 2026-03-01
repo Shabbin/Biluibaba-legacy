@@ -34,8 +34,8 @@ module.exports.getUserInfo = async (request, response, next) => {
 module.exports.updateUserInfo = async (request, response, next) => {
   const { name, phoneNumber, shippingAddress } = request.body;
 
-  if (!name || !phoneNumber)
-    return next(new ErrorResponse("Missing information", 422));
+  if (!name)
+    return next(new ErrorResponse("Name is required", 422));
 
   const user = await User.findById(request.user.id);
 

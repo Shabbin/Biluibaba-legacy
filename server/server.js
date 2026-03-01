@@ -101,6 +101,7 @@ app.get("/api-docs.json", (req, res) => {
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/product", require("./routes/product"));
 app.use("/api/order", require("./routes/order"));
+app.use("/api/coupon", require("./routes/coupon"));
 app.use("/api/app", require("./routes/app"));
 app.use("/api/vendor", require("./routes/vendor"));
 app.use("/api/vet", require("./routes/vet"));
