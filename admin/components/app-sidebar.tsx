@@ -388,6 +388,17 @@ export function AppSidebar() {
                       <SidebarMenuSubItem>
                         <SidebarMenuSubButton
                           asChild
+                          isActive={isActive("/dashboard/site-settings/product-ad")}
+                        >
+                          <Link href="/dashboard/site-settings/product-ad">
+                            <Megaphone className="w-3.5 h-3.5" />
+                            <span>Product Ad</span>
+                          </Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton
+                          asChild
                           isActive={isActive("/dashboard/site-settings/best-deals")}
                         >
                           <Link href="/dashboard/site-settings/best-deals">

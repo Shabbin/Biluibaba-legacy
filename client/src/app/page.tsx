@@ -30,15 +30,15 @@ const productCategories = [
   { src: "/pets/rabbit.png", link: "/products?pet=rabbit" },
 ];
 
-const popularCategoryItems = [
-  { name: "Cat Food", icon: "🐱", link: "/products?category=cat-food" },
-  { name: "Dog Food", icon: "🐶", link: "/products?category=dog-food" },
-  { name: "Treats", icon: "🦴", link: "/products?category=treats" },
-  { name: "Litter", icon: "🪣", link: "/products?category=litter" },
-  { name: "Supplies", icon: "🧺", link: "/products?category=supplies" },
-  { name: "Grooming", icon: "✂️", link: "/products?category=grooming" },
-  { name: "Deals", icon: "🏷️", link: "/products?category=deals" },
-];
+// const popularCategoryItems = [
+//   { name: "Cat Food", icon: "🐱", link: "/products?category=cat-food" },
+//   { name: "Dog Food", icon: "🐶", link: "/products?category=dog-food" },
+//   { name: "Treats", icon: "🦴", link: "/products?category=treats" },
+//   { name: "Litter", icon: "🪣", link: "/products?category=litter" },
+//   { name: "Supplies", icon: "🧺", link: "/products?category=supplies" },
+//   { name: "Grooming", icon: "✂️", link: "/products?category=grooming" },
+//   { name: "Deals", icon: "🏷️", link: "/products?category=deals" },
+// ];
 
 // Helper for Section Headers
 interface SectionHeaderProps {
@@ -108,73 +108,14 @@ export default function Home() {
       <div className="bg-gradient-to-b from-petzy-blue-light to-white pb-0 relative">
         <div className="pt-8 px-4 md:px-8 max-w-[1400px] mx-auto">
           <Landing slider={site.product_landing_slider} />
-          <div className="text-center mt-8 mb-4">
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-petzy-slate leading-snug">
-              আপনার আদরের বাচ্চার খাবারের নিশ্চিত সমাধান এখন বিলুইবাবা তে!
-            </h1>
-          </div>
+          
         </div>
         <div className="text-white relative z-10 -mb-2 mt-8 opacity-50">
            {/* Optional: Add a subtle curve here if desired, or keep clean */}
         </div>
       </div>
 
-      {/* --- POPULAR CATEGORIES --- */}
-      <section className="py-16 bg-white relative">
-        <div className="container mx-auto px-5">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-petzy-slate mb-4">
-              Popular Categories
-            </h2>
-            <p className="text-petzy-slate-light max-w-2xl mx-auto">
-              Find exactly what you need for your furry, feathered, or scaled friends.
-            </p>
-          </div>
-
-          {/* Hardcoded Popular Category Items */}
-          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4 md:gap-6 mb-12">
-            {popularCategoryItems.map((item) => (
-              <Link
-                key={item.name}
-                href={item.link}
-                className="group cursor-pointer flex flex-col items-center"
-              >
-                <div className="w-20 h-20 md:w-24 md:h-24 bg-petzy-blue-light/30 rounded-2xl p-3 mb-3 transition-all duration-300 group-hover:bg-petzy-coral/10 group-hover:scale-105 shadow-sm group-hover:shadow-md flex items-center justify-center border border-transparent group-hover:border-petzy-coral/20">
-                  <span className="text-3xl md:text-4xl">{item.icon}</span>
-                </div>
-                <h3 className="font-bold text-sm text-petzy-slate group-hover:text-petzy-coral transition-colors text-center">
-                  {item.name}
-                </h3>
-              </Link>
-            ))}
-          </div>
-
-          {/* Dynamic Categories from DB */}
-          {site.popular_product_category.length > 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 md:gap-8">
-              {site.popular_product_category.map((category) => (
-                <div
-                  key={category._id}
-                  onClick={() => router.push(category.categorySlug)}
-                  className="group cursor-pointer flex flex-col items-center"
-                >
-                  <div className="w-full aspect-square bg-petzy-blue-light/30 rounded-full p-4 mb-4 transition-all duration-300 group-hover:bg-petzy-coral/10 group-hover:scale-105 shadow-sm group-hover:shadow-md flex items-center justify-center border border-transparent group-hover:border-petzy-coral/20">
-                    <SafeImg
-                      src={category.image}
-                      alt={category.category}
-                      className="w-3/4 h-3/4 object-contain transition-transform duration-500 group-hover:rotate-3"
-                    />
-                  </div>
-                  <h3 className="font-bold text-petzy-slate group-hover:text-petzy-coral transition-colors">
-                    {category.category}
-                  </h3>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
+    
       {/* --- QUICK LINKS (ICONS) --- */}
       <div className="container mx-auto px-5 mb-16">
         <ProductCategory categories={productCategories} />
@@ -192,9 +133,11 @@ export default function Home() {
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-petzy-yellow-soft rounded-full blur-3xl opacity-50"></div>
         <div className="container mx-auto px-5 relative z-10">
           <ProductAd
-            title="Treat Them Right"
-            desc="Premium nutrition choices for your beloved pets with exclusive discounts."
-            buttonText="Shop Now"
+            title={site.product_ad?.title ?? "Treat Them Right"}
+            desc={site.product_ad?.description ?? "Premium nutrition choices for your beloved pets with exclusive discounts."}
+            buttonText={site.product_ad?.button_text ?? "Shop Now"}
+            buttonLink={site.product_ad?.button_link ?? "/products"}
+            imagePath={site.product_ad?.image?.path ?? ""}
           />
         </div>
       </section>
@@ -216,7 +159,7 @@ export default function Home() {
       </section>
 
       {/* --- WHOLESOME FOOD PROMO BANNER --- */}
-      <section className="py-16 bg-petzy-mint-light/30 my-10 relative overflow-hidden">
+      {/* <section className="py-16 bg-petzy-mint-light/30 my-10 relative overflow-hidden">
         <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-petzy-mint-light rounded-full blur-3xl opacity-50"></div>
         <div className="container mx-auto px-5 relative z-10 text-center">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-petzy-slate mb-4">
@@ -228,7 +171,7 @@ export default function Home() {
             </Button>
           </Link>
         </div>
-      </section>
+      </section> */}
 
       {/* --- SPECIFIC CATEGORIES --- */}
       <section className="container mx-auto px-5 mb-20">
@@ -242,7 +185,7 @@ export default function Home() {
       </section>
 
       {/* --- BRAND SPOTLIGHT --- */}
-      <section className="bg-petzy-slate/5 py-16 mb-20">
+      {/* <section className="bg-petzy-slate/5 py-16 mb-20">
         <div className="container mx-auto px-5">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-12 text-petzy-slate">
             Brands In Spotlight
@@ -262,10 +205,10 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* --- VET SECTION --- */}
-      <div className="relative">
+      {/* <div className="relative">
         <div className="text-petzy-periwinkle-light -mb-1 relative z-20">
            <WavyDivider flip={false} />
         </div>
@@ -313,10 +256,10 @@ export default function Home() {
          <div className="text-petzy-periwinkle-light -mt-1 relative z-20 transform rotate-180">
            <WavyDivider flip={false} />
         </div>
-      </div>
+      </div> */}
 
       {/* --- VET BANNERS GRID --- */}
-      <section className="container mx-auto px-5 py-20">
+      {/* <section className="container mx-auto px-5 py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2 rounded-3xl overflow-hidden shadow-soft group">
             <SafeImg
@@ -335,10 +278,10 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* --- ADOPTION SECTION --- */}
-      <section className="container mx-auto px-5 mb-20">
+      {/* <section className="container mx-auto px-5 mb-20">
         <div className="text-center mb-12">
            <FaStar className="inline-block text-petzy-yellow text-4xl mb-4" />
            <h2 className="text-4xl lg:text-5xl font-bold text-petzy-slate mb-2">Take me Home</h2>
@@ -364,7 +307,7 @@ export default function Home() {
             >Post Adoption</Button>
           </Link>
         </div>
-      </section>
+      </section> */}
 
       {/* --- TESTIMONIALS --- */}
       <section className="py-10">

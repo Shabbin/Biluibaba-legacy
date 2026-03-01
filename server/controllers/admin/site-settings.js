@@ -526,6 +526,39 @@ module.exports.updateAdoptionBannerTwo = async (request, response, next) => {
   return response.status(200).json({ success: true, site });
 };
 
+module.exports.updateProductAd = async (request, response, next) => {
+  const { title, description, button_text, button_link } = request.body;
+  const url = request.protocol + "://" + request.get("host");
+
+  const site = await SiteSettings.findOne();
+
+  if (title !== undefined) site.product_ad.title = title;
+  if (description !== undefined) site.product_ad.description = description;
+  if (button_text !== undefined) site.product_ad.button_text = button_text;
+  if (button_link !== undefined) site.product_ad.button_link = button_link;
+
+  // Handle optional image upload
+  if (request.files && request.files.image && request.files.image.length > 0) {
+    const file = request.files.image[0];
+
+    // Remove old image if it exists
+    if (site.product_ad.image && site.product_ad.image.filename) {
+      const oldPath = path.join(
+        __dirname,
+        `../../uploads/site-settings/product-ad/${site.product_ad.image.filename}`
+      );
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+    }
+
+    site.product_ad.image.filename = file.filename;
+    site.product_ad.image.path = `${url}/uploads/site-settings/product-ad/${file.filename}`;
+  }
+
+  await site.save();
+
+  return response.status(200).json({ success: true, site });
+};
+
 const productLandingSliderStorage = multer.diskStorage({
   destination: function (req, file, cb) {
     const dir = path.join(__dirname, "../../uploads/site-settings/product-landing-slider");
@@ -658,4 +691,22 @@ exports.uploadVetBannerOne = Upload(vetBannerOneStorage).fields([
 
 exports.uploadAdoptionBanner = Upload(adoptionBannerStorage).fields([
   { name: "banner", maxCount: 1 },
+]);
+
+const productAdStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const dir = path.join(__dirname, "../../uploads/site-settings/product-ad");
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    cb(null, dir);
+  },
+  filename: function (req, file, cb) {
+    if (file.fieldname === "image")
+      cb(null, "product-ad-" + Date.now() + path.extname(file.originalname));
+  },
+});
+
+exports.uploadProductAd = Upload(productAdStorage).fields([
+  { name: "image", maxCount: 1 },
 ]);

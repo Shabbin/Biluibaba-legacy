@@ -69,6 +69,8 @@ const {
   addBestDealsProduct,
   deleteBestDealsProduct,
   updateBestDealsDuration,
+  updateProductAd,
+  uploadProductAd,
 } = require("../controllers/admin/site-settings");
 
 router.route("/login").post(login);
@@ -152,6 +154,9 @@ router
   .route("/site-settings/best-deals/products/:productId")
   .delete(deleteBestDealsProduct);
 router.route("/site-settings/best-deals").post(updateBestDealsDuration);
+router
+  .route("/site-settings/product-ad")
+  .post(uploadProductAd, updateProductAd);
 
 // Testimonials routes
 router.route("/testimonials").get(getAllTestimonials);

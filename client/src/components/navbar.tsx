@@ -145,7 +145,7 @@ const Navbar = () => {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <button className="focus:outline-none">
-                          <Avatar className="w-10 h-10 cursor-pointer ring-2 ring-transparent hover:ring-petzy-coral/30 transition-all duration-300">
+                          <Avatar className="w-8 h-8 cursor-pointer ring-2 ring-transparent hover:ring-petzy-coral/30 transition-all duration-300">
                             <AvatarImage src={user.avatar} alt={user.name} />
                             <AvatarFallback className="bg-gradient-to-br from-petzy-coral to-petzy-coral/70 text-white text-sm font-bold">
                               {user.name?.charAt(0)?.toUpperCase() || "U"}
