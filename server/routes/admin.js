@@ -5,6 +5,14 @@ const { protectAdmin } = require("../middleware/auth");
 
 const { login } = require("../controllers/admin");
 
+const {
+  getAllTestimonials,
+  createTestimonial,
+  updateTestimonial,
+  deleteTestimonial,
+  uploadTestimonialImage,
+} = require("../controllers/admin/testimonials");
+
 const { getUsers } = require("../controllers/admin/users");
 const { getStats } = require("../controllers/admin/stats");
 
@@ -144,5 +152,15 @@ router
   .route("/site-settings/best-deals/products/:productId")
   .delete(deleteBestDealsProduct);
 router.route("/site-settings/best-deals").post(updateBestDealsDuration);
+
+// Testimonials routes
+router.route("/testimonials").get(getAllTestimonials);
+router
+  .route("/testimonials/create")
+  .post(uploadTestimonialImage, createTestimonial);
+router
+  .route("/testimonials/:id")
+  .put(uploadTestimonialImage, updateTestimonial)
+  .delete(deleteTestimonial);
 
 module.exports = router;

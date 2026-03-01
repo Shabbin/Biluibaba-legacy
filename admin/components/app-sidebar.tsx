@@ -440,6 +440,17 @@ export function AppSidebar() {
                           </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton
+                          asChild
+                          isActive={isActive("/dashboard/site-settings/testimonials")}
+                        >
+                          <Link href="/dashboard/site-settings/testimonials">
+                            <Star className="w-3.5 h-3.5" />
+                            <span>Testimonials</span>
+                          </Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </SidebarMenuItem>

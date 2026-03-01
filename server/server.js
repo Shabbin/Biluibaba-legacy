@@ -72,6 +72,7 @@ app.use("/uploads/adoptions", express.static("./uploads/adoptions"));
 app.use("/uploads/site-settings", express.static("./uploads/site-settings"));
 app.use("/uploads/logo", express.static("./uploads/logo.png"));
 app.use("/uploads/vendor", express.static("./uploads/vendor"));
+app.use("/uploads/testimonials", express.static("./uploads/testimonials"));
 
 // Swagger Documentation
 app.use(
@@ -107,6 +108,7 @@ app.use("/api/room", require("./routes/room"));
 app.use("/api/adoptions", require("./routes/adoptions"));
 app.use("/api/admin", require("./routes/admin"));
 app.use("/api/contact", require("./routes/contact"));
+app.use("/api/testimonials", require("./routes/testimonials"));
 
 app.get("/location", async (request, response) => {
   const res = await fetch(
