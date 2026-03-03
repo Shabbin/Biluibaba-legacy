@@ -1,5 +1,5 @@
 import "@/src/styles/globals.css";
-
+import HashCleaner from "@/src/app/_components/HashCleaner";
 import { Toaster as HotToaster } from "react-hot-toast";
 import { Toaster } from "@/src/components/ui/toaster";
 
@@ -27,7 +27,17 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className="selection:bg-stone-950 selection:text-white">
       <body className={inter.className}>
+         <script
+    dangerouslySetInnerHTML={{
+      __html: `
+        if (window.location.hash === '#_=_') {
+          history.replaceState(null, document.title, window.location.pathname + window.location.search);
+        }
+      `,
+    }}
+  />
         <AuthProvider>
+           <HashCleaner />
           <Navbar/>
           
           <HotToaster
