@@ -195,7 +195,7 @@ const Footer = () => {
           </p>
           <div className="flex items-center gap-2 text-sm text-petzy-slate-light">
             <span>Developed by</span>
-            <span className="font-bold text-petzy-coral bg-petzy-coral/10 px-3 py-1 rounded-md">Fractal</span>
+            <span className="font-bold text-petzy-coral bg-petzy-coral/10 px-3 py-1 rounded-md">BBIT</span>
           </div>
         </div>
 
