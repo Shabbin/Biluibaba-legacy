@@ -13,10 +13,11 @@ const sendAdminToken = async (statusCode, response) => {
     .status(statusCode)
     .cookie("super-token", token, {
       httpOnly: true,
-      domain: process.env.NODE_ENV == "production" ? ".biluibaba.com" : "",
+      domain: process.env.NODE_ENV === "production" ? ".biluibaba.com" : "",
       secure: process.env.NODE_ENV === "production",
+      path: "/",
       maxAge: 1000 * 60 * 60 * 24,
-      sameSite: "strict",
+       sameSite: "none",
     })
     .json({ success: true });
 };
