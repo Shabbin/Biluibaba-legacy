@@ -4,7 +4,19 @@ const router = express.Router();
 const { protectAdmin } = require("../middleware/auth");
 
 const { login } = require("../controllers/admin");
+router.post("/logout", (req, res) => {
+  res.clearCookie("super-token", {
+    httpOnly: true,
+    domain: process.env.NODE_ENV === "production" ? ".biluibaba.com" : "",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
 
+  return res.status(200).json({
+    success: true,
+    message: "Logged out successfully",
+  });
+});
 const {
   getAllTestimonials,
   createTestimonial,
