@@ -28,11 +28,8 @@ const ProductAdSchema = z.object({
   description: z.string().min(1, "Description is required"),
   button_text: z.string().min(1, "Button text is required"),
   button_link: z.string().min(1, "Button link is required"),
-  image: z
-    .union([z.instanceof(File), z.string()])
-    .optional(),
+image: z.any().optional(),
 });
-
 type ProductAdFormValues = z.infer<typeof ProductAdSchema>;
 
 export default function Page() {
