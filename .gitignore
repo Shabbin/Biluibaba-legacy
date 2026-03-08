@@ -3,4 +3,20 @@
 
 vps.txt
 .vscode
+
+# environment files
+.env
+.env.*
 **/.env
+
+# server test artifacts
+server/backend-test
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# node modules
+node_modules
+# will remove later
+client/public/favicon.ico

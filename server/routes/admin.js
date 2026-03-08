@@ -7,9 +7,10 @@ const { login } = require("../controllers/admin");
 router.post("/logout", (req, res) => {
   res.clearCookie("super-token", {
     httpOnly: true,
-    domain: process.env.NODE_ENV === "production" ? ".biluibaba.com" : "",
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    domain: ".biluibaba.com" ,
+    secure: true,
+    sameSite: "none",
+    path: "/",
   });
 
   return res.status(200).json({
