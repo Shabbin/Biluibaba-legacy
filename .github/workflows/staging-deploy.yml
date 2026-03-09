@@ -10,54 +10,90 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
+      # ---------- ADMIN ----------
       - name: Install Admin Dependencies
         run: |
           cd admin
-          npm install
+          npm ci
 
       - name: Build Admin
         run: |
           cd admin
           npm run build
 
+      # ---------- CLIENT ----------
+      - name: Install Client Dependencies
+        run: |
+          cd client
+          npm ci
+
       - name: Build Client
         run: |
           cd client
-          npm install
           npm run build
 
-      - name: Build Backend
+      # ---------- SERVER ----------
+      - name: Install Backend Dependencies
         run: |
           cd server
-          npm install
+          npm ci
 
+      # ---------- TEST SSH CONNECTION ----------
+      - name: Test SSH Connection
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 22
+          timeout: 60s
+          command_timeout: 10m
+          script: |
+            echo "SSH connection successful"
+
+      # ---------- DEPLOY ----------
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 22
+          timeout: 60s
+          command_timeout: 20m
           script: |
+            set -e
+
+            echo "Starting deployment..."
+
             cd /root/test/Biluibaba-legacy
+
+            echo "Pulling latest code..."
             git pull origin initial-ecommerce-release
 
+            echo "Installing Admin dependencies..."
             cd admin
-            npm install
+            npm ci
             npm run build
 
+            echo "Building Client..."
             cd ../client
-            npm install
+            npm ci
             npm run build
 
+            echo "Installing Server dependencies..."
             cd ../server
-            npm install
+            npm ci
 
-            pm2 reload all
+            echo "Reloading PM2 processes..."
+            pm2 reload admin-site-test main-site-test backend-test app-site-test
+
+            echo "Deployment completed successfully!"
