@@ -17,27 +17,28 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
-      # ---------- INSTALL ROOT DEPENDENCIES ----------
-      - name: Install dependencies
-        run: |
-          cd admin && npm install --legacy-peer-deps
-          cd ../client && npm install --legacy-peer-deps
-          cd ../server && npm install --legacy-peer-deps
-
-      # ---------- BUILD PROJECT ----------
+      # ---------- BUILD ADMIN ----------
       - name: Build Admin
         run: |
           cd admin
+          npm install --legacy-peer-deps
           npm run build
 
+      # ---------- BUILD CLIENT ----------
       - name: Build Client
         run: |
           cd client
+          npm install --legacy-peer-deps
           npm run build
 
-      # ---------- DEPLOY (FAST) ----------
+      # ---------- INSTALL SERVER ----------
+      - name: Install Backend
+        run: |
+          cd server
+          npm install --legacy-peer-deps
+
+      # ---------- DEPLOY ----------
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -50,18 +51,18 @@ jobs:
           script: |
             set -e
 
-            echo "Deploying latest code..."
+            echo "Updating project..."
 
             cd /root/test/Biluibaba-legacy
 
             git fetch origin
             git reset --hard origin/initial-ecommerce-release
 
-            echo "Restarting PM2 services..."
+            echo "Restarting services..."
 
             pm2 reload admin-site-test
             pm2 reload main-site-test
             pm2 reload backend-test
             pm2 reload app-site-test
 
-            echo "Deployment complete."
+            echo "Deployment finished!"
