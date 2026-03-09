@@ -68,9 +68,19 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
           timeout: 60s
-          command_timeout: 20m
+          command_timeout: 30m
           script: |
             set -e
+
+            echo "Loading Node via NVM..."
+
+            export NVM_DIR="/root/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+            nvm use 20
+
+            node -v
+            npm -v
 
             echo "Starting deployment..."
 
