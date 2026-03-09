@@ -13,53 +13,31 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
-      # ---------- ADMIN ----------
-      - name: Install Admin Dependencies
+      # ---------- INSTALL ROOT DEPENDENCIES ----------
+      - name: Install dependencies
         run: |
-          cd admin
-          npm ci
+          cd admin && npm install --legacy-peer-deps
+          cd ../client && npm install --legacy-peer-deps
+          cd ../server && npm install --legacy-peer-deps
 
+      # ---------- BUILD PROJECT ----------
       - name: Build Admin
         run: |
           cd admin
           npm run build
-
-      # ---------- CLIENT ----------
-      - name: Install Client Dependencies
-        run: |
-          cd client
-          npm ci
 
       - name: Build Client
         run: |
           cd client
           npm run build
 
-      # ---------- SERVER ----------
-      - name: Install Backend Dependencies
-        run: |
-          cd server
-          npm ci
-
-      # ---------- TEST SSH CONNECTION ----------
-      - name: Test SSH Connection
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          port: 22
-          timeout: 60s
-          command_timeout: 10m
-          script: |
-            echo "SSH connection successful"
-
-      # ---------- DEPLOY ----------
+      # ---------- DEPLOY (FAST) ----------
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -68,42 +46,22 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
           timeout: 60s
-          command_timeout: 30m
+          command_timeout: 5m
           script: |
             set -e
 
-            echo "Loading Node via NVM..."
-
-            export NVM_DIR="/root/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
-            nvm use 20
-
-            node -v
-            npm -v
-
-            echo "Starting deployment..."
+            echo "Deploying latest code..."
 
             cd /root/test/Biluibaba-legacy
 
-            echo "Pulling latest code..."
-            git pull origin initial-ecommerce-release
+            git fetch origin
+            git reset --hard origin/initial-ecommerce-release
 
-            echo "Installing Admin dependencies..."
-            cd admin
-            npm ci
-            npm run build
+            echo "Restarting PM2 services..."
 
-            echo "Building Client..."
-            cd ../client
-            npm ci
-            npm run build
+            pm2 reload admin-site-test
+            pm2 reload main-site-test
+            pm2 reload backend-test
+            pm2 reload app-site-test
 
-            echo "Installing Server dependencies..."
-            cd ../server
-            npm ci
-
-            echo "Reloading PM2 processes..."
-            pm2 reload admin-site-test main-site-test backend-test app-site-test
-
-            echo "Deployment completed successfully!"
+            echo "Deployment complete."
