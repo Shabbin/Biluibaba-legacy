@@ -14,11 +14,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const fetchUserData = async () => {
     try {
-      const response = await fetch("/api/user", {
-        method: "GET",
-        credentials: "include",
-      });
-
+     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
+  method: "GET",
+  credentials: "include",
+});
       if (response.ok) {
         const data = await response.json();
         setUser(data);
