@@ -17,8 +17,8 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
-          timeout: 60s
-          command_timeout: 30m
+          timeout: 120s
+          command_timeout: 90m
 
           script: |
             set -e
@@ -31,46 +31,46 @@ jobs:
             git fetch origin
             git reset --hard origin/initial-ecommerce-release
 
-            echo "📦 Installing dependencies..."
+            echo "📦 Installing dependencies if needed..."
 
-            cd admin
-            if [ -f package-lock.json ]; then
-              npm ci --legacy-peer-deps
-            else
+            if [ ! -d "admin/node_modules" ]; then
+              echo "Installing admin dependencies..."
+              cd admin
               npm install --legacy-peer-deps
+              cd ..
             fi
 
-            cd ../client
-            if [ -f package-lock.json ]; then
-              npm ci --legacy-peer-deps
-            else
+            if [ ! -d "client/node_modules" ]; then
+              echo "Installing client dependencies..."
+              cd client
               npm install --legacy-peer-deps
+              cd ..
             fi
 
-            cd ../server
-            if [ -f package-lock.json ]; then
-              npm ci --legacy-peer-deps
-            else
+            if [ ! -d "server/node_modules" ]; then
+              echo "Installing server dependencies..."
+              cd server
               npm install --legacy-peer-deps
+              cd ..
             fi
-
-            cd ..
 
             echo "🧹 Cleaning old builds..."
             rm -rf admin/.next
             rm -rf client/.next
 
-            echo "⚙️ Building applications (parallel)..."
+            echo "⚙️ Building applications in parallel..."
 
-            cd admin
-            npm run build &
+            (
+              cd admin
+              npm run build
+            ) &
 
-            cd ../client
-            npm run build &
+            (
+              cd client
+              npm run build
+            ) &
 
             wait
-
-            cd ..
 
             echo "🔄 Reloading PM2 processes..."
 
