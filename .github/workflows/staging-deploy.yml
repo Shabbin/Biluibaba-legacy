@@ -6,65 +6,11 @@ on:
       - initial-ecommerce-release
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # ---------- CHECKOUT ----------
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      # ---------- NODE ----------
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm"
-          cache-dependency-path: |
-            admin/package-lock.json
-            client/package-lock.json
-            server/package-lock.json
-
-      # ---------- NEXT BUILD CACHE ----------
-      - name: Cache Next.js build
-        uses: actions/cache@v4
-        with:
-          path: |
-            admin/.next/cache
-            client/.next/cache
-          key: ${{ runner.os }}-next-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-next-
-
-      # ---------- ADMIN ----------
-      - name: Install Admin Dependencies
-        run: |
-          cd admin
-          npm ci
-
-      - name: Build Admin
-        run: |
-          cd admin
-          npm run build
-
-      # ---------- CLIENT ----------
-      - name: Install Client Dependencies
-        run: |
-          cd client
-          npm ci
-
-      - name: Build Client
-        run: |
-          cd client
-          npm run build
-
-      # ---------- SERVER ----------
-      - name: Install Server Dependencies
-        run: |
-          cd server
-          npm ci
-
-      # ---------- DEPLOY ----------
+      # ---------- CONNECT & DEPLOY ----------
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -73,18 +19,47 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
           timeout: 60s
-          command_timeout: 5m
+          command_timeout: 10m
           script: |
             set -e
 
+            echo "🚀 Starting deployment..."
+
             cd /root/test/Biluibaba-legacy
 
+            echo "📥 Pulling latest code..."
             git fetch origin
             git reset --hard origin/initial-ecommerce-release
+
+            echo "📦 Installing dependencies..."
+
+            cd admin
+            npm install --legacy-peer-deps
+
+            cd ../client
+            npm install --legacy-peer-deps
+
+            cd ../server
+            npm install --legacy-peer-deps
+
+            echo "🧹 Cleaning old builds..."
+
+            rm -rf ../admin/.next
+            rm -rf ../client/.next
+
+            echo "⚙️ Building applications..."
+
+            cd ../admin
+            npm run build
+
+            cd ../client
+            npm run build
+
+            echo "🔄 Reloading PM2 processes..."
 
             pm2 reload admin-site-test
             pm2 reload main-site-test
             pm2 reload backend-test
             pm2 reload app-site-test
 
-            echo "Deployment completed successfully."
+            echo "✅ Deployment completed successfully."
