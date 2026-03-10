@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ---------- CONNECT & DEPLOY ----------
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -19,7 +18,8 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
           timeout: 60s
-          command_timeout: 10m
+          command_timeout: 30m
+
           script: |
             set -e
 
@@ -34,26 +34,43 @@ jobs:
             echo "📦 Installing dependencies..."
 
             cd admin
-            npm install --legacy-peer-deps
+            if [ -f package-lock.json ]; then
+              npm ci --legacy-peer-deps
+            else
+              npm install --legacy-peer-deps
+            fi
 
             cd ../client
-            npm install --legacy-peer-deps
+            if [ -f package-lock.json ]; then
+              npm ci --legacy-peer-deps
+            else
+              npm install --legacy-peer-deps
+            fi
 
             cd ../server
-            npm install --legacy-peer-deps
+            if [ -f package-lock.json ]; then
+              npm ci --legacy-peer-deps
+            else
+              npm install --legacy-peer-deps
+            fi
+
+            cd ..
 
             echo "🧹 Cleaning old builds..."
+            rm -rf admin/.next
+            rm -rf client/.next
 
-            rm -rf ../admin/.next
-            rm -rf ../client/.next
+            echo "⚙️ Building applications (parallel)..."
 
-            echo "⚙️ Building applications..."
-
-            cd ../admin
-            npm run build
+            cd admin
+            npm run build &
 
             cd ../client
-            npm run build
+            npm run build &
+
+            wait
+
+            cd ..
 
             echo "🔄 Reloading PM2 processes..."
 
