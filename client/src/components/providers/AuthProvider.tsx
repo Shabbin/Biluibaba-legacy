@@ -10,7 +10,13 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
+ const [user, setUser] = useState<User | null>(() => {
+  if (typeof window !== "undefined") {
+    const cachedUser = localStorage.getItem("user");
+    return cachedUser ? JSON.parse(cachedUser) : null;
+  }
+  return null;
+});
 
   const fetchUserData = async () => {
     try {
@@ -23,7 +29,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // console.log("AUTH USER:", res);
 
-  setUser(res.data);
+setUser(res.data);
+localStorage.setItem("user", JSON.stringify(res.data));
 } else {
   setUser(null);
 }
@@ -35,7 +42,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 const logout = async () => {
   // Immediately update UI
   setUser(null);
-
+localStorage.removeItem("user");
   try {
     await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
       method: "POST",

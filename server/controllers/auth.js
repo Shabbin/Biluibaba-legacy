@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const handlebars = require("handlebars");
 const multer = require("multer");
+const cloudinary = require("../config/cloudinary");
 
 const User = require("../models/user.model");
 const Orders = require("../models/order.model");
@@ -172,9 +173,22 @@ module.exports.authenticateGoogle = async (request, response, next) => {
 
     let user = await User.findOne({ email: data.email });
 
+    let avatarUrl;
+
+    // Upload to Cloudinary only if needed
+    if (!user || !user.avatar || user.avatar.includes("googleusercontent")) {
+      const uploadedAvatar = await cloudinary.uploader.upload(data.picture, {
+        folder: "avatars",
+      });
+
+      avatarUrl = uploadedAvatar.secure_url;
+    } else {
+      avatarUrl = user.avatar;
+    }
+
     if (user) {
-      // Update existing user with Google avatar
-      user.avatar = data.picture;
+      // Update existing user
+      user.avatar = avatarUrl;
       user.authType = "google";
 
       await user.save();
@@ -188,7 +202,7 @@ module.exports.authenticateGoogle = async (request, response, next) => {
         "",
         "",
         "google",
-        data.picture
+        avatarUrl
       );
 
       return redirectAndSendToken(state || "/", newUser, 200, response);

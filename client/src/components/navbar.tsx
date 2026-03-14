@@ -49,6 +49,14 @@ const Navbar = () => {
   const router = useRouter();
   const { user, logout } = useAuth();
   
+  const optimizedAvatar =
+  user?.avatar?.includes("res.cloudinary.com")
+    ? user.avatar.replace(
+        "/upload/",
+        "/upload/w_200,h_200,c_fill,f_auto,q_auto/"
+      )
+    : user?.avatar;
+
   // State
   const [cartOpen, setCartOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -146,7 +154,7 @@ const Navbar = () => {
                       <DropdownMenuTrigger asChild>
                         <button className="focus:outline-none">
                           <Avatar className="w-8 h-8 cursor-pointer ring-2 ring-transparent hover:ring-petzy-coral/30 transition-all duration-300">
-                            <AvatarImage src={user.avatar} alt={user.name} />
+                           <AvatarImage src={optimizedAvatar} alt={user.name} />
                             <AvatarFallback className="bg-gradient-to-br from-petzy-coral to-petzy-coral/70 text-white text-sm font-bold">
                               {user.name?.charAt(0)?.toUpperCase() || "U"}
                             </AvatarFallback>

@@ -33,6 +33,6 @@ router.route("/update-profile").post(updateUserInfo);
 router.route("/update-avatar").post(uploadAvatar, updateAvatar);
 router.route("/orders").get(getOrders);
 router.route("/vet").get(getBookings);
-router.route("/logout").get(logoutUser);
+router.route("/logout").post(logoutUser);
 
 module.exports = router;
