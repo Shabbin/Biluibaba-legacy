@@ -157,10 +157,11 @@ module.exports.register = async (request, response, next) => {
 module.exports.authenticateGoogle = async (request, response, next) => {
   const { code, state } = request.query;
 
-  if (!code)
+  if (!code) {
     return response
       .status(400)
       .json({ success: false, data: "Missing 'code' parameter" });
+  }
 
   try {
     const { tokens } = await oauth2Client.getToken(code);
@@ -169,10 +170,18 @@ module.exports.authenticateGoogle = async (request, response, next) => {
     const oauth2 = google.oauth2({ version: "v2", auth: oauth2Client });
     const { data } = await oauth2.userinfo.get();
 
-    const user = await User.findOne({ email: data.email });
+    let user = await User.findOne({ email: data.email });
 
-    if (user) return redirectAndSendToken(state || "/", user, 200, response);
-    else {
+    if (user) {
+      // Update existing user with Google avatar
+      user.avatar = data.picture;
+      user.authType = "google";
+
+      await user.save();
+
+      return redirectAndSendToken(state || "/", user, 200, response);
+    } else {
+      // Create new Google user
       let newUser = await registerUser(
         data.name,
         data.email,
@@ -184,6 +193,7 @@ module.exports.authenticateGoogle = async (request, response, next) => {
 
       return redirectAndSendToken(state || "/", newUser, 200, response);
     }
+
   } catch (error) {
     console.error(error);
     response.redirect(`${process.env.FRONTEND_URL}/login`);

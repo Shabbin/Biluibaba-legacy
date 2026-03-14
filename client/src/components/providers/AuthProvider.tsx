@@ -18,12 +18,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   method: "GET",
   credentials: "include",
 });
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data);
-      } else {
-         setUser(null);
-      }
+   if (response.ok) {
+  const res = await response.json();
+
+  // console.log("AUTH USER:", res);
+
+  setUser(res.data);
+} else {
+  setUser(null);
+}
     } catch (error) {
        setUser(null);
       console.log("Error fetching user data:");

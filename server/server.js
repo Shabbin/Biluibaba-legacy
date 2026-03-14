@@ -10,6 +10,7 @@ const swaggerSpecs = require("./config/swagger");
 const connectDB = require("./config/db");
 const errorHandler = require("./middleware/error");
 
+const path = require("path");
 // Validate SSLCommerz Configuration
 console.log("\n==============================================");
 console.log("SSLCommerz Configuration Check");
@@ -66,7 +67,7 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cookieParser());
 
 // Static folders
-app.use("/uploads/profile", express.static("./uploads/profile"));
+app.use("/uploads/profile", express.static(path.join(__dirname, "uploads/profile")));
 app.use("/uploads/product", express.static("./uploads/product"));
 app.use("/uploads/adoptions", express.static("./uploads/adoptions"));
 app.use("/uploads/site-settings", express.static("./uploads/site-settings"));

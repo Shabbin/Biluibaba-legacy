@@ -29,7 +29,30 @@ jobs:
 
             echo "📥 Pulling latest code..."
             git fetch origin
+
+            PREVIOUS_COMMIT=$(git rev-parse HEAD)
+
             git reset --hard origin/initial-ecommerce-release
+
+            echo "🔍 Detecting changes..."
+
+            CHANGED_FILES=$(git diff --name-only $PREVIOUS_COMMIT HEAD)
+
+            ADMIN_CHANGED=false
+            CLIENT_CHANGED=false
+            SERVER_CHANGED=false
+
+            if echo "$CHANGED_FILES" | grep -q "^admin/"; then
+              ADMIN_CHANGED=true
+            fi
+
+            if echo "$CHANGED_FILES" | grep -q "^client/"; then
+              CLIENT_CHANGED=true
+            fi
+
+            if echo "$CHANGED_FILES" | grep -q "^server/"; then
+              SERVER_CHANGED=true
+            fi
 
             echo "📦 Installing dependencies if needed..."
 
@@ -54,29 +77,49 @@ jobs:
               cd ..
             fi
 
-            echo "🧹 Cleaning old builds..."
-            rm -rf admin/.next
-            rm -rf client/.next
+            echo "⚙️ Building applications..."
 
-            echo "⚙️ Building applications in parallel..."
+            if [ "$ADMIN_CHANGED" = true ]; then
+              echo "🧹 Cleaning admin build..."
+              rm -rf admin/.next
 
-            (
-              cd admin
-              npm run build
-            ) &
+              echo "⚙️ Building admin..."
+              (
+                cd admin
+                npm run build
+              )
+            else
+              echo "⏭️ No admin changes detected."
+            fi
 
-            (
-              cd client
-              npm run build
-            ) &
+            if [ "$CLIENT_CHANGED" = true ]; then
+              echo "🧹 Cleaning client build..."
+              rm -rf client/.next
 
-            wait
+              echo "⚙️ Building client..."
+              (
+                cd client
+                npm run build
+              )
+            else
+              echo "⏭️ No client changes detected."
+            fi
 
             echo "🔄 Reloading PM2 processes..."
 
-            pm2 reload admin-site-test
-            pm2 reload main-site-test
-            pm2 reload backend-test
+            if [ "$ADMIN_CHANGED" = true ]; then
+              pm2 reload admin-site-test
+            fi
+
+            if [ "$CLIENT_CHANGED" = true ]; then
+              pm2 reload main-site-test
+            fi
+
+            if [ "$SERVER_CHANGED" = true ]; then
+              pm2 reload backend-test
+            fi
+
+            echo "🔄 Reloading app site..."
             pm2 reload app-site-test
 
             echo "✅ Deployment completed successfully."
